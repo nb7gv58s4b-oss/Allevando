@@ -1,12 +1,10 @@
-const supabaseClient = window.supabase.createClient(
+const client = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 
 async function registerUser() {
-
     try {
-
         const nome = document.getElementById("nome").value.trim();
         const cognome = document.getElementById("cognome").value.trim();
         const email = document.getElementById("email").value.trim();
@@ -31,7 +29,7 @@ async function registerUser() {
 
         alert("Sto creando il tuo account...");
 
-        const { data, error } = await supabaseClient.auth.signUp({
+        const result = await client.auth.signUp({
             email: email,
             password: password,
             options: {
@@ -42,20 +40,14 @@ async function registerUser() {
             }
         });
 
-        if (error) {
-            alert("Errore Supabase: " + error.message);
-            console.error(error);
+        if (result.error) {
+            alert("Errore Supabase: " + result.error.message);
             return;
         }
-
-        console.log("Registrazione completata:", data);
 
         alert("Account creato! Controlla la tua email per confermare l'account.");
 
     } catch (error) {
-
-        console.error(error);
         alert("Errore inatteso: " + error.message);
-
     }
 }
