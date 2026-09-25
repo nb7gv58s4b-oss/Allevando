@@ -1,3 +1,3 @@
-const SUPABASE_URL = "const SUPABASE_URL = "https://gdzorpepscjkaylmqnal.supabase.co";";
+const SUPABASE_URL = "const SUPABASE_URL = "https://gdzorpepscjkaylmqnal.supabase.co";
 
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkem9ycGVwc2Nqa2F5bG1xbmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNDQ5ODEsImV4cCI6MjEwNTkyMDk4MX0.sZLfFFzE6MINGgdU3hIye5dNNCwIxJNLWEWR_W0QHCY";
