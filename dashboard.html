@@ -1,0 +1,350 @@
+```html
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard — ALLEVANDO</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <div class="logo">
+
+        <span class="logo-mark">
+            A
+        </span>
+
+        <span class="logo-text">
+            ALLEVANDO
+        </span>
+
+    </div>
+
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="soggetti.html">
+            Soggetti
+        </a>
+
+        <a href="coppie.html">
+            Coppie
+        </a>
+
+        <a href="covate.html">
+            Covate
+        </a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+        <button
+            onclick="logoutUser()"
+            class="btn btn-small"
+            style="border:none; cursor:pointer;">
+
+            Esci
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <section class="intro">
+
+        <span class="eyebrow">
+            AREA PERSONALE
+        </span>
+
+
+        <h1>
+            Il tuo allevamento.
+        </h1>
+
+
+        <p id="welcome-message">
+
+            Caricamento...
+
+        </p>
+
+    </section>
+
+
+
+    <section class="features">
+
+
+        <div class="feature-grid">
+
+
+            <!-- SOGGETTI -->
+
+            <div class="feature">
+
+                <h3>
+                    🐦 Soggetti
+                </h3>
+
+                <p>
+                    Gestisci tutti i soggetti
+                    del tuo allevamento.
+                </p>
+
+                <strong
+                    id="count-soggetti">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- COPPIE -->
+
+            <div class="feature">
+
+                <h3>
+                    ❤️ Coppie
+                </h3>
+
+                <p>
+                    Gestisci le coppie
+                    riproduttive.
+                </p>
+
+                <strong
+                    id="count-coppie">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- COVATE -->
+
+            <div class="feature">
+
+                <h3>
+                    🥚 Covate
+                </h3>
+
+                <p>
+                    Tieni sotto controllo
+                    le covate.
+                </p>
+
+                <strong
+                    id="count-covate">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- NASCITE -->
+
+            <div class="feature">
+
+                <h3>
+                    🐣 Nascite
+                </h3>
+
+                <p>
+                    Registra e controlla
+                    le nuove nascite.
+                </p>
+
+                <strong
+                    id="count-nascite">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <section class="intro">
+
+
+        <h2>
+            Gestisci il tuo allevamento
+        </h2>
+
+
+        <p>
+            Inizia aggiungendo il primo soggetto.
+        </p>
+
+
+        <a href="#"
+           class="btn">
+
+            + Aggiungi soggetto
+
+        </a>
+
+
+    </section>
+
+
+</main>
+
+
+
+<footer>
+
+
+    <div class="footer-logo">
+
+        ALLEVANDO
+
+    </div>
+
+
+    <p>
+
+        Il gestionale fatto dagli allevatori,
+        per gli allevatori.
+
+    </p>
+
+
+    <div class="copyright">
+
+        © 2026 ALLEVANDO
+
+    </div>
+
+
+</footer>
+
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
+
+<script src="js/config.js">
+</script>
+
+
+<script src="js/auth.js">
+</script>
+
+
+
+<script>
+
+
+async function checkUser() {
+
+
+    const result =
+        await client.auth.getUser();
+
+
+    if (result.error || !result.data.user) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    const user =
+        result.data.user;
+
+
+    const nome =
+        user.user_metadata?.nome;
+
+
+    if (nome) {
+
+        document.getElementById(
+            "welcome-message"
+        ).textContent =
+            "Ciao " + nome + "! " +
+            "Benvenuto nel tuo allevamento.";
+
+    } else {
+
+        document.getElementById(
+            "welcome-message"
+        ).textContent =
+            "Benvenuto nel tuo allevamento.";
+
+    }
+
+}
+
+
+
+async function logoutUser() {
+
+
+    await client.auth.signOut();
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+checkUser();
+
+</script>
+
+
+</body>
+
+</html>
+```
