@@ -1,4 +1,4 @@
-```javascript id="w8m3q2"
+```javascript
 const client = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
@@ -43,29 +43,21 @@ async function registerUser() {
 
 
         const result = await client.auth.signUp({
-
             email: email,
-
             password: password,
 
             options: {
-
                 data: {
                     nome: nome,
                     cognome: cognome
                 }
-
             }
-
         });
 
 
         if (result.error) {
-
             alert("Errore Supabase: " + result.error.message);
-
             return;
-
         }
 
 
@@ -81,7 +73,6 @@ async function registerUser() {
 }
 
 
-
 // ============================
 // LOGIN
 // ============================
@@ -95,11 +86,8 @@ async function loginUser() {
 
 
         if (!email || !password) {
-
             alert("Inserisci email e password.");
-
             return;
-
         }
 
 
@@ -107,20 +95,14 @@ async function loginUser() {
 
 
         const result = await client.auth.signInWithPassword({
-
             email: email,
-
             password: password
-
         });
 
 
         if (result.error) {
-
             alert("Errore di accesso: " + result.error.message);
-
             return;
-
         }
 
 
@@ -138,29 +120,3 @@ async function loginUser() {
 
 }
 ```
-
-
-        alert("Sto creando il tuo account...");
-
-        const result = await client.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    nome: nome,
-                    cognome: cognome
-                }
-            }
-        });
-
-        if (result.error) {
-            alert("Errore Supabase: " + result.error.message);
-            return;
-        }
-
-        alert("Account creato! Controlla la tua email per confermare l'account.");
-
-    } catch (error) {
-        alert("Errore inatteso: " + error.message);
-    }
-}
