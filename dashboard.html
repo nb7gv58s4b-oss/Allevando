@@ -327,6 +327,35 @@ function cambiaAnno() {
 }
 
 
+// CARICA NUMERO SOGGETTI
+
+async function caricaNumeroSoggetti(userId) {
+
+    const result = await client
+        .from("soggetti")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId);
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore conteggio soggetti:",
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "count-soggetti"
+    ).textContent = result.count || 0;
+
+}
+
+
 // CONTROLLO UTENTE
 
 async function checkUser() {
@@ -358,6 +387,11 @@ async function checkUser() {
     document.getElementById(
         "anno-selezionato"
     ).textContent = annoIniziale;
+
+
+    // CARICA CONTEGGIO SOGGETTI
+
+    await caricaNumeroSoggetti(user.id);
 
 }
 
