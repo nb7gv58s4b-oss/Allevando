@@ -1,70 +1,44 @@
-```html
 <!DOCTYPE html>
 <html lang="it">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard — ALLEVANDO</title>
 
-    <link rel="stylesheet"
-          href="css/style.css">
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 
 <body>
 
-
 <header class="navbar">
 
-    <div class="logo">
+    <div class="nav-inner">
 
-        <span class="logo-mark">
-            A
-        </span>
+        <a href="dashboard.html" class="brand">
+            <div class="brand-mark">A</div>
 
-        <span class="logo-text">
-            ALLEVANDO
-        </span>
-
-    </div>
-
-
-    <nav>
-
-        <a href="dashboard.html">
-            Dashboard
+            <div>
+                <div class="brand-name">ALLEVANDO</div>
+                <div class="brand-tagline">
+                    Il gestionale fatto dagli allevatori, per gli allevatori.
+                </div>
+            </div>
         </a>
 
-        <a href="soggetti.html">
-            Soggetti
-        </a>
-
-        <a href="coppie.html">
-            Coppie
-        </a>
-
-        <a href="covate.html">
-            Covate
-        </a>
-
-    </nav>
-
-
-    <div class="nav-actions">
+        <nav class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="soggetti.html">Soggetti</a>
+            <a href="coppie.html">Coppie</a>
+            <a href="covate.html">Covate</a>
+        </nav>
 
         <button
             onclick="logoutUser()"
             class="btn btn-small"
             style="border:none; cursor:pointer;">
-
             Esci
-
         </button>
 
     </div>
@@ -72,9 +46,9 @@
 </header>
 
 
-
 <main>
 
+    <!-- BENVENUTO -->
 
     <section class="intro">
 
@@ -82,118 +56,143 @@
             AREA PERSONALE
         </span>
 
-
         <h1>
-            Il tuo allevamento.
+            Ciao <span id="nome-allevatore">allevatore</span>.
         </h1>
 
-
-        <p id="welcome-message">
-
-            Caricamento...
-
+        <p>
+            Tutto il tuo allevamento, organizzato in un unico posto.
         </p>
 
     </section>
 
 
+    <!-- SELETTORE ANNO -->
+
+    <section class="intro">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:20px;
+            flex-wrap:wrap;
+        ">
+
+            <div>
+                <span class="eyebrow">
+                    ANNO DI GESTIONE
+                </span>
+
+                <h2 style="margin-top:8px;">
+                    Stagione <span id="anno-selezionato">2026</span>
+                </h2>
+            </div>
+
+            <select
+                id="anno"
+                onchange="cambiaAnno()"
+                style="
+                    padding:12px 16px;
+                    border-radius:10px;
+                    border:1px solid #d1d5db;
+                    background:white;
+                    font-size:16px;
+                    cursor:pointer;
+                ">
+            </select>
+
+        </div>
+
+    </section>
+
+
+    <!-- STATISTICHE -->
 
     <section class="features">
-
 
         <div class="feature-grid">
 
 
-            <!-- SOGGETTI -->
-
             <div class="feature">
 
+                <div style="font-size:30px;">
+                    🐦
+                </div>
+
                 <h3>
-                    🐦 Soggetti
+                    Soggetti
                 </h3>
 
                 <p>
-                    Gestisci tutti i soggetti
-                    del tuo allevamento.
+                    Tutti i soggetti presenti nel tuo allevamento.
                 </p>
 
-                <strong
-                    id="count-soggetti">
-
+                <strong id="count-soggetti">
                     0
-
                 </strong>
 
             </div>
 
 
-
-            <!-- COPPIE -->
-
             <div class="feature">
 
+                <div style="font-size:30px;">
+                    ❤️
+                </div>
+
                 <h3>
-                    ❤️ Coppie
+                    Coppie
                 </h3>
 
                 <p>
-                    Gestisci le coppie
-                    riproduttive.
+                    Le coppie riproduttive attive.
                 </p>
 
-                <strong
-                    id="count-coppie">
-
+                <strong id="count-coppie">
                     0
-
                 </strong>
 
             </div>
 
 
-
-            <!-- COVATE -->
-
             <div class="feature">
 
+                <div style="font-size:30px;">
+                    🥚
+                </div>
+
                 <h3>
-                    🥚 Covate
+                    Covate
                 </h3>
 
                 <p>
-                    Tieni sotto controllo
-                    le covate.
+                    Le covate registrate nell'anno selezionato.
                 </p>
 
-                <strong
-                    id="count-covate">
-
+                <strong id="count-covate">
                     0
-
                 </strong>
 
             </div>
 
 
-
-            <!-- NASCITE -->
-
             <div class="feature">
 
+                <div style="font-size:30px;">
+                    🐣
+                </div>
+
                 <h3>
-                    🐣 Nascite
+                    Nascite
                 </h3>
 
                 <p>
-                    Registra e controlla
-                    le nuove nascite.
+                    Le nascite registrate nell'anno selezionato.
                 </p>
 
-                <strong
-                    id="count-nascite">
-
+                <strong id="count-nascite">
                     0
-
                 </strong>
 
             </div>
@@ -201,140 +200,175 @@
 
         </div>
 
-
     </section>
 
 
+    <!-- ACCESSI RAPIDI -->
 
     <section class="intro">
 
+        <span class="eyebrow">
+            ACCESSI RAPIDI
+        </span>
 
         <h2>
             Gestisci il tuo allevamento
         </h2>
 
-
         <p>
-            Inizia aggiungendo il primo soggetto.
+            Da qui potrai accedere rapidamente alle principali funzioni di ALLEVANDO.
         </p>
 
 
-        <a href="#"
-           class="btn">
+        <div style="
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-top:24px;
+        ">
 
-            + Aggiungi soggetto
+            <a href="soggetti.html" class="btn">
+                + Aggiungi soggetto
+            </a>
 
-        </a>
+            <a href="coppie.html" class="btn">
+                + Crea coppia
+            </a>
 
+            <a href="covate.html" class="btn">
+                + Registra covata
+            </a>
+
+        </div>
 
     </section>
-
 
 </main>
 
 
+<footer class="footer">
 
-<footer>
+    <div class="footer-inner">
 
+        <div>
+            <strong>ALLEVANDO</strong>
 
-    <div class="footer-logo">
+            <p>
+                Il gestionale fatto dagli allevatori,
+                per gli allevatori.
+            </p>
+        </div>
 
-        ALLEVANDO
-
-    </div>
-
-
-    <p>
-
-        Il gestionale fatto dagli allevatori,
-        per gli allevatori.
-
-    </p>
-
-
-    <div class="copyright">
-
-        © 2026 ALLEVANDO
+        <div>
+            <p>
+                © 2026 ALLEVANDO. Tutti i diritti riservati.
+            </p>
+        </div>
 
     </div>
-
 
 </footer>
 
 
-
 <!-- SUPABASE -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="js/config.js"></script>
 
-<script src="js/config.js">
-</script>
-
-
-<script src="js/auth.js">
-</script>
-
+<script src="js/auth.js"></script>
 
 
 <script>
 
+const annoCorrente = new Date().getFullYear();
+
+const selettoreAnno = document.getElementById("anno");
+
+const annoSalvato = localStorage.getItem("allevando_anno");
+
+const annoIniziale = annoSalvato
+    ? parseInt(annoSalvato)
+    : annoCorrente;
+
+
+// CREA GLI ANNI DISPONIBILI
+
+for (let anno = annoCorrente; anno >= 2020; anno--) {
+
+    const option = document.createElement("option");
+
+    option.value = anno;
+    option.textContent = anno;
+
+    if (anno === annoIniziale) {
+        option.selected = true;
+    }
+
+    selettoreAnno.appendChild(option);
+}
+
+
+// CAMBIO ANNO
+
+function cambiaAnno() {
+
+    const anno = parseInt(selettoreAnno.value);
+
+    localStorage.setItem(
+        "allevando_anno",
+        anno
+    );
+
+    document.getElementById(
+        "anno-selezionato"
+    ).textContent = anno;
+
+}
+
+
+// CONTROLLO UTENTE
 
 async function checkUser() {
 
-
-    const result =
-        await client.auth.getUser();
-
+    const result = await client.auth.getUser();
 
     if (result.error || !result.data.user) {
 
-        window.location.href =
-            "login.html";
+        window.location.href = "login.html";
 
         return;
-
     }
 
 
-    const user =
-        result.data.user;
+    const user = result.data.user;
 
-
-    const nome =
-        user.user_metadata?.nome;
+    const nome = user.user_metadata?.nome;
 
 
     if (nome) {
 
         document.getElementById(
-            "welcome-message"
-        ).textContent =
-            "Ciao " + nome + "! " +
-            "Benvenuto nel tuo allevamento.";
-
-    } else {
-
-        document.getElementById(
-            "welcome-message"
-        ).textContent =
-            "Benvenuto nel tuo allevamento.";
+            "nome-allevatore"
+        ).textContent = nome;
 
     }
+
+
+    document.getElementById(
+        "anno-selezionato"
+    ).textContent = annoIniziale;
 
 }
 
 
+// LOGOUT
 
 async function logoutUser() {
 
-
     await client.auth.signOut();
 
-
-    window.location.href =
-        "login.html";
+    window.location.href = "login.html";
 
 }
 
@@ -343,8 +377,6 @@ checkUser();
 
 </script>
 
-
 </body>
 
 </html>
-```
