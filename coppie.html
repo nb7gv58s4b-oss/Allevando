@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Coppie - ALLEVANDO</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+```
+
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+
+```
+    <h1>ALLEVANDO</h1>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="soggetti.html">Soggetti</a>
+        <a href="coppie.html" class="active">Coppie</a>
+        <a href="covate.html">Covate</a>
+        <button onclick="logoutUser()">Esci</button>
+    </nav>
+
+</div>
+```
+
+</header>
+
+<main class="container">
+
+```
+<section class="page-header">
+    <h2>Gestione Coppie</h2>
+    <p>Crea e gestisci le coppie riproduttive del tuo allevamento.</p>
+</section>
+
+
+<!-- FORM COPPIA -->
+
+<section class="card">
+
+    <h3 id="titolo-form">➕ Nuova coppia</h3>
+
+    <form id="form-coppia">
+
+        <div class="form-group">
+            <label for="maschio_id">Maschio</label>
+
+            <select id="maschio_id" required>
+                <option value="">Seleziona il maschio</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="femmina_id">Femmina</label>
+
+            <select id="femmina_id" required>
+                <option value="">Seleziona la femmina</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="data_inizio">Data inizio</label>
+
+            <input
+                type="date"
+                id="data_inizio"
+            >
+        </div>
+
+
+        <div class="form-group">
+            <label for="stato">Stato</label>
+
+            <select id="stato">
+
+                <option value="Attiva">
+                    Attiva
+                </option>
+
+                <option value="In cova">
+                    In cova
+                </option>
+
+                <option value="Separata">
+                    Separata
+                </option>
+
+                <option value="Terminata">
+                    Terminata
+                </option>
+
+            </select>
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="note">Note</label>
+
+            <textarea
+                id="note"
+                rows="4"
+                placeholder="Eventuali note sulla coppia..."
+            ></textarea>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                id="bottone-salva"
+            >
+                💾 Salva coppia
+            </button>
+
+
+            <button
+                type="button"
+                id="bottone-annulla"
+                onclick="annullaModifica()"
+                style="display:none;"
+            >
+                Annulla
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<!-- LISTA COPPIE -->
+
+<section class="card">
+
+    <h3>🐦 Le mie coppie</h3>
+
+    <div id="lista-coppie">
+
+        <p>Caricamento coppie...</p>
+
+    </div>
+
+</section>
+```
+
+</main>
+
+<script>
+
+let utenteCorrente = null;
+let coppiaInModifica = null;
+
+
+/* ================================
+   CONTROLLO UTENTE
+================================ */
+
+async function controllaUtente() {
+
+    const result = await client.auth.getUser();
+
+    if (result.error || !result.data.user) {
+
+        window.location.href = "login.html";
+        return;
+
+    }
+
+    utenteCorrente = result.data.user;
+
+    await caricaSoggetti();
+    await caricaCoppie();
+
+}
+
+
+/* ================================
+   CARICA SOGGETTI ATTIVI
+================================ */
+
+async function caricaSoggetti() {
+
+    const result = await client
+        .from("soggetti")
+        .select("*")
+        .eq("user_id", utenteCorrente.id)
+        .eq("stato", "Attivo")
+        .order("codice", { ascending: true });
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore caricamento soggetti:",
+            result.error
+        );
+
+        alert(
+            "Errore nel caricamento dei soggetti: " +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+
+    const maschioSelect =
+        document.getElementById("maschio_id");
+
+    const femminaSelect =
+        document.getElementById("femmina_id");
+
+
+    maschioSelect.innerHTML =
+        '<option value="">Seleziona il maschio</option>';
+
+    femminaSelect.innerHTML =
+        '<option value="">Seleziona la femmina</option>';
+
+
+    result.data.forEach(function(soggetto) {
+
+        const testo =
+            creaNomeSoggetto(soggetto);
+
+
+        if (
+            soggetto.sesso === "Maschio" ||
+            soggetto.sesso === "Da definire"
+        ) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = soggetto.id;
+            option.textContent = testo;
+
+            maschioSelect.appendChild(option);
+
+        }
+
+
+        if (
+            soggetto.sesso === "Femmina" ||
+            soggetto.sesso === "Da definire"
+        ) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = soggetto.id;
+            option.textContent = testo;
+
+            femminaSelect.appendChild(option);
+
+        }
+
+    });
+
+}
+
+
+/* ================================
+   NOME SOGGETTO
+================================ */
+
+function creaNomeSoggetto(soggetto) {
+
+    let nome = "";
+
+    if (soggetto.codice) {
+
+        nome += soggetto.codice;
+
+    } else {
+
+        nome += "Soggetto";
+
+    }
+
+
+    if (soggetto.specie) {
+
+        nome += " — " + soggetto.specie;
+
+    }
+
+
+    if (soggetto.mutazione) {
+
+        nome += " — " + soggetto.mutazione;
+
+    }
+
+
+    return nome;
+
+}
+
+
+/* ================================
+   CARICA COPPIE
+================================ */
+
+async function caricaCoppie() {
+
+    const lista =
+        document.getElementById("lista-coppie");
+
+
+    const result = await client
+        .from("coppie")
+        .select("*")
+        .eq("user_id", utenteCorrente.id)
+        .order("created_at", { ascending: false });
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore caricamento coppie:",
+            result.error
+        );
+
+        lista.innerHTML =
+            "<p>Errore nel caricamento delle coppie.</p>";
+
+        return;
+
+    }
+
+
+    if (!result.data || result.data.length === 0) {
+
+        lista.innerHTML =
+            "<p>Non hai ancora creato nessuna coppia.</p>";
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    for (const coppia of result.data) {
+
+        let maschio = null;
+        let femmina = null;
+
+
+        const maschioResult = await client
+            .from("soggetti")
+            .select("*")
+            .eq("id", coppia.maschio_id)
+            .eq("user_id", utenteCorrente.id)
+            .single();
+
+
+        if (!maschioResult.error) {
+
+            maschio = maschioResult.data;
+
+        }
+
+
+        const femminaResult = await client
+            .from("soggetti")
+            .select("*")
+            .eq("id", coppia.femmina_id)
+            .eq("user_id", utenteCorrente.id)
+            .single();
+
+
+        if (!femminaResult.error) {
+
+            femmina = femminaResult.data;
+
+        }
+
+
+        const card =
+            document.createElement("div");
+
+        card.className = "soggetto-card";
+
+
+        const nomeMaschio =
+            maschio
+                ? creaNomeSoggetto(maschio)
+                : "Soggetto non disponibile";
+
+
+        const nomeFemmina =
+            femmina
+                ? creaNomeSoggetto(femmina)
+                : "Soggetto non disponibile";
+
+
+        let dataInizio = "";
+
+        if (coppia.data_inizio) {
+
+            const data =
+                new Date(coppia.data_inizio);
+
+            dataInizio =
+                data.toLocaleDateString("it-IT");
+
+        }
+
+
+        card.innerHTML = `
+
+            <h4>🐦 ${nomeMaschio}</h4>
+
+            <p>
+                <strong>♀ Femmina:</strong>
+                ${nomeFemmina}
+            </p>
+
+            <p>
+                <strong>Stato:</strong>
+                ${coppia.stato || "Non specificato"}
+            </p>
+
+            ${
+                dataInizio
+                    ? `
+                        <p>
+                            <strong>Data inizio:</strong>
+                            ${dataInizio}
+                        </p>
+                    `
+                    : ""
+            }
+
+            ${
+                coppia.note
+                    ? `
+                        <p>
+                            <strong>Note:</strong>
+                            ${coppia.note}
+                        </p>
+                    `
+                    : ""
+            }
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    onclick="modificaCoppia('${coppia.id}')"
+                >
+                    ✏️ Modifica
+                </button>
+
+            </div>
+
+        `;
+
+
+        lista.appendChild(card);
+
+    }
+
+}
+
+
+/* ================================
+   CREA / MODIFICA COPPIA
+================================ */
+
+document
+    .getElementById("form-coppia")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const maschioId =
+            document.getElementById("maschio_id").value;
+
+        const femminaId =
+            document.getElementById("femmina_id").value;
+
+
+        if (!maschioId || !femminaId) {
+
+            alert(
+                "Seleziona un maschio e una femmina."
+            );
+
+            return;
+
+        }
+
+
+        if (maschioId === femminaId) {
+
+            alert(
+                "Il maschio e la femmina devono essere due soggetti diversi."
+            );
+
+            return;
+
+        }
+
+
+        const datiCoppia = {
+
+            maschio_id: maschioId,
+
+            femmina_id: femminaId,
+
+            data_inizio:
+                document.getElementById("data_inizio").value
+                || null,
+
+            stato:
+                document.getElementById("stato").value,
+
+            note:
+                document.getElementById("note").value.trim()
+                || null
+
+        };
+
+
+        if (coppiaInModifica) {
+
+            const result = await client
+                .from("coppie")
+                .update(datiCoppia)
+                .eq("id", coppiaInModifica)
+                .eq("user_id", utenteCorrente.id);
+
+
+            if (result.error) {
+
+                console.error(
+                    "Errore modifica coppia:",
+                    result.error
+                );
+
+                alert(
+                    "Errore durante la modifica: " +
+                    result.error.message
+                );
+
+                return;
+
+            }
+
+
+            alert("Coppia modificata correttamente.");
+
+        } else {
+
+            const nuovaCoppia = {
+
+                user_id:
+                    utenteCorrente.id,
+
+                ...datiCoppia
+
+            };
+
+
+            const result = await client
+                .from("coppie")
+                .insert([nuovaCoppia]);
+
+
+            if (result.error) {
+
+                console.error(
+                    "Errore creazione coppia:",
+                    result.error
+                );
+
+                alert(
+                    "Errore durante la creazione: " +
+                    result.error.message
+                );
+
+                return;
+
+            }
+
+
+            alert("Coppia creata correttamente.");
+
+        }
+
+
+        annullaModifica();
+
+        await caricaCoppie();
+
+    });
+
+
+/* ================================
+   MODIFICA COPPIA
+================================ */
+
+async function modificaCoppia(id) {
+
+    const result = await client
+        .from("coppie")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", utenteCorrente.id)
+        .single();
+
+
+    if (result.error) {
+
+        alert(
+            "Errore nel caricamento della coppia."
+        );
+
+        return;
+
+    }
+
+
+    const coppia =
+        result.data;
+
+
+    coppiaInModifica =
+        coppia.id;
+
+
+    document.getElementById("maschio_id").value =
+        coppia.maschio_id || "";
+
+
+    document.getElementById("femmina_id").value =
+        coppia.femmina_id || "";
+
+
+    document.getElementById("data_inizio").value =
+        coppia.data_inizio || "";
+
+
+    document.getElementById("stato").value =
+        coppia.stato || "Attiva";
+
+
+    document.getElementById("note").value =
+        coppia.note || "";
+
+
+    document.getElementById("titolo-form").textContent =
+        "✏️ Modifica coppia";
+
+
+    document.getElementById("bottone-salva").textContent =
+        "💾 Salva modifiche";
+
+
+    document.getElementById("bottone-annulla").style.display =
+        "inline-block";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ================================
+   ANNULLA MODIFICA
+================================ */
+
+function annullaModifica() {
+
+    coppiaInModifica = null;
+
+
+    document
+        .getElementById("form-coppia")
+        .reset();
+
+
+    document.getElementById("stato").value =
+        "Attiva";
+
+
+    document.getElementById("titolo-form").textContent =
+        "➕ Nuova coppia";
+
+
+    document.getElementById("bottone-salva").textContent =
+        "💾 Salva coppia";
+
+
+    document.getElementById("bottone-annulla").style.display =
+        "none";
+
+}
+
+
+/* ================================
+   LOGOUT
+================================ */
+
+async function logoutUser() {
+
+    await client.auth.signOut();
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* ================================
+   AVVIO
+================================ */
+
+controllaUtente();
+
+</script>
+
+</body>
+</html>
