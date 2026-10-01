@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Soggetti — ALLEVANDO</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="nav-inner">
+
+        <a href="dashboard.html" class="brand">
+
+            <div class="brand-mark">A</div>
+
+            <div>
+                <div class="brand-name">ALLEVANDO</div>
+                <div class="brand-tagline">
+                    Il gestionale fatto dagli allevatori, per gli allevatori.
+                </div>
+            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="soggetti.html">
+                Soggetti
+            </a>
+
+            <a href="coppie.html">
+                Coppie
+            </a>
+
+            <a href="covate.html">
+                Covate
+            </a>
+
+        </nav>
+
+
+        <button
+            onclick="logoutUser()"
+            class="btn btn-small"
+            style="border:none; cursor:pointer;">
+            Esci
+        </button>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="intro">
+
+        <span class="eyebrow">
+            ANAGRAFICA
+        </span>
+
+        <h1>
+            I tuoi soggetti.
+        </h1>
+
+        <p>
+            Gestisci e consulta tutti i soggetti del tuo allevamento.
+        </p>
+
+    </section>
+
+
+    <!-- NUOVO SOGGETTO -->
+
+    <section class="intro">
+
+        <h2>
+            Aggiungi soggetto
+        </h2>
+
+        <form id="soggetto-form">
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="codice">
+                        Codice / Anello
+                    </label>
+
+                    <input
+                        type="text"
+                        id="codice"
+                        placeholder="Es. IT-26-001">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="specie">
+                        Specie
+                    </label>
+
+                    <input
+                        type="text"
+                        id="specie"
+                        placeholder="Es. Passero del Giappone"
+                        required>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="sesso">
+                        Sesso
+                    </label>
+
+                    <select id="sesso" required>
+
+                        <option value="Da definire">
+                            Da definire
+                        </option>
+
+                        <option value="Maschio">
+                            Maschio
+                        </option>
+
+                        <option value="Femmina">
+                            Femmina
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="mutazione">
+                        Mutazione
+                    </label>
+
+                    <input
+                        type="text"
+                        id="mutazione"
+                        placeholder="Es. Nero Grigio">
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="data_nascita">
+                        Data di nascita
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_nascita">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="stato">
+                        Stato
+                    </label>
+
+                    <select id="stato" required>
+
+                        <option value="Attivo">
+                            Attivo
+                        </option>
+
+                        <option value="Ceduto">
+                            Ceduto
+                        </option>
+
+                        <option value="Deceduto">
+                            Deceduto
+                        </option>
+
+                        <option value="Ritirato">
+                            Ritirato
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn">
+
+                + Aggiungi soggetto
+
+            </button>
+
+
+        </form>
+
+    </section>
+
+
+    <!-- ELENCO SOGGETTI -->
+
+    <section class="intro">
+
+        <span class="eyebrow">
+            REGISTRO
+        </span>
+
+        <h2>
+            I tuoi soggetti
+        </h2>
+
+        <div id="lista-soggetti">
+
+            <p>
+                Caricamento...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div>
+
+            <strong>
+                ALLEVANDO
+            </strong>
+
+            <p>
+                Il gestionale fatto dagli allevatori,
+                per gli allevatori.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                © 2026 ALLEVANDO. Tutti i diritti riservati.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/auth.js"></script>
+
+
+<script>
+
+let utenteCorrente = null;
+
+
+// CONTROLLO UTENTE
+
+async function controllaUtente() {
+
+    const result = await client.auth.getUser();
+
+    if (result.error || !result.data.user) {
+
+        window.location.href = "login.html";
+
+        return;
+
+    }
+
+    utenteCorrente = result.data.user;
+
+    caricaSoggetti();
+
+}
+
+
+// CARICA I SOGGETTI
+
+async function caricaSoggetti() {
+
+    const lista = document.getElementById("lista-soggetti");
+
+    const result = await client
+        .from("soggetti")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+
+    if (result.error) {
+
+        lista.innerHTML =
+            "<p>Errore nel caricamento dei soggetti.</p>";
+
+        console.error(result.error);
+
+        return;
+
+    }
+
+
+    if (!result.data || result.data.length === 0) {
+
+        lista.innerHTML =
+            "<p>Non hai ancora inserito nessun soggetto.</p>";
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    result.data.forEach(soggetto => {
+
+        const elemento = document.createElement("div");
+
+        elemento.className = "feature";
+
+
+        elemento.innerHTML = `
+
+            <h3>
+                ${soggetto.codice || "Senza codice"}
+            </h3>
+
+            <p>
+                ${soggetto.specie || ""}
+            </p>
+
+            <p>
+                <strong>Sesso:</strong>
+                ${soggetto.sesso || "Da definire"}
+            </p>
+
+            <p>
+                <strong>Mutazione:</strong>
+                ${soggetto.mutazione || "—"}
+            </p>
+
+            <p>
+                <strong>Stato:</strong>
+                ${soggetto.stato || "Attivo"}
+            </p>
+
+        `;
+
+
+        lista.appendChild(elemento);
+
+    });
+
+}
+
+
+// AGGIUNTA SOGGETTO
+
+document
+    .getElementById("soggetto-form")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const nuovoSoggetto = {
+
+            user_id: utenteCorrente.id,
+
+            codice:
+                document.getElementById("codice").value.trim(),
+
+            specie:
+                document.getElementById("specie").value.trim(),
+
+            sesso:
+                document.getElementById("sesso").value,
+
+            mutazione:
+                document.getElementById("mutazione").value.trim(),
+
+            data_nascita:
+                document.getElementById("data_nascita").value || null,
+
+            stato:
+                document.getElementById("stato").value
+
+        };
+
+
+        const result = await client
+            .from("soggetti")
+            .insert(nuovoSoggetto);
+
+
+        if (result.error) {
+
+            alert(
+                "Errore nel salvataggio: "
+                + result.error.message
+            );
+
+            console.error(result.error);
+
+            return;
+
+        }
+
+
+        alert("Soggetto aggiunto correttamente.");
+
+
+        document
+            .getElementById("soggetto-form")
+            .reset();
+
+
+        document.getElementById("sesso").value =
+            "Da definire";
+
+        document.getElementById("stato").value =
+            "Attivo";
+
+
+        caricaSoggetti();
+
+    });
+
+
+// LOGOUT
+
+async function logoutUser() {
+
+    await client.auth.signOut();
+
+    window.location.href = "login.html";
+
+}
+
+
+controllaUtente();
+
+</script>
+
+</body>
+
+</html>
