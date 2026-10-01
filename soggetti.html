@@ -82,11 +82,11 @@
     </section>
 
 
-    <!-- NUOVO SOGGETTO -->
+    <!-- NUOVO / MODIFICA SOGGETTO -->
 
     <section class="intro">
 
-        <h2>
+        <h2 id="titolo-form">
             Aggiungi soggetto
         </h2>
 
@@ -223,9 +223,22 @@
 
             <button
                 type="submit"
-                class="btn">
+                class="btn"
+                id="pulsante-form">
 
                 + Aggiungi soggetto
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-small"
+                id="pulsante-annulla"
+                onclick="annullaModifica()"
+                style="display:none; margin-left:10px;">
+
+                Annulla
 
             </button>
 
@@ -301,6 +314,8 @@
 <script>
 
 let utenteCorrente = null;
+
+let soggettoInModifica = null;
 
 
 // CONTROLLO UTENTE
@@ -389,9 +404,23 @@ async function caricaSoggetti() {
             </p>
 
             <p>
+                <strong>Data di nascita:</strong>
+                ${soggetto.data_nascita || "—"}
+            </p>
+
+            <p>
                 <strong>Stato:</strong>
                 ${soggetto.stato || "Attivo"}
             </p>
+
+            <button
+                type="button"
+                class="btn btn-small"
+                onclick="modificaSoggetto('${soggetto.id}')">
+
+                ✏️ Modifica
+
+            </button>
 
         `;
 
@@ -403,7 +432,111 @@ async function caricaSoggetti() {
 }
 
 
-// AGGIUNTA SOGGETTO
+// AVVIA MODIFICA
+
+async function modificaSoggetto(id) {
+
+    const result = await client
+        .from("soggetti")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", utenteCorrente.id)
+        .single();
+
+
+    if (result.error) {
+
+        alert(
+            "Errore nel caricamento del soggetto: "
+            + result.error.message
+        );
+
+        console.error(result.error);
+
+        return;
+
+    }
+
+
+    const soggetto = result.data;
+
+    soggettoInModifica = soggetto.id;
+
+
+    document.getElementById("codice").value =
+        soggetto.codice || "";
+
+    document.getElementById("specie").value =
+        soggetto.specie || "";
+
+    document.getElementById("sesso").value =
+        soggetto.sesso || "Da definire";
+
+    document.getElementById("mutazione").value =
+        soggetto.mutazione || "";
+
+    document.getElementById("data_nascita").value =
+        soggetto.data_nascita || "";
+
+    document.getElementById("stato").value =
+        soggetto.stato || "Attivo";
+
+
+    document.getElementById("titolo-form").textContent =
+        "Modifica soggetto";
+
+
+    document.getElementById("pulsante-form").textContent =
+        "💾 Salva modifiche";
+
+
+    document.getElementById("pulsante-annulla").style.display =
+        "inline-block";
+
+
+    document.getElementById("soggetto-form")
+        .scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+}
+
+
+// ANNULLA MODIFICA
+
+function annullaModifica() {
+
+    soggettoInModifica = null;
+
+
+    document
+        .getElementById("soggetto-form")
+        .reset();
+
+
+    document.getElementById("sesso").value =
+        "Da definire";
+
+    document.getElementById("stato").value =
+        "Attivo";
+
+
+    document.getElementById("titolo-form").textContent =
+        "Aggiungi soggetto";
+
+
+    document.getElementById("pulsante-form").textContent =
+        "+ Aggiungi soggetto";
+
+
+    document.getElementById("pulsante-annulla").style.display =
+        "none";
+
+}
+
+
+// AGGIUNTA / MODIFICA SOGGETTO
 
 document
     .getElementById("soggetto-form")
@@ -412,9 +545,7 @@ document
         event.preventDefault();
 
 
-        const nuovoSoggetto = {
-
-            user_id: utenteCorrente.id,
+        const datiSoggetto = {
 
             codice:
                 document.getElementById("codice").value.trim(),
@@ -433,6 +564,55 @@ document
 
             stato:
                 document.getElementById("stato").value
+
+        };
+
+
+        // MODIFICA
+
+        if (soggettoInModifica) {
+
+            const result = await client
+                .from("soggetti")
+                .update(datiSoggetto)
+                .eq("id", soggettoInModifica)
+                .eq("user_id", utenteCorrente.id);
+
+
+            if (result.error) {
+
+                alert(
+                    "Errore nella modifica: "
+                    + result.error.message
+                );
+
+                console.error(result.error);
+
+                return;
+
+            }
+
+
+            alert("Soggetto modificato correttamente.");
+
+
+            annullaModifica();
+
+            caricaSoggetti();
+
+            return;
+
+        }
+
+
+        // NUOVO SOGGETTO
+
+        const nuovoSoggetto = {
+
+            user_id:
+                utenteCorrente.id,
+
+            ...datiSoggetto
 
         };
 
