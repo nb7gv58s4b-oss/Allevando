@@ -319,6 +319,68 @@ function creaNomeSoggetto(soggetto) {
 
 
 /* ================================
+   CONTROLLO SOGGETTO GIÀ IN COPPIA
+================================ */
+
+async function controllaSoggettoOccupato(soggettoId) {
+
+    if (!soggettoId) {
+        return false;
+    }
+
+
+    let query = client
+        .from("coppie")
+        .select("id, maschio_id, femmina_id, stato")
+        .eq("user_id", utenteCorrente.id)
+        .in("stato", ["Attiva", "In cova"])
+        .or(
+            `maschio_id.eq.${soggettoId},femmina_id.eq.${soggettoId}`
+        );
+
+
+    /*
+       Durante la modifica escludiamo la coppia che
+       stiamo modificando.
+    */
+
+    if (coppiaInModifica) {
+
+        query = query.neq(
+            "id",
+            coppiaInModifica
+        );
+
+    }
+
+
+    const result = await query;
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore controllo coppia:",
+            result.error
+        );
+
+        alert(
+            "Errore durante il controllo delle coppie: " +
+            result.error.message
+        );
+
+        return true;
+
+    }
+
+
+    return result.data &&
+           result.data.length > 0;
+
+}
+
+
+/* ================================
    CARICA COPPIE
 ================================ */
 
@@ -504,6 +566,9 @@ document
         const femminaId =
             document.getElementById("femmina_id").value;
 
+        const stato =
+            document.getElementById("stato").value;
+
 
         if (!maschioId || !femminaId) {
 
@@ -527,18 +592,66 @@ document
         }
 
 
+        /*
+           Controlliamo solo quando la coppia viene
+           impostata come Attiva o In cova.
+        */
+
+        if (
+            stato === "Attiva" ||
+            stato === "In cova"
+        ) {
+
+            const maschioOccupato =
+                await controllaSoggettoOccupato(
+                    maschioId
+                );
+
+
+            if (maschioOccupato) {
+
+                alert(
+                    "⚠️ Questo maschio appartiene già a una coppia attiva o in cova."
+                );
+
+                return;
+
+            }
+
+
+            const femminaOccupata =
+                await controllaSoggettoOccupato(
+                    femminaId
+                );
+
+
+            if (femminaOccupata) {
+
+                alert(
+                    "⚠️ Questa femmina appartiene già a una coppia attiva o in cova."
+                );
+
+                return;
+
+            }
+
+        }
+
+
         const datiCoppia = {
 
-            maschio_id: maschioId,
+            maschio_id:
+                maschioId,
 
-            femmina_id: femminaId,
+            femmina_id:
+                femminaId,
 
             data_inizio:
                 document.getElementById("data_inizio").value
                 || null,
 
             stato:
-                document.getElementById("stato").value,
+                stato,
 
             note:
                 document.getElementById("note").value.trim()
@@ -573,7 +686,9 @@ document
             }
 
 
-            alert("Coppia modificata correttamente.");
+            alert(
+                "Coppia modificata correttamente."
+            );
 
         } else {
 
@@ -609,7 +724,9 @@ document
             }
 
 
-            alert("Coppia creata correttamente.");
+            alert(
+                "Coppia creata correttamente."
+            );
 
         }
 
