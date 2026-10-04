@@ -3,358 +3,195 @@
 <html lang="it">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Soggetti — ALLEVANDO</title>
+<title>Soggetti — ALLEVANDO</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css">
 
-    <style>
-        /* =====================================================
-           SOGGETTI
-        ===================================================== */
+<style>
+/* =========================================================
+   SOGGETTI — INTEGRAZIONI SPECIFICHE
+   ========================================================= */
 
-        .subjects-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 25px 0;
-        }
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
 
-        .subjects-toolbar input,
-        .subjects-toolbar select {
-            flex: 1;
-            min-width: 180px;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            background: #fff;
-            color: #0f172a;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
+.soggetti-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
 
-        .subjects-toolbar input:focus,
-        .subjects-toolbar select:focus {
-            outline: none;
-            border-color: #166534;
-            box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.10);
-        }
+.soggetto-card {
+    position: relative;
+}
 
-        .subjects-summary {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
+.soggetto-card .azioni {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
 
-        .summary-card {
-            flex: 1;
-            min-width: 160px;
-            padding: 18px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
-        }
+.soggetto-card .btn-small {
+    min-height: 38px;
+}
 
-        .summary-label {
-            display: block;
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
+.soggetto-card .stato {
+    margin-top: 8px;
+}
 
-        .summary-number {
-            display: block;
-            font-size: 28px;
-            font-weight: 700;
-            color: #0f172a;
-        }
+.form-intro {
+    margin-bottom: 25px;
+}
 
-        .subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px;
-        }
+.form-intro h3 {
+    margin-bottom: 5px;
+}
 
-        .subject-card {
-            position: relative;
-            padding: 22px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+.form-intro p {
+    color: var(--muted);
+    font-size: 14px;
+}
 
-        .subject-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.09);
-        }
+.brand-tagline {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.2;
+}
 
-        .subject-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
+.lista-titolo {
+    margin-bottom: 20px;
+}
 
-        .subject-code {
-            margin: 0;
-            color: #166534;
-            font-size: 21px;
-            font-weight: 700;
-        }
+.lista-titolo h3 {
+    margin-bottom: 5px;
+}
 
-        .subject-species {
-            margin: 5px 0 0;
-            color: #64748b;
-            font-size: 14px;
-        }
+.lista-titolo p {
+    color: var(--muted);
+    font-size: 14px;
+}
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 9px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
+@media (max-width: 700px) {
 
-        .status-attivo {
-            background: #dcfce7;
-            color: #166534;
-        }
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 
-        .status-ceduto {
-            background: #fef3c7;
-            color: #92400e;
-        }
+    .brand-tagline {
+        display: none;
+    }
 
-        .status-deceduto {
-            background: #fee2e2;
-            color: #991b1b;
-        }
+    .soggetto-card {
+        padding: 18px;
+    }
+}
+</style>
 
-        .status-ritirato {
-            background: #e2e8f0;
-            color: #475569;
-        }
-
-        .subject-details {
-            display: grid;
-            gap: 9px;
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .subject-detail {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            font-size: 14px;
-        }
-
-        .subject-detail-label {
-            color: #64748b;
-        }
-
-        .subject-detail-value {
-            color: #0f172a;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .subject-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .subject-actions .btn {
-            flex: 1;
-        }
-
-        .empty-state {
-            padding: 35px 20px;
-            text-align: center;
-            border: 1px dashed #cbd5e1;
-            border-radius: 14px;
-            background: #f8fafc;
-            color: #64748b;
-            grid-column: 1 / -1;
-        }
-
-        .archive-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-top: 45px;
-            margin-bottom: 18px;
-        }
-
-        .archive-header h2 {
-            margin: 0;
-        }
-
-        .archive-section {
-            display: none;
-        }
-
-        .archive-section.visible {
-            display: block;
-        }
-
-        .archive-card {
-            opacity: 0.82;
-        }
-
-        .archive-toggle {
-            cursor: pointer;
-            border: 1px solid #d1d5db;
-            background: #fff;
-            color: #0f172a;
-        }
-
-        .form-container {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
-        }
-
-        .form-container h2 {
-            margin-top: 0;
-        }
-
-        .form-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 700px) {
-            .subject-header {
-                align-items: flex-start;
-            }
-
-            .subject-detail {
-                flex-direction: column;
-                gap: 2px;
-            }
-
-            .subject-detail-value {
-                text-align: left;
-            }
-
-            .archive-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
 <header class="navbar">
 
-    <div class="nav-inner">
+    <a href="dashboard.html" class="brand">
 
-        <a href="dashboard.html" class="brand">
+        <div class="logo-mark">A</div>
 
-            <div class="brand-mark">A</div>
-
-            <div>
-                <div class="brand-name">ALLEVANDO</div>
-
-                <div class="brand-tagline">
-                    Il gestionale fatto dagli allevatori,
-                    per gli allevatori.
-                </div>
+        <div>
+            <div class="brand-name">ALLEVANDO</div>
+            <div class="brand-tagline">
+                Il gestionale fatto dagli allevatori, per gli allevatori.
             </div>
+        </div>
 
-        </a>
+    </a>
 
-        <nav class="nav-links">
+    <nav class="nav-links">
 
-            <a href="dashboard.html">
-                Dashboard
-            </a>
+        <a href="dashboard.html">Dashboard</a>
 
-            <a href="soggetti.html">
-                Soggetti
-            </a>
+        <a href="soggetti.html" class="active">Soggetti</a>
 
-            <a href="coppie.html">
-                Coppie
-            </a>
+        <a href="coppie.html">Coppie</a>
 
-            <a href="covate.html">
-                Covate
-            </a>
+        <a href="covate.html">Covate</a>
 
-        </nav>
+    </nav>
 
-        <button
-            onclick="logoutUser()"
-            class="btn btn-small"
-            style="border:none; cursor:pointer;">
-
-            Esci
-
-        </button>
-
-    </div>
+    <button
+        onclick="logoutUser()"
+        class="btn btn-small"
+        type="button"
+    >
+        Esci
+    </button>
 
 </header>
 
 
+<!-- =========================================================
+     CONTENUTO
+     ========================================================= -->
+
 <main>
 
-    <!-- =====================================================
-         INTRO
-    ====================================================== -->
+    <div class="container">
 
-    <section class="intro">
+        <!-- =================================================
+             TITOLO PAGINA
+             ================================================= -->
 
-        <span class="eyebrow">
-            ANAGRAFICA
-        </span>
+        <section class="page-header">
 
-        <h1>
-            I tuoi soggetti.
-        </h1>
+            <span class="eyebrow">
+                ANAGRAFICA
+            </span>
 
-        <p>
-            Gestisci e consulta tutti i soggetti
-            del tuo allevamento.
-        </p>
-
-    </section>
-
-
-    <!-- =====================================================
-         FORM
-    ====================================================== -->
-
-    <section class="intro">
-
-        <div class="form-container">
-
-            <h2 id="titolo-form">
-                Aggiungi soggetto
+            <h2>
+                I tuoi soggetti.
             </h2>
 
+            <p>
+                Gestisci e consulta tutti i soggetti del tuo allevamento.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             FORM
+             ================================================= -->
+
+        <section class="card">
+
+            <div class="form-intro">
+
+                <h3 id="titolo-form">
+                    Aggiungi soggetto
+                </h3>
+
+                <p>
+                    Inserisci i dati del soggetto nel tuo registro.
+                </p>
+
+            </div>
+
+
             <form id="soggetto-form">
+
+                <!-- Codice / Specie -->
 
                 <div class="form-row">
 
@@ -367,7 +204,8 @@
                         <input
                             type="text"
                             id="codice"
-                            placeholder="Es. IT-26-001">
+                            placeholder="Es. IT-26-001"
+                        >
 
                     </div>
 
@@ -382,12 +220,15 @@
                             type="text"
                             id="specie"
                             placeholder="Es. Passero del Giappone"
-                            required>
+                            required
+                        >
 
                     </div>
 
                 </div>
 
+
+                <!-- Sesso / Mutazione -->
 
                 <div class="form-row">
 
@@ -425,12 +266,15 @@
                         <input
                             type="text"
                             id="mutazione"
-                            placeholder="Es. Nero Grigio">
+                            placeholder="Es. Nero Grigio"
+                        >
 
                     </div>
 
                 </div>
 
+
+                <!-- Data / Stato -->
 
                 <div class="form-row">
 
@@ -442,7 +286,8 @@
 
                         <input
                             type="date"
-                            id="data_nascita">
+                            id="data_nascita"
+                        >
 
                     </div>
 
@@ -478,266 +323,98 @@
                 </div>
 
 
+                <!-- Pulsanti -->
+
                 <div class="form-actions">
 
                     <button
                         type="submit"
-                        class="btn"
-                        id="pulsante-form">
-
+                        id="pulsante-form"
+                    >
                         + Aggiungi soggetto
-
                     </button>
-
 
                     <button
                         type="button"
-                        class="btn btn-small"
                         id="pulsante-annulla"
                         onclick="annullaModifica()"
-                        style="display:none;">
-
+                        style="display:none;"
+                    >
                         Annulla
-
                     </button>
 
                 </div>
 
             </form>
 
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- =====================================================
-         REGISTRO
-    ====================================================== -->
+        <!-- =================================================
+             LISTA SOGGETTI
+             ================================================= -->
 
-    <section class="intro">
+        <section class="card">
 
-        <span class="eyebrow">
-            REGISTRO
-        </span>
+            <div class="lista-titolo">
 
-        <h2>
-            I tuoi soggetti
-        </h2>
+                <h3>
+                    I tuoi soggetti
+                </h3>
 
-
-        <!-- RIEPILOGO -->
-
-        <div class="subjects-summary">
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-                    Soggetti attivi
-                </span>
-
-                <span
-                    class="summary-number"
-                    id="totale-attivi">
-
-                    0
-
-                </span>
+                <p>
+                    Registro completo dei soggetti inseriti.
+                </p>
 
             </div>
 
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-                    Risultati visualizzati
-                </span>
-
-                <span
-                    class="summary-number"
-                    id="totale-risultati">
-
-                    0
-
-                </span>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-                    Archiviati
-                </span>
-
-                <span
-                    class="summary-number"
-                    id="totale-archiviati">
-
-                    0
-
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- RICERCA E FILTRI -->
-
-        <div class="subjects-toolbar">
-
-            <input
-                type="search"
-                id="ricerca"
-                placeholder="🔎 Cerca codice, specie o mutazione...">
-
-
-            <select id="filtro-specie">
-
-                <option value="">
-                    Tutte le specie
-                </option>
-
-            </select>
-
-
-            <select id="filtro-sesso">
-
-                <option value="">
-                    Tutti i sessi
-                </option>
-
-                <option value="Maschio">
-                    Maschi
-                </option>
-
-                <option value="Femmina">
-                    Femmine
-                </option>
-
-                <option value="Da definire">
-                    Da definire
-                </option>
-
-            </select>
-
-
-            <select id="filtro-stato">
-
-                <option value="Attivo">
-                    Solo attivi
-                </option>
-
-                <option value="">
-                    Tutti gli stati
-                </option>
-
-                <option value="Ceduto">
-                    Ceduti
-                </option>
-
-                <option value="Deceduto">
-                    Deceduti
-                </option>
-
-                <option value="Ritirato">
-                    Ritirati
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- LISTA ATTIVI -->
-
-        <div
-            id="lista-soggetti"
-            class="subjects-grid">
-
-            <div class="empty-state">
-                Caricamento...
-            </div>
-
-        </div>
-
-
-        <!-- ARCHIVIO -->
-
-        <div class="archive-header">
-
-            <div>
-
-                <span class="eyebrow">
-                    ARCHIVIO
-                </span>
-
-                <h2>
-                    Soggetti non attivi
-                </h2>
-
-            </div>
-
-
-            <button
-                type="button"
-                id="toggle-archivio"
-                class="btn btn-small archive-toggle">
-
-                Mostra archivio
-
-            </button>
-
-        </div>
-
-
-        <div
-            id="archivio-section"
-            class="archive-section">
 
             <div
-                id="lista-archivio"
-                class="subjects-grid">
+                id="lista-soggetti"
+                class="soggetti-lista"
+            >
+
+                <div class="empty-state">
+                    Caricamento...
+                </div>
+
             </div>
 
-        </div>
+        </section>
 
-    </section>
+    </div>
 
 </main>
 
 
-<footer class="footer">
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
 
-    <div class="footer-inner">
+<footer>
 
-        <div>
+    <div class="container">
 
-            <strong>
-                ALLEVANDO
-            </strong>
-
-            <p>
-                Il gestionale fatto dagli allevatori,
-                per gli allevatori.
-            </p>
-
+        <div class="footer-logo">
+            ALLEVANDO
         </div>
 
+        <p>
+            Il gestionale fatto dagli allevatori, per gli allevatori.
+        </p>
 
-        <div>
-
-            <p>
-                © 2026 ALLEVANDO.
-                Tutti i diritti riservati.
-            </p>
-
+        <div class="copyright">
+            © 2026 ALLEVANDO. Tutti i diritti riservati.
         </div>
 
     </div>
 
 </footer>
 
+
+<!-- =========================================================
+     SUPABASE
+     ========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -748,14 +425,18 @@
 
 <script>
 
+/* =========================================================
+   VARIABILI
+   ========================================================= */
+
 let utenteCorrente = null;
+
 let soggettoInModifica = null;
-let tuttiISoggetti = [];
 
 
 /* =========================================================
    CONTROLLO UTENTE
-========================================================= */
+   ========================================================= */
 
 async function controllaUtente() {
 
@@ -766,21 +447,28 @@ async function controllaUtente() {
         window.location.href = "login.html";
 
         return;
-
     }
 
     utenteCorrente = result.data.user;
 
-    await caricaSoggetti();
-
+    caricaSoggetti();
 }
 
 
 /* =========================================================
    CARICA SOGGETTI
-========================================================= */
+   ========================================================= */
 
 async function caricaSoggetti() {
+
+    const lista = document.getElementById("lista-soggetti");
+
+    lista.innerHTML = `
+        <div class="empty-state">
+            Caricamento...
+        </div>
+    `;
+
 
     const result = await client
         .from("soggetti")
@@ -792,437 +480,115 @@ async function caricaSoggetti() {
 
     if (result.error) {
 
-        console.error(result.error);
-
-        document.getElementById(
-            "lista-soggetti"
-        ).innerHTML = `
-
+        lista.innerHTML = `
             <div class="empty-state">
-                Errore nel caricamento dei soggetti.
+                <strong>Errore nel caricamento</strong>
+                Impossibile caricare i soggetti.
             </div>
-
         `;
 
-        return;
+        console.error(result.error);
 
+        return;
     }
 
 
-    tuttiISoggetti = result.data || [];
-
-    aggiornaFiltroSpecie();
-
-    aggiornaRiepilogo();
-
-    applicaFiltri();
-
-}
-
-
-/* =========================================================
-   RIEPILOGO
-========================================================= */
-
-function aggiornaRiepilogo() {
-
-    const attivi = tuttiISoggetti.filter(
-        soggetto => soggetto.stato === "Attivo"
-    );
-
-
-    const archiviati = tuttiISoggetti.filter(
-        soggetto => soggetto.stato !== "Attivo"
-    );
-
-
-    document.getElementById(
-        "totale-attivi"
-    ).textContent = attivi.length;
-
-
-    document.getElementById(
-        "totale-archiviati"
-    ).textContent = archiviati.length;
-
-}
-
-
-/* =========================================================
-   FILTRO SPECIE
-========================================================= */
-
-function aggiornaFiltroSpecie() {
-
-    const select =
-        document.getElementById("filtro-specie");
-
-
-    const specie = [
-        ...new Set(
-            tuttiISoggetti
-                .map(soggetto => soggetto.specie)
-                .filter(Boolean)
-        )
-    ].sort();
-
-
-    select.innerHTML = `
-        <option value="">
-            Tutte le specie
-        </option>
-    `;
-
-
-    specie.forEach(nomeSpecie => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = nomeSpecie;
-
-        option.textContent = nomeSpecie;
-
-        select.appendChild(option);
-
-    });
-
-}
-
-
-/* =========================================================
-   APPLICA FILTRI
-========================================================= */
-
-function applicaFiltri() {
-
-    const ricerca =
-        document.getElementById("ricerca")
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const specie =
-        document.getElementById("filtro-specie").value;
-
-
-    const sesso =
-        document.getElementById("filtro-sesso").value;
-
-
-    const stato =
-        document.getElementById("filtro-stato").value;
-
-
-    const risultati =
-        tuttiISoggetti.filter(soggetto => {
-
-            const testo = [
-                soggetto.codice,
-                soggetto.specie,
-                soggetto.mutazione
-            ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-
-
-            const corrispondeRicerca =
-                !ricerca ||
-                testo.includes(ricerca);
-
-
-            const corrispondeSpecie =
-                !specie ||
-                soggetto.specie === specie;
-
-
-            const corrispondeSesso =
-                !sesso ||
-                soggetto.sesso === sesso;
-
-
-            const corrispondeStato =
-                !stato ||
-                soggetto.stato === stato;
-
-
-            return (
-                corrispondeRicerca &&
-                corrispondeSpecie &&
-                corrispondeSesso &&
-                corrispondeStato
-            );
-
-        });
-
-
-    /*
-       La lista principale mostra sempre
-       esclusivamente i soggetti attivi.
-    */
-
-    const risultatiAttivi =
-        risultati.filter(
-            soggetto =>
-                soggetto.stato === "Attivo"
-        );
-
-
-    const risultatiArchivio =
-        risultati.filter(
-            soggetto =>
-                soggetto.stato !== "Attivo"
-        );
-
-
-    mostraLista(
-        risultatiAttivi,
-        "lista-soggetti",
-        false
-    );
-
-
-    mostraLista(
-        risultatiArchivio,
-        "lista-archivio",
-        true
-    );
-
-
-    document.getElementById(
-        "totale-risultati"
-    ).textContent = risultati.length;
-
-}
-
-
-/* =========================================================
-   CREA CARD
-========================================================= */
-
-function creaCard(soggetto, archivio = false) {
-
-    const codice =
-        soggetto.codice || "Senza codice";
-
-
-    const specie =
-        soggetto.specie || "Specie non specificata";
-
-
-    const sesso =
-        soggetto.sesso || "Da definire";
-
-
-    const mutazione =
-        soggetto.mutazione || "—";
-
-
-    const dataNascita =
-        formattaData(soggetto.data_nascita);
-
-
-    const stato =
-        soggetto.stato || "Attivo";
-
-
-    const statoClasse =
-        stato
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-
-
-    const elemento =
-        document.createElement("div");
-
-
-    elemento.className =
-        "subject-card" +
-        (archivio ? " archive-card" : "");
-
-
-    elemento.innerHTML = `
-
-        <div class="subject-header">
-
-            <div>
-
-                <h3 class="subject-code">
-                    ${escapeHTML(codice)}
-                </h3>
-
-                <p class="subject-species">
-                    ${escapeHTML(specie)}
-                </p>
-
+    if (!result.data || result.data.length === 0) {
+
+        lista.innerHTML = `
+            <div class="empty-state">
+                <strong>Nessun soggetto</strong>
+                Non hai ancora inserito nessun soggetto.
             </div>
+        `;
 
-
-            <span class="status-badge status-${statoClasse}">
-                ${escapeHTML(stato)}
-            </span>
-
-        </div>
-
-
-        <div class="subject-details">
-
-            <div class="subject-detail">
-
-                <span class="subject-detail-label">
-                    Sesso
-                </span>
-
-                <span class="subject-detail-value">
-                    ${escapeHTML(sesso)}
-                </span>
-
-            </div>
-
-
-            <div class="subject-detail">
-
-                <span class="subject-detail-label">
-                    Mutazione
-                </span>
-
-                <span class="subject-detail-value">
-                    ${escapeHTML(mutazione)}
-                </span>
-
-            </div>
-
-
-            <div class="subject-detail">
-
-                <span class="subject-detail-label">
-                    Data di nascita
-                </span>
-
-                <span class="subject-detail-value">
-                    ${dataNascita}
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="subject-actions">
-
-            <button
-                type="button"
-                class="btn btn-small"
-                onclick="modificaSoggetto('${soggetto.id}')">
-
-                ✏️ Modifica
-
-            </button>
-
-        </div>
-
-    `;
-
-
-    return elemento;
-
-}
-
-
-/* =========================================================
-   MOSTRA LISTA
-========================================================= */
-
-function mostraLista(
-    soggetti,
-    idLista,
-    archivio
-) {
-
-    const lista =
-        document.getElementById(idLista);
+        return;
+    }
 
 
     lista.innerHTML = "";
 
 
-    if (!soggetti || soggetti.length === 0) {
+    result.data.forEach(soggetto => {
 
-        const messaggio = archivio
-            ? "Nessun soggetto archiviato."
-            : "Non ci sono soggetti che corrispondono ai filtri.";
+        const elemento = document.createElement("div");
+
+        elemento.className = "soggetto-card";
 
 
-        lista.innerHTML = `
+        let classeStato = "stato-attivo";
 
-            <div class="empty-state">
-                ${messaggio}
+        const stato = soggetto.stato || "Attivo";
+
+
+        if (stato === "Ceduto") {
+            classeStato = "stato-ceduto";
+        }
+
+        if (stato === "Deceduto") {
+            classeStato = "stato-deceduto";
+        }
+
+        if (stato === "Ritirato") {
+            classeStato = "stato-ritirato";
+        }
+
+
+        elemento.innerHTML = `
+
+            <h4>
+                ${soggetto.codice || "Senza codice"}
+            </h4>
+
+            <p>
+                <strong>Specie:</strong>
+                ${soggetto.specie || "—"}
+            </p>
+
+            <p>
+                <strong>Sesso:</strong>
+                ${soggetto.sesso || "Da definire"}
+            </p>
+
+            <p>
+                <strong>Mutazione:</strong>
+                ${soggetto.mutazione || "—"}
+            </p>
+
+            <p>
+                <strong>Data di nascita:</strong>
+                ${soggetto.data_nascita || "—"}
+            </p>
+
+            <span class="stato ${classeStato}">
+                ${stato}
+            </span>
+
+            <div class="azioni">
+
+                <button
+                    type="button"
+                    class="btn btn-small"
+                    onclick="modificaSoggetto('${soggetto.id}')"
+                >
+                    ✏️ Modifica
+                </button>
+
             </div>
 
         `;
 
-        return;
 
-    }
-
-
-    soggetti.forEach(soggetto => {
-
-        lista.appendChild(
-            creaCard(soggetto, archivio)
-        );
+        lista.appendChild(elemento);
 
     });
-
-}
-
-
-/* =========================================================
-   FORMATTA DATA
-========================================================= */
-
-function formattaData(data) {
-
-    if (!data) {
-        return "—";
-    }
-
-
-    const parti = data.split("-");
-
-
-    if (parti.length !== 3) {
-        return data;
-    }
-
-
-    return `${parti[2]}/${parti[1]}/${parti[0]}`;
-
-}
-
-
-/* =========================================================
-   SICUREZZA HTML
-========================================================= */
-
-function escapeHTML(valore) {
-
-    return String(valore ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 
 }
 
 
 /* =========================================================
    MODIFICA SOGGETTO
-========================================================= */
+   ========================================================= */
 
 async function modificaSoggetto(id) {
 
@@ -1237,14 +603,13 @@ async function modificaSoggetto(id) {
     if (result.error) {
 
         alert(
-            "Errore nel caricamento del soggetto: " +
-            result.error.message
+            "Errore nel caricamento del soggetto: "
+            + result.error.message
         );
 
         console.error(result.error);
 
         return;
-
     }
 
 
@@ -1287,30 +652,30 @@ async function modificaSoggetto(id) {
 
 
     document.getElementById("pulsante-annulla").style.display =
-        "inline-block";
+        "inline-flex";
 
 
-    document.getElementById("soggetto-form")
-        .scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+    document.getElementById("soggetto-form").scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+    });
 
 }
 
 
 /* =========================================================
    ANNULLA MODIFICA
-========================================================= */
+   ========================================================= */
 
 function annullaModifica() {
 
     soggettoInModifica = null;
 
 
-    document.getElementById(
-        "soggetto-form"
-    ).reset();
+    document.getElementById("soggetto-form").reset();
 
 
     document.getElementById("sesso").value =
@@ -1329,16 +694,15 @@ function annullaModifica() {
         "+ Aggiungi soggetto";
 
 
-    document.getElementById(
-        "pulsante-annulla"
-    ).style.display = "none";
+    document.getElementById("pulsante-annulla").style.display =
+        "none";
 
 }
 
 
 /* =========================================================
-   AGGIUNTA / MODIFICA
-========================================================= */
+   SALVATAGGIO FORM
+   ========================================================= */
 
 document
     .getElementById("soggetto-form")
@@ -1375,7 +739,8 @@ document
             data_nascita:
                 document
                     .getElementById("data_nascita")
-                    .value || null,
+                    .value
+                || null,
 
             stato:
                 document
@@ -1385,7 +750,9 @@ document
         };
 
 
-        /* MODIFICA */
+        /* ================================================
+           MODIFICA
+           ================================================ */
 
         if (soggettoInModifica) {
 
@@ -1399,14 +766,13 @@ document
             if (result.error) {
 
                 alert(
-                    "Errore nella modifica: " +
-                    result.error.message
+                    "Errore nella modifica: "
+                    + result.error.message
                 );
 
                 console.error(result.error);
 
                 return;
-
             }
 
 
@@ -1417,14 +783,15 @@ document
 
             annullaModifica();
 
-            await caricaSoggetti();
+            caricaSoggetti();
 
             return;
-
         }
 
 
-        /* NUOVO SOGGETTO */
+        /* ================================================
+           NUOVO SOGGETTO
+           ================================================ */
 
         const nuovoSoggetto = {
 
@@ -1444,14 +811,13 @@ document
         if (result.error) {
 
             alert(
-                "Errore nel salvataggio: " +
-                result.error.message
+                "Errore nel salvataggio: "
+                + result.error.message
             );
 
             console.error(result.error);
 
             return;
-
         }
 
 
@@ -1473,62 +839,14 @@ document
             "Attivo";
 
 
-        await caricaSoggetti();
-
-    });
-
-
-/* =========================================================
-   RICERCA E FILTRI
-========================================================= */
-
-document
-    .getElementById("ricerca")
-    .addEventListener("input", applicaFiltri);
-
-
-document
-    .getElementById("filtro-specie")
-    .addEventListener("change", applicaFiltri);
-
-
-document
-    .getElementById("filtro-sesso")
-    .addEventListener("change", applicaFiltri);
-
-
-document
-    .getElementById("filtro-stato")
-    .addEventListener("change", applicaFiltri);
-
-
-/* =========================================================
-   ARCHIVIO
-========================================================= */
-
-document
-    .getElementById("toggle-archivio")
-    .addEventListener("click", function() {
-
-        const archivio =
-            document.getElementById("archivio-section");
-
-
-        const visibile =
-            archivio.classList.toggle("visible");
-
-
-        this.textContent =
-            visibile
-                ? "Nascondi archivio"
-                : "Mostra archivio";
+        caricaSoggetti();
 
     });
 
 
 /* =========================================================
    LOGOUT
-========================================================= */
+   ========================================================= */
 
 async function logoutUser() {
 
@@ -1541,13 +859,12 @@ async function logoutUser() {
 
 /* =========================================================
    AVVIO
-========================================================= */
+   ========================================================= */
 
 controllaUtente();
 
 </script>
 
 </body>
-
 </html>
 ```
