@@ -379,7 +379,7 @@
             display: grid;
 
             grid-template-columns:
-                repeat(4, 1fr);
+                repeat(5, 1fr);
 
             gap: 16px;
 
@@ -561,7 +561,7 @@
             display: grid;
 
             grid-template-columns:
-                repeat(3, 1fr);
+                repeat(4, 1fr);
 
             gap: 10px;
         }
@@ -709,6 +709,16 @@
         /* =====================================================
            RESPONSIVE
         ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .stats-grid-new {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+        }
+
 
         @media (max-width: 1000px) {
 
@@ -900,6 +910,10 @@
 
             <a href="covate.html">
                 Covate
+            </a>
+
+            <a href="gabbie.html">
+                Gabbie
             </a>
 
         </nav>
@@ -1109,6 +1123,32 @@
         </div>
 
 
+        <!-- GABBIE -->
+
+        <div class="stat-card-new">
+
+            <div class="stat-icon">
+                G
+            </div>
+
+            <h3>
+                Gabbie
+            </h3>
+
+            <strong
+                id="count-gabbie"
+                class="stat-number"
+            >
+                0
+            </strong>
+
+            <span class="stat-description">
+                Gabbie presenti nell'allevamento
+            </span>
+
+        </div>
+
+
     </section>
 
 
@@ -1197,6 +1237,28 @@
 
                     <span>
                         Registra una nuova covata
+                    </span>
+
+                </a>
+
+
+                <!-- GABBIE -->
+
+                <a
+                    href="gabbie.html"
+                    class="action-card"
+                >
+
+                    <div class="action-icon">
+                        +
+                    </div>
+
+                    <strong>
+                        Gestisci gabbie
+                    </strong>
+
+                    <span>
+                        Organizza le gabbie dell'allevamento
                     </span>
 
                 </a>
@@ -1447,6 +1509,51 @@ async function caricaNumeroSoggetti(userId) {
 
 
 /* =========================================================
+   CONTEGGIO GABBIE
+========================================================= */
+
+async function caricaNumeroGabbie(userId) {
+
+    const result =
+        await client
+
+            .from("gabbie")
+
+            .select(
+                "*",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+
+            .eq(
+                "user_id",
+                userId
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore conteggio gabbie:",
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "count-gabbie"
+    ).textContent =
+        result.count || 0;
+
+}
+
+
+/* =========================================================
    CONTROLLO UTENTE
 ========================================================= */
 
@@ -1494,6 +1601,10 @@ async function checkUser() {
 
 
     await caricaNumeroSoggetti(
+        user.id
+    );
+
+    await caricaNumeroGabbie(
         user.id
     );
 
