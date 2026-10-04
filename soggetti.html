@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="it">
 
@@ -8,6 +9,258 @@
     <title>Soggetti — ALLEVANDO</title>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =====================================================
+           SOGGETTI
+        ===================================================== */
+
+        .subjects-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .subjects-toolbar input,
+        .subjects-toolbar select {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #fff;
+            color: #0f172a;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .subjects-toolbar input:focus,
+        .subjects-toolbar select:focus {
+            outline: none;
+            border-color: #166534;
+            box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.10);
+        }
+
+        .subjects-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            flex: 1;
+            min-width: 160px;
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .summary-label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .summary-number {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .subject-card {
+            position: relative;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.09);
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .subject-code {
+            margin: 0;
+            color: #166534;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .subject-species {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-attivo {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-ceduto {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-deceduto {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-ritirato {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .subject-details {
+            display: grid;
+            gap: 9px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .subject-detail {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .subject-detail-label {
+            color: #64748b;
+        }
+
+        .subject-detail-value {
+            color: #0f172a;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .subject-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .subject-actions .btn {
+            flex: 1;
+        }
+
+        .empty-state {
+            padding: 35px 20px;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+            background: #f8fafc;
+            color: #64748b;
+            grid-column: 1 / -1;
+        }
+
+        .archive-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 45px;
+            margin-bottom: 18px;
+        }
+
+        .archive-header h2 {
+            margin: 0;
+        }
+
+        .archive-section {
+            display: none;
+        }
+
+        .archive-section.visible {
+            display: block;
+        }
+
+        .archive-card {
+            opacity: 0.82;
+        }
+
+        .archive-toggle {
+            cursor: pointer;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #0f172a;
+        }
+
+        .form-container {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 700px) {
+            .subject-header {
+                align-items: flex-start;
+            }
+
+            .subject-detail {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .subject-detail-value {
+                text-align: left;
+            }
+
+            .archive-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -22,13 +275,14 @@
 
             <div>
                 <div class="brand-name">ALLEVANDO</div>
+
                 <div class="brand-tagline">
-                    Il gestionale fatto dagli allevatori, per gli allevatori.
+                    Il gestionale fatto dagli allevatori,
+                    per gli allevatori.
                 </div>
             </div>
 
         </a>
-
 
         <nav class="nav-links">
 
@@ -50,12 +304,13 @@
 
         </nav>
 
-
         <button
             onclick="logoutUser()"
             class="btn btn-small"
             style="border:none; cursor:pointer;">
+
             Esci
+
         </button>
 
     </div>
@@ -64,6 +319,10 @@
 
 
 <main>
+
+    <!-- =====================================================
+         INTRO
+    ====================================================== -->
 
     <section class="intro">
 
@@ -76,179 +335,184 @@
         </h1>
 
         <p>
-            Gestisci e consulta tutti i soggetti del tuo allevamento.
+            Gestisci e consulta tutti i soggetti
+            del tuo allevamento.
         </p>
 
     </section>
 
 
-    <!-- NUOVO / MODIFICA SOGGETTO -->
+    <!-- =====================================================
+         FORM
+    ====================================================== -->
 
     <section class="intro">
 
-        <h2 id="titolo-form">
-            Aggiungi soggetto
-        </h2>
+        <div class="form-container">
 
-        <form id="soggetto-form">
+            <h2 id="titolo-form">
+                Aggiungi soggetto
+            </h2>
 
+            <form id="soggetto-form">
 
-            <div class="form-row">
+                <div class="form-row">
 
+                    <div class="form-group">
 
-                <div class="form-group">
+                        <label for="codice">
+                            Codice / Anello
+                        </label>
 
-                    <label for="codice">
-                        Codice / Anello
-                    </label>
+                        <input
+                            type="text"
+                            id="codice"
+                            placeholder="Es. IT-26-001">
 
-                    <input
-                        type="text"
-                        id="codice"
-                        placeholder="Es. IT-26-001">
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="specie">
-                        Specie
-                    </label>
-
-                    <input
-                        type="text"
-                        id="specie"
-                        placeholder="Es. Passero del Giappone"
-                        required>
-
-                </div>
+                    </div>
 
 
-            </div>
+                    <div class="form-group">
 
+                        <label for="specie">
+                            Specie
+                        </label>
 
-            <div class="form-row">
+                        <input
+                            type="text"
+                            id="specie"
+                            placeholder="Es. Passero del Giappone"
+                            required>
 
-
-                <div class="form-group">
-
-                    <label for="sesso">
-                        Sesso
-                    </label>
-
-                    <select id="sesso" required>
-
-                        <option value="Da definire">
-                            Da definire
-                        </option>
-
-                        <option value="Maschio">
-                            Maschio
-                        </option>
-
-                        <option value="Femmina">
-                            Femmina
-                        </option>
-
-                    </select>
+                    </div>
 
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-row">
 
-                    <label for="mutazione">
-                        Mutazione
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="text"
-                        id="mutazione"
-                        placeholder="Es. Nero Grigio">
+                        <label for="sesso">
+                            Sesso
+                        </label>
 
-                </div>
+                        <select id="sesso" required>
 
+                            <option value="Da definire">
+                                Da definire
+                            </option>
 
-            </div>
+                            <option value="Maschio">
+                                Maschio
+                            </option>
 
+                            <option value="Femmina">
+                                Femmina
+                            </option>
 
-            <div class="form-row">
+                        </select>
 
-
-                <div class="form-group">
-
-                    <label for="data_nascita">
-                        Data di nascita
-                    </label>
-
-                    <input
-                        type="date"
-                        id="data_nascita">
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label for="stato">
-                        Stato
-                    </label>
+                        <label for="mutazione">
+                            Mutazione
+                        </label>
 
-                    <select id="stato" required>
+                        <input
+                            type="text"
+                            id="mutazione"
+                            placeholder="Es. Nero Grigio">
 
-                        <option value="Attivo">
-                            Attivo
-                        </option>
-
-                        <option value="Ceduto">
-                            Ceduto
-                        </option>
-
-                        <option value="Deceduto">
-                            Deceduto
-                        </option>
-
-                        <option value="Ritirato">
-                            Ritirato
-                        </option>
-
-                    </select>
+                    </div>
 
                 </div>
 
 
-            </div>
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="data_nascita">
+                            Data di nascita
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data_nascita">
+
+                    </div>
 
 
-            <button
-                type="submit"
-                class="btn"
-                id="pulsante-form">
+                    <div class="form-group">
 
-                + Aggiungi soggetto
+                        <label for="stato">
+                            Stato
+                        </label>
 
-            </button>
+                        <select id="stato" required>
+
+                            <option value="Attivo">
+                                Attivo
+                            </option>
+
+                            <option value="Ceduto">
+                                Ceduto
+                            </option>
+
+                            <option value="Deceduto">
+                                Deceduto
+                            </option>
+
+                            <option value="Ritirato">
+                                Ritirato
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
 
 
-            <button
-                type="button"
-                class="btn btn-small"
-                id="pulsante-annulla"
-                onclick="annullaModifica()"
-                style="display:none; margin-left:10px;">
+                <div class="form-actions">
 
-                Annulla
+                    <button
+                        type="submit"
+                        class="btn"
+                        id="pulsante-form">
 
-            </button>
+                        + Aggiungi soggetto
+
+                    </button>
 
 
-        </form>
+                    <button
+                        type="button"
+                        class="btn btn-small"
+                        id="pulsante-annulla"
+                        onclick="annullaModifica()"
+                        style="display:none;">
+
+                        Annulla
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </section>
 
 
-    <!-- ELENCO SOGGETTI -->
+    <!-- =====================================================
+         REGISTRO
+    ====================================================== -->
 
     <section class="intro">
 
@@ -260,11 +524,181 @@
             I tuoi soggetti
         </h2>
 
-        <div id="lista-soggetti">
 
-            <p>
+        <!-- RIEPILOGO -->
+
+        <div class="subjects-summary">
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Soggetti attivi
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="totale-attivi">
+
+                    0
+
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Risultati visualizzati
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="totale-risultati">
+
+                    0
+
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+                    Archiviati
+                </span>
+
+                <span
+                    class="summary-number"
+                    id="totale-archiviati">
+
+                    0
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RICERCA E FILTRI -->
+
+        <div class="subjects-toolbar">
+
+            <input
+                type="search"
+                id="ricerca"
+                placeholder="🔎 Cerca codice, specie o mutazione...">
+
+
+            <select id="filtro-specie">
+
+                <option value="">
+                    Tutte le specie
+                </option>
+
+            </select>
+
+
+            <select id="filtro-sesso">
+
+                <option value="">
+                    Tutti i sessi
+                </option>
+
+                <option value="Maschio">
+                    Maschi
+                </option>
+
+                <option value="Femmina">
+                    Femmine
+                </option>
+
+                <option value="Da definire">
+                    Da definire
+                </option>
+
+            </select>
+
+
+            <select id="filtro-stato">
+
+                <option value="Attivo">
+                    Solo attivi
+                </option>
+
+                <option value="">
+                    Tutti gli stati
+                </option>
+
+                <option value="Ceduto">
+                    Ceduti
+                </option>
+
+                <option value="Deceduto">
+                    Deceduti
+                </option>
+
+                <option value="Ritirato">
+                    Ritirati
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- LISTA ATTIVI -->
+
+        <div
+            id="lista-soggetti"
+            class="subjects-grid">
+
+            <div class="empty-state">
                 Caricamento...
-            </p>
+            </div>
+
+        </div>
+
+
+        <!-- ARCHIVIO -->
+
+        <div class="archive-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    ARCHIVIO
+                </span>
+
+                <h2>
+                    Soggetti non attivi
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="toggle-archivio"
+                class="btn btn-small archive-toggle">
+
+                Mostra archivio
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="archivio-section"
+            class="archive-section">
+
+            <div
+                id="lista-archivio"
+                class="subjects-grid">
+            </div>
 
         </div>
 
@@ -294,7 +728,8 @@
         <div>
 
             <p>
-                © 2026 ALLEVANDO. Tutti i diritti riservati.
+                © 2026 ALLEVANDO.
+                Tutti i diritti riservati.
             </p>
 
         </div>
@@ -314,11 +749,13 @@
 <script>
 
 let utenteCorrente = null;
-
 let soggettoInModifica = null;
+let tuttiISoggetti = [];
 
 
-// CONTROLLO UTENTE
+/* =========================================================
+   CONTROLLO UTENTE
+========================================================= */
 
 async function controllaUtente() {
 
@@ -334,84 +771,347 @@ async function controllaUtente() {
 
     utenteCorrente = result.data.user;
 
-    caricaSoggetti();
+    await caricaSoggetti();
 
 }
 
 
-// CARICA I SOGGETTI
+/* =========================================================
+   CARICA SOGGETTI
+========================================================= */
 
 async function caricaSoggetti() {
-
-    const lista = document.getElementById("lista-soggetti");
 
     const result = await client
         .from("soggetti")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+            ascending: false
+        });
 
 
     if (result.error) {
 
-        lista.innerHTML =
-            "<p>Errore nel caricamento dei soggetti.</p>";
-
         console.error(result.error);
 
+        document.getElementById(
+            "lista-soggetti"
+        ).innerHTML = `
+
+            <div class="empty-state">
+                Errore nel caricamento dei soggetti.
+            </div>
+
+        `;
+
         return;
 
     }
 
 
-    if (!result.data || result.data.length === 0) {
+    tuttiISoggetti = result.data || [];
 
-        lista.innerHTML =
-            "<p>Non hai ancora inserito nessun soggetto.</p>";
+    aggiornaFiltroSpecie();
 
-        return;
+    aggiornaRiepilogo();
 
-    }
+    applicaFiltri();
 
-
-    lista.innerHTML = "";
+}
 
 
-    result.data.forEach(soggetto => {
+/* =========================================================
+   RIEPILOGO
+========================================================= */
 
-        const elemento = document.createElement("div");
+function aggiornaRiepilogo() {
 
-        elemento.className = "feature";
+    const attivi = tuttiISoggetti.filter(
+        soggetto => soggetto.stato === "Attivo"
+    );
 
 
-        elemento.innerHTML = `
+    const archiviati = tuttiISoggetti.filter(
+        soggetto => soggetto.stato !== "Attivo"
+    );
 
-            <h3>
-                ${soggetto.codice || "Senza codice"}
-            </h3>
 
-            <p>
-                ${soggetto.specie || ""}
-            </p>
+    document.getElementById(
+        "totale-attivi"
+    ).textContent = attivi.length;
 
-            <p>
-                <strong>Sesso:</strong>
-                ${soggetto.sesso || "Da definire"}
-            </p>
 
-            <p>
-                <strong>Mutazione:</strong>
-                ${soggetto.mutazione || "—"}
-            </p>
+    document.getElementById(
+        "totale-archiviati"
+    ).textContent = archiviati.length;
 
-            <p>
-                <strong>Data di nascita:</strong>
-                ${soggetto.data_nascita || "—"}
-            </p>
+}
 
-            <p>
-                <strong>Stato:</strong>
-                ${soggetto.stato || "Attivo"}
-            </p>
+
+/* =========================================================
+   FILTRO SPECIE
+========================================================= */
+
+function aggiornaFiltroSpecie() {
+
+    const select =
+        document.getElementById("filtro-specie");
+
+
+    const specie = [
+        ...new Set(
+            tuttiISoggetti
+                .map(soggetto => soggetto.specie)
+                .filter(Boolean)
+        )
+    ].sort();
+
+
+    select.innerHTML = `
+        <option value="">
+            Tutte le specie
+        </option>
+    `;
+
+
+    specie.forEach(nomeSpecie => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = nomeSpecie;
+
+        option.textContent = nomeSpecie;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   APPLICA FILTRI
+========================================================= */
+
+function applicaFiltri() {
+
+    const ricerca =
+        document.getElementById("ricerca")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const specie =
+        document.getElementById("filtro-specie").value;
+
+
+    const sesso =
+        document.getElementById("filtro-sesso").value;
+
+
+    const stato =
+        document.getElementById("filtro-stato").value;
+
+
+    const risultati =
+        tuttiISoggetti.filter(soggetto => {
+
+            const testo = [
+                soggetto.codice,
+                soggetto.specie,
+                soggetto.mutazione
+            ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+
+            const corrispondeRicerca =
+                !ricerca ||
+                testo.includes(ricerca);
+
+
+            const corrispondeSpecie =
+                !specie ||
+                soggetto.specie === specie;
+
+
+            const corrispondeSesso =
+                !sesso ||
+                soggetto.sesso === sesso;
+
+
+            const corrispondeStato =
+                !stato ||
+                soggetto.stato === stato;
+
+
+            return (
+                corrispondeRicerca &&
+                corrispondeSpecie &&
+                corrispondeSesso &&
+                corrispondeStato
+            );
+
+        });
+
+
+    /*
+       La lista principale mostra sempre
+       esclusivamente i soggetti attivi.
+    */
+
+    const risultatiAttivi =
+        risultati.filter(
+            soggetto =>
+                soggetto.stato === "Attivo"
+        );
+
+
+    const risultatiArchivio =
+        risultati.filter(
+            soggetto =>
+                soggetto.stato !== "Attivo"
+        );
+
+
+    mostraLista(
+        risultatiAttivi,
+        "lista-soggetti",
+        false
+    );
+
+
+    mostraLista(
+        risultatiArchivio,
+        "lista-archivio",
+        true
+    );
+
+
+    document.getElementById(
+        "totale-risultati"
+    ).textContent = risultati.length;
+
+}
+
+
+/* =========================================================
+   CREA CARD
+========================================================= */
+
+function creaCard(soggetto, archivio = false) {
+
+    const codice =
+        soggetto.codice || "Senza codice";
+
+
+    const specie =
+        soggetto.specie || "Specie non specificata";
+
+
+    const sesso =
+        soggetto.sesso || "Da definire";
+
+
+    const mutazione =
+        soggetto.mutazione || "—";
+
+
+    const dataNascita =
+        formattaData(soggetto.data_nascita);
+
+
+    const stato =
+        soggetto.stato || "Attivo";
+
+
+    const statoClasse =
+        stato
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
+
+    const elemento =
+        document.createElement("div");
+
+
+    elemento.className =
+        "subject-card" +
+        (archivio ? " archive-card" : "");
+
+
+    elemento.innerHTML = `
+
+        <div class="subject-header">
+
+            <div>
+
+                <h3 class="subject-code">
+                    ${escapeHTML(codice)}
+                </h3>
+
+                <p class="subject-species">
+                    ${escapeHTML(specie)}
+                </p>
+
+            </div>
+
+
+            <span class="status-badge status-${statoClasse}">
+                ${escapeHTML(stato)}
+            </span>
+
+        </div>
+
+
+        <div class="subject-details">
+
+            <div class="subject-detail">
+
+                <span class="subject-detail-label">
+                    Sesso
+                </span>
+
+                <span class="subject-detail-value">
+                    ${escapeHTML(sesso)}
+                </span>
+
+            </div>
+
+
+            <div class="subject-detail">
+
+                <span class="subject-detail-label">
+                    Mutazione
+                </span>
+
+                <span class="subject-detail-value">
+                    ${escapeHTML(mutazione)}
+                </span>
+
+            </div>
+
+
+            <div class="subject-detail">
+
+                <span class="subject-detail-label">
+                    Data di nascita
+                </span>
+
+                <span class="subject-detail-value">
+                    ${dataNascita}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="subject-actions">
 
             <button
                 type="button"
@@ -422,17 +1122,107 @@ async function caricaSoggetti() {
 
             </button>
 
+        </div>
+
+    `;
+
+
+    return elemento;
+
+}
+
+
+/* =========================================================
+   MOSTRA LISTA
+========================================================= */
+
+function mostraLista(
+    soggetti,
+    idLista,
+    archivio
+) {
+
+    const lista =
+        document.getElementById(idLista);
+
+
+    lista.innerHTML = "";
+
+
+    if (!soggetti || soggetti.length === 0) {
+
+        const messaggio = archivio
+            ? "Nessun soggetto archiviato."
+            : "Non ci sono soggetti che corrispondono ai filtri.";
+
+
+        lista.innerHTML = `
+
+            <div class="empty-state">
+                ${messaggio}
+            </div>
+
         `;
 
+        return;
 
-        lista.appendChild(elemento);
+    }
+
+
+    soggetti.forEach(soggetto => {
+
+        lista.appendChild(
+            creaCard(soggetto, archivio)
+        );
 
     });
 
 }
 
 
-// AVVIA MODIFICA
+/* =========================================================
+   FORMATTA DATA
+========================================================= */
+
+function formattaData(data) {
+
+    if (!data) {
+        return "—";
+    }
+
+
+    const parti = data.split("-");
+
+
+    if (parti.length !== 3) {
+        return data;
+    }
+
+
+    return `${parti[2]}/${parti[1]}/${parti[0]}`;
+
+}
+
+
+/* =========================================================
+   SICUREZZA HTML
+========================================================= */
+
+function escapeHTML(valore) {
+
+    return String(valore ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   MODIFICA SOGGETTO
+========================================================= */
 
 async function modificaSoggetto(id) {
 
@@ -447,8 +1237,8 @@ async function modificaSoggetto(id) {
     if (result.error) {
 
         alert(
-            "Errore nel caricamento del soggetto: "
-            + result.error.message
+            "Errore nel caricamento del soggetto: " +
+            result.error.message
         );
 
         console.error(result.error);
@@ -460,23 +1250,29 @@ async function modificaSoggetto(id) {
 
     const soggetto = result.data;
 
+
     soggettoInModifica = soggetto.id;
 
 
     document.getElementById("codice").value =
         soggetto.codice || "";
 
+
     document.getElementById("specie").value =
         soggetto.specie || "";
+
 
     document.getElementById("sesso").value =
         soggetto.sesso || "Da definire";
 
+
     document.getElementById("mutazione").value =
         soggetto.mutazione || "";
 
+
     document.getElementById("data_nascita").value =
         soggetto.data_nascita || "";
+
 
     document.getElementById("stato").value =
         soggetto.stato || "Attivo";
@@ -503,20 +1299,23 @@ async function modificaSoggetto(id) {
 }
 
 
-// ANNULLA MODIFICA
+/* =========================================================
+   ANNULLA MODIFICA
+========================================================= */
 
 function annullaModifica() {
 
     soggettoInModifica = null;
 
 
-    document
-        .getElementById("soggetto-form")
-        .reset();
+    document.getElementById(
+        "soggetto-form"
+    ).reset();
 
 
     document.getElementById("sesso").value =
         "Da definire";
+
 
     document.getElementById("stato").value =
         "Attivo";
@@ -530,13 +1329,16 @@ function annullaModifica() {
         "+ Aggiungi soggetto";
 
 
-    document.getElementById("pulsante-annulla").style.display =
-        "none";
+    document.getElementById(
+        "pulsante-annulla"
+    ).style.display = "none";
 
 }
 
 
-// AGGIUNTA / MODIFICA SOGGETTO
+/* =========================================================
+   AGGIUNTA / MODIFICA
+========================================================= */
 
 document
     .getElementById("soggetto-form")
@@ -548,27 +1350,42 @@ document
         const datiSoggetto = {
 
             codice:
-                document.getElementById("codice").value.trim(),
+                document
+                    .getElementById("codice")
+                    .value
+                    .trim(),
 
             specie:
-                document.getElementById("specie").value.trim(),
+                document
+                    .getElementById("specie")
+                    .value
+                    .trim(),
 
             sesso:
-                document.getElementById("sesso").value,
+                document
+                    .getElementById("sesso")
+                    .value,
 
             mutazione:
-                document.getElementById("mutazione").value.trim(),
+                document
+                    .getElementById("mutazione")
+                    .value
+                    .trim(),
 
             data_nascita:
-                document.getElementById("data_nascita").value || null,
+                document
+                    .getElementById("data_nascita")
+                    .value || null,
 
             stato:
-                document.getElementById("stato").value
+                document
+                    .getElementById("stato")
+                    .value
 
         };
 
 
-        // MODIFICA
+        /* MODIFICA */
 
         if (soggettoInModifica) {
 
@@ -582,8 +1399,8 @@ document
             if (result.error) {
 
                 alert(
-                    "Errore nella modifica: "
-                    + result.error.message
+                    "Errore nella modifica: " +
+                    result.error.message
                 );
 
                 console.error(result.error);
@@ -593,19 +1410,21 @@ document
             }
 
 
-            alert("Soggetto modificato correttamente.");
+            alert(
+                "Soggetto modificato correttamente."
+            );
 
 
             annullaModifica();
 
-            caricaSoggetti();
+            await caricaSoggetti();
 
             return;
 
         }
 
 
-        // NUOVO SOGGETTO
+        /* NUOVO SOGGETTO */
 
         const nuovoSoggetto = {
 
@@ -625,8 +1444,8 @@ document
         if (result.error) {
 
             alert(
-                "Errore nel salvataggio: "
-                + result.error.message
+                "Errore nel salvataggio: " +
+                result.error.message
             );
 
             console.error(result.error);
@@ -636,7 +1455,9 @@ document
         }
 
 
-        alert("Soggetto aggiunto correttamente.");
+        alert(
+            "Soggetto aggiunto correttamente."
+        );
 
 
         document
@@ -647,16 +1468,67 @@ document
         document.getElementById("sesso").value =
             "Da definire";
 
+
         document.getElementById("stato").value =
             "Attivo";
 
 
-        caricaSoggetti();
+        await caricaSoggetti();
 
     });
 
 
-// LOGOUT
+/* =========================================================
+   RICERCA E FILTRI
+========================================================= */
+
+document
+    .getElementById("ricerca")
+    .addEventListener("input", applicaFiltri);
+
+
+document
+    .getElementById("filtro-specie")
+    .addEventListener("change", applicaFiltri);
+
+
+document
+    .getElementById("filtro-sesso")
+    .addEventListener("change", applicaFiltri);
+
+
+document
+    .getElementById("filtro-stato")
+    .addEventListener("change", applicaFiltri);
+
+
+/* =========================================================
+   ARCHIVIO
+========================================================= */
+
+document
+    .getElementById("toggle-archivio")
+    .addEventListener("click", function() {
+
+        const archivio =
+            document.getElementById("archivio-section");
+
+
+        const visibile =
+            archivio.classList.toggle("visible");
+
+
+        this.textContent =
+            visibile
+                ? "Nascondi archivio"
+                : "Mostra archivio";
+
+    });
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 async function logoutUser() {
 
@@ -667,6 +1539,10 @@ async function logoutUser() {
 }
 
 
+/* =========================================================
+   AVVIO
+========================================================= */
+
 controllaUtente();
 
 </script>
@@ -674,3 +1550,4 @@ controllaUtente();
 </body>
 
 </html>
+```
