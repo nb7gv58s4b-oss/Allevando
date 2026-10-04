@@ -1,1528 +1,434 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Dashboard — ALLEVANDO</title>
-
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
-    <style>
-
-        /* =====================================================
-           DASHBOARD ALLEVANDO — DESIGN PILOTA
-        ===================================================== */
-
-        body.dashboard-page {
-            background:
-                radial-gradient(
-                    circle at top left,
-                    rgba(24, 92, 69, 0.045),
-                    transparent 30%
-                ),
-                #faf8f2;
-        }
-
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
-        .app-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-
-            background: rgba(250, 248, 242, 0.94);
-
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-
-            border-bottom: 1px solid #e2e5df;
-        }
-
-        .app-header-inner {
-            width: min(1280px, calc(100% - 40px));
-
-            min-height: 82px;
-
-            margin: 0 auto;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 30px;
-        }
-
-
-        /* =====================================================
-           LOGO
-        ===================================================== */
-
-        .app-logo {
-            display: flex;
-            align-items: center;
-
-            flex-shrink: 0;
-        }
-
-        .app-logo img {
-            width: 175px;
-            height: auto;
-
-            display: block;
-
-            object-fit: contain;
-        }
-
-
-        /* =====================================================
-           NAV
-        ===================================================== */
-
-        .app-nav {
-            display: flex;
-            align-items: center;
-
-            gap: 4px;
-
-            margin-left: auto;
-        }
-
-        .app-nav a {
-            position: relative;
-
-            padding: 10px 14px;
-
-            color: #65716b;
-
-            border-radius: 10px;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            transition:
-                color 0.2s ease,
-                background 0.2s ease;
-        }
-
-        .app-nav a:hover {
-            color: #185c45;
-            background: #e9f3ee;
-        }
-
-        .app-nav a.active {
-            color: #0d3d2d;
-            background: #e4efe8;
-        }
-
-        .app-nav a.active::after {
-            content: "";
-
-            position: absolute;
-
-            left: 14px;
-            right: 14px;
-            bottom: 4px;
-
-            height: 2px;
-
-            background: #185c45;
-
-            border-radius: 999px;
-        }
-
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
-
-        .logout-button {
-            min-height: 40px;
-
-            padding: 9px 16px;
-
-            background: transparent;
-
-            color: #68736d;
-
-            border: 1px solid #dfe4de;
-
-            border-radius: 10px;
-
-            font-size: 13px;
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease;
-        }
-
-        .logout-button:hover {
-            color: #b84c4c;
-
-            background: #f9e5e5;
-
-            border-color: #e7c1c1;
-        }
-
-
-        /* =====================================================
-           MAIN
-        ===================================================== */
-
-        .dashboard-main {
-            width: min(1280px, calc(100% - 40px));
-
-            margin: 0 auto;
-
-            padding: 46px 0 80px;
-        }
-
-
-        /* =====================================================
-           TOP AREA
-        ===================================================== */
-
-        .dashboard-top {
-            display: flex;
-
-            align-items: flex-end;
-            justify-content: space-between;
-
-            gap: 30px;
-
-            margin-bottom: 32px;
-        }
-
-        .dashboard-kicker {
-            display: block;
-
-            margin-bottom: 8px;
-
-            color: #185c45;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            letter-spacing: 0.15em;
-
-            text-transform: uppercase;
-        }
-
-        .dashboard-title {
-            margin: 0;
-
-            color: #0d3d2d;
-
-            font-family:
-                "Cormorant Garamond",
-                Georgia,
-                serif;
-
-            font-size: clamp(42px, 5vw, 64px);
-
-            font-weight: 700;
-
-            line-height: 0.95;
-
-            letter-spacing: -0.025em;
-        }
-
-        .dashboard-title span {
-            color: #185c45;
-        }
-
-        .dashboard-subtitle {
-            max-width: 620px;
-
-            margin-top: 12px;
-
-            color: #68736d;
-
-            font-size: 15px;
-        }
-
-
-        /* =====================================================
-           YEAR SELECTOR
-        ===================================================== */
-
-        .year-box {
-            min-width: 220px;
-
-            padding: 14px 16px;
-
-            background: white;
-
-            border: 1px solid #dfe4de;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 5px 18px rgba(24, 44, 36, 0.05);
-        }
-
-        .year-label {
-            display: block;
-
-            margin-bottom: 5px;
-
-            color: #8a938e;
-
-            font-size: 10px;
-            font-weight: 800;
-
-            letter-spacing: 0.12em;
-
-            text-transform: uppercase;
-        }
-
-        .year-row {
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-        }
-
-        .year-row strong {
-            color: #0d3d2d;
-
-            font-family:
-                "Cormorant Garamond",
-                Georgia,
-                serif;
-
-            font-size: 27px;
-
-            line-height: 1;
-        }
-
-        .year-row select {
-            width: 90px;
-
-            min-height: 34px;
-
-            padding: 5px 8px;
-
-            background: #f7f9f6;
-
-            border: 1px solid #dfe4de;
-
-            border-radius: 8px;
-
-            color: #185c45;
-
-            font-size: 13px;
-            font-weight: 700;
-
-            cursor: pointer;
-        }
-
-
-        /* =====================================================
-           SECTION LABEL
-        ===================================================== */
-
-        .section-label {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 14px;
-        }
-
-        .section-label h2 {
-            margin: 0;
-
-            color: #17211d;
-
-            font-family:
-                "Inter",
-                sans-serif;
-
-            font-size: 14px;
-
-            font-weight: 800;
-
-            letter-spacing: 0.02em;
-        }
-
-        .section-label span {
-            color: #89938d;
-
-            font-size: 12px;
-        }
-
-
-        /* =====================================================
-           STATISTICS
-        ===================================================== */
-
-        .stats-grid-new {
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 16px;
-
-            margin-bottom: 38px;
-        }
-
-        .stat-card-new {
-            position: relative;
-
-            min-height: 170px;
-
-            padding: 22px;
-
-            overflow: hidden;
-
-            background: white;
-
-            border: 1px solid #dfe4de;
-
-            border-radius: 17px;
-
-            box-shadow:
-                0 5px 20px rgba(24, 44, 36, 0.045);
-
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease,
-                border-color 0.2s ease;
-        }
-
-        .stat-card-new:hover {
-            transform: translateY(-3px);
-
-            border-color: #cbd8ce;
-
-            box-shadow:
-                0 14px 32px rgba(24, 44, 36, 0.09);
-        }
-
-        .stat-card-new::after {
-            content: "";
-
-            position: absolute;
-
-            width: 100px;
-            height: 100px;
-
-            right: -40px;
-            bottom: -40px;
-
-            background: #e9f3ee;
-
-            border-radius: 50%;
-        }
-
-        .stat-icon {
-            width: 42px;
-            height: 42px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-bottom: 18px;
-
-            background: #e9f3ee;
-
-            border-radius: 12px;
-
-            color: #185c45;
-
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .stat-card-new h3 {
-            margin: 0 0 4px;
-
-            color: #68736d;
-
-            font-family:
-                "Inter",
-                sans-serif;
-
-            font-size: 13px;
-
-            font-weight: 600;
-        }
-
-        .stat-number {
-            display: block;
-
-            color: #0d3d2d;
-
-            font-family:
-                "Cormorant Garamond",
-                Georgia,
-                serif;
-
-            font-size: 48px;
-
-            font-weight: 700;
-
-            line-height: 0.9;
-        }
-
-        .stat-description {
-            display: block;
-
-            margin-top: 11px;
-
-            color: #8a938e;
-
-            font-size: 11px;
-        }
-
-
-        /* =====================================================
-           QUICK ACTIONS
-        ===================================================== */
-
-        .dashboard-columns {
-            display: grid;
-
-            grid-template-columns:
-                1.4fr 0.6fr;
-
-            gap: 20px;
-        }
-
-        .dashboard-panel {
-            padding: 24px;
-
-            background: white;
-
-            border: 1px solid #dfe4de;
-
-            border-radius: 17px;
-
-            box-shadow:
-                0 5px 20px rgba(24, 44, 36, 0.045);
-        }
-
-        .panel-title {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 20px;
-        }
-
-        .panel-title h2 {
-            margin: 0;
-
-            color: #17211d;
-
-            font-family:
-                "Inter",
-                sans-serif;
-
-            font-size: 15px;
-
-            font-weight: 800;
-        }
-
-        .panel-title span {
-            color: #8a938e;
-
-            font-size: 11px;
-        }
-
-
-        /* =====================================================
-           ACTION CARDS
-        ===================================================== */
-
-        .action-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 10px;
-        }
-
-        .action-card {
-            display: flex;
-
-            flex-direction: column;
-
-            min-height: 120px;
-
-            padding: 17px;
-
-            background: #f8faf8;
-
-            border: 1px solid #e5eae5;
-
-            border-radius: 12px;
-
-            transition:
-                background 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease;
-        }
-
-        .action-card:hover {
-            transform: translateY(-2px);
-
-            background: #eef5f0;
-
-            border-color: #cbdacf;
-        }
-
-        .action-icon {
-            margin-bottom: auto;
-
-            color: #185c45;
-
-            font-size: 22px;
-        }
-
-        .action-card strong {
-            display: block;
-
-            margin-top: 16px;
-
-            color: #17211d;
-
-            font-size: 13px;
-        }
-
-        .action-card span {
-            display: block;
-
-            margin-top: 3px;
-
-            color: #87918b;
-
-            font-size: 10px;
-        }
-
-
-        /* =====================================================
-           FUTURE FEATURES
-        ===================================================== */
-
-        .future-list {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 9px;
-        }
-
-        .future-item {
-            display: flex;
-
-            align-items: center;
-
-            gap: 11px;
-
-            padding: 11px;
-
-            background: #fafbf9;
-
-            border: 1px solid #e8ece8;
-
-            border-radius: 10px;
-        }
-
-        .future-dot {
-            width: 8px;
-            height: 8px;
-
-            flex-shrink: 0;
-
-            background: #b96848;
-
-            border-radius: 50%;
-        }
-
-        .future-item strong {
-            display: block;
-
-            color: #334039;
-
-            font-size: 12px;
-        }
-
-        .future-item span {
-            display: block;
-
-            color: #8a938e;
-
-            font-size: 10px;
-        }
-
-
-        /* =====================================================
-           FOOTER
-        ===================================================== */
-
-        .dashboard-footer {
-            margin-top: 50px;
-
-            padding-top: 20px;
-
-            border-top: 1px solid #e1e5e0;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            color: #8a938e;
-
-            font-size: 11px;
-        }
-
-        .dashboard-footer strong {
-            color: #185c45;
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 1000px) {
-
-            .app-header-inner {
-                flex-wrap: wrap;
-
-                padding: 14px 0;
-            }
-
-            .app-nav {
-                order: 3;
-
-                width: 100%;
-
-                justify-content: center;
-
-                overflow-x: auto;
-
-                padding-bottom: 2px;
-            }
-
-            .stats-grid-new {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-            .dashboard-columns {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-
-        @media (max-width: 650px) {
-
-            .app-header-inner {
-                width: min(100% - 24px, 1280px);
-
-                min-height: 70px;
-
-                gap: 10px;
-            }
-
-            .app-logo img {
-                width: 135px;
-            }
-
-            .logout-button {
-                padding: 8px 11px;
-
-                font-size: 11px;
-            }
-
-            .app-nav {
-                justify-content: flex-start;
-            }
-
-            .app-nav a {
-                padding: 8px 11px;
-
-                white-space: nowrap;
-
-                font-size: 11px;
-            }
-
-            .dashboard-main {
-                width: min(100% - 24px, 1280px);
-
-                padding-top: 32px;
-            }
-
-            .dashboard-top {
-                align-items: stretch;
-
-                flex-direction: column;
-
-                gap: 20px;
-            }
-
-            .dashboard-title {
-                font-size: 48px;
-            }
-
-            .year-box {
-                width: 100%;
-            }
-
-            .stats-grid-new {
-                grid-template-columns:
-                    repeat(2, 1fr);
-
-                gap: 10px;
-            }
-
-            .stat-card-new {
-                min-height: 145px;
-
-                padding: 17px;
-            }
-
-            .stat-icon {
-                width: 36px;
-                height: 36px;
-
-                margin-bottom: 13px;
-
-                font-size: 16px;
-            }
-
-            .stat-number {
-                font-size: 40px;
-            }
-
-            .stat-description {
-                font-size: 10px;
-            }
-
-            .dashboard-panel {
-                padding: 18px;
-            }
-
-            .action-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .action-card {
-                min-height: 80px;
-            }
-
-            .dashboard-footer {
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 5px;
-            }
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard | Allevando</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .welcome {
+      margin-bottom: 30px;
+    }
+
+    .welcome h1 {
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #64748b;
+    }
+
+    /* STATISTICHE */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .stat-card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #166534;
+    }
+
+    /* AZIONI RAPIDE */
+    .section-title {
+      margin-bottom: 18px;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .action-card {
+      display: block;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px;
+      text-decoration: none;
+      color: #0f172a;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      transition: 0.2s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .action-card h3 {
+      margin: 0 0 8px;
+      color: #166534;
+    }
+
+    .action-card p {
+      margin: 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ROADMAP */
+    .roadmap {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+      margin-bottom: 30px;
+    }
+
+    .roadmap-item {
+      padding: 14px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .roadmap-item:last-child {
+      border-bottom: none;
+    }
+
+    .roadmap-item strong {
+      color: #0f172a;
+    }
+
+    .roadmap-item span {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ANNO */
+    .year-box {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+      margin-bottom: 30px;
+    }
+
+    .year-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .year-box select {
+      width: 100%;
+      max-width: 250px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1000px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
+<body>
 
-<body class="dashboard-page">
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<header class="app-header">
-
-    <div class="app-header-inner">
-
-
-        <!-- LOGO -->
-
-        <a
-            href="dashboard.html"
-            class="app-logo"
-        >
-
-            <img
-                src="logo.png"
-                alt="ALLEVANDO"
-            >
-
-        </a>
-
-
-        <!-- NAVIGAZIONE -->
-
-        <nav class="app-nav">
-
-            <a
-                href="dashboard.html"
-                class="active"
-            >
-                Dashboard
-            </a>
-
-            <a href="soggetti.html">
-                Soggetti
-            </a>
-
-            <a href="coppie.html">
-                Coppie
-            </a>
-
-            <a href="covate.html">
-                Covate
-            </a>
-
-        </nav>
-
-
-        <!-- LOGOUT -->
-
-        <button
-            onclick="logoutUser()"
-            class="logout-button"
-        >
-            Esci
-        </button>
-
-
-    </div>
-
+<header>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="soggetti.html">Soggetti</a>
+    <a href="coppie.html">Coppie</a>
+    <a href="covate.html">Covate</a>
+    <a href="gabbie.html">Gabbie</a>
+    <button onclick="logoutUser()">Esci</button>
+  </nav>
 </header>
 
+<main class="dashboard-container">
+
+  <!-- BENVENUTO -->
+  <section class="welcome">
+    <h1>Benvenuto in Allevando</h1>
+    <p id="welcome-text">Gestisci il tuo allevamento in modo semplice e ordinato.</p>
+  </section>
 
 
-<!-- =====================================================
-     MAIN
-===================================================== -->
+  <!-- STATISTICHE -->
+  <section>
 
-<main class="dashboard-main">
+    <div class="stats-grid">
 
+      <div class="stat-card">
+        <h3>Soggetti</h3>
+        <div class="stat-number" id="count-soggetti">0</div>
+      </div>
 
-    <!-- =================================================
-         BENVENUTO + ANNO
-    ================================================== -->
+      <div class="stat-card">
+        <h3>Coppie</h3>
+        <div class="stat-number" id="count-coppie">0</div>
+      </div>
 
-    <section class="dashboard-top">
+      <div class="stat-card">
+        <h3>Covate</h3>
+        <div class="stat-number" id="count-covate">0</div>
+      </div>
 
+      <div class="stat-card">
+        <h3>Nascite</h3>
+        <div class="stat-number" id="count-nascite">0</div>
+      </div>
 
-        <div>
-
-            <span class="dashboard-kicker">
-                Area personale
-            </span>
-
-            <h1 class="dashboard-title">
-                Ciao,
-                <span id="nome-allevatore">
-                    allevatore
-                </span>.
-            </h1>
-
-            <p class="dashboard-subtitle">
-                Tutto il tuo allevamento, organizzato
-                in un unico posto.
-            </p>
-
-        </div>
-
-
-        <!-- ANNO -->
-
-        <div class="year-box">
-
-            <span class="year-label">
-                Anno di gestione
-            </span>
-
-            <div class="year-row">
-
-                <strong id="anno-selezionato">
-                    2026
-                </strong>
-
-                <select
-                    id="anno"
-                    onchange="cambiaAnno()"
-                >
-                </select>
-
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         STATISTICHE
-    ================================================== -->
-
-    <div class="section-label">
-
-        <h2>
-            Panoramica
-        </h2>
-
-        <span>
-            Situazione attuale
-        </span>
+      <!-- NUOVA SEZIONE GABBIE -->
+      <div class="stat-card">
+        <h3>Gabbie</h3>
+        <div class="stat-number" id="count-gabbie">0</div>
+      </div>
 
     </div>
 
+  </section>
 
-    <section class="stats-grid-new">
 
+  <!-- AZIONI RAPIDE -->
+  <section>
 
-        <!-- SOGGETTI -->
+    <h2 class="section-title">Azioni rapide</h2>
 
-        <div class="stat-card-new">
+    <div class="actions-grid">
 
-            <div class="stat-icon">
-                S
-            </div>
+      <a href="soggetti.html" class="action-card">
+        <h3>Nuovo soggetto</h3>
+        <p>Registra un nuovo soggetto nel tuo allevamento.</p>
+      </a>
 
-            <h3>
-                Soggetti
-            </h3>
+      <a href="coppie.html" class="action-card">
+        <h3>Nuova coppia</h3>
+        <p>Crea una nuova coppia riproduttiva.</p>
+      </a>
 
-            <strong
-                id="count-soggetti"
-                class="stat-number"
-            >
-                0
-            </strong>
+      <a href="covate.html" class="action-card">
+        <h3>Nuova covata</h3>
+        <p>Registra una nuova covata e gestisci le uova.</p>
+      </a>
 
-            <span class="stat-description">
-                Soggetti attivi nel tuo allevamento
-            </span>
+      <!-- NUOVA AZIONE GABBIE -->
+      <a href="gabbie.html" class="action-card">
+        <h3>Gestisci gabbie</h3>
+        <p>Visualizza e organizza le gabbie del tuo allevamento.</p>
+      </a>
 
-        </div>
+    </div>
 
+  </section>
 
-        <!-- COPPIE -->
 
-        <div class="stat-card-new">
+  <!-- ROADMAP -->
+  <section class="roadmap">
 
-            <div class="stat-icon">
-                C
-            </div>
+    <h2 class="section-title">Prossimamente</h2>
 
-            <h3>
-                Coppie
-            </h3>
+    <div class="roadmap-item">
+      <strong>Finanze</strong><br>
+      <span>Gestione di entrate, uscite e costi dell'allevamento.</span>
+    </div>
 
-            <strong
-                id="count-coppie"
-                class="stat-number"
-            >
-                0
-            </strong>
+    <div class="roadmap-item">
+      <strong>Trattamenti</strong><br>
+      <span>Gestione di medicinali, cure e alimentazione complementare.</span>
+    </div>
 
-            <span class="stat-description">
-                Coppie presenti nell'allevamento
-            </span>
+    <div class="roadmap-item">
+      <strong>Calendario</strong><br>
+      <span>Promemoria per cure, preparazione alla cova e attività dell'allevamento.</span>
+    </div>
 
-        </div>
+  </section>
 
 
-        <!-- COVATE -->
+  <!-- ANNO -->
+  <section class="year-box">
 
-        <div class="stat-card-new">
+    <label for="year-select">Anno di gestione</label>
 
-            <div class="stat-icon">
-                V
-            </div>
+    <select id="year-select">
+      <option value="">Seleziona anno</option>
+    </select>
 
-            <h3>
-                Covate
-            </h3>
-
-            <strong
-                id="count-covate"
-                class="stat-number"
-            >
-                0
-            </strong>
-
-            <span class="stat-description">
-                Covate dell'anno selezionato
-            </span>
-
-        </div>
-
-
-        <!-- NASCITE -->
-
-        <div class="stat-card-new">
-
-            <div class="stat-icon">
-                N
-            </div>
-
-            <h3>
-                Nascite
-            </h3>
-
-            <strong
-                id="count-nascite"
-                class="stat-number"
-            >
-                0
-            </strong>
-
-            <span class="stat-description">
-                Nascite dell'anno selezionato
-            </span>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         COLONNE
-    ================================================== -->
-
-    <section class="dashboard-columns">
-
-
-        <!-- =================================================
-             ACCESSI RAPIDI
-        ================================================== -->
-
-        <div class="dashboard-panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    Accessi rapidi
-                </h2>
-
-                <span>
-                    Gestione allevamento
-                </span>
-
-            </div>
-
-
-            <div class="action-grid">
-
-
-                <a
-                    href="soggetti.html"
-                    class="action-card"
-                >
-
-                    <div class="action-icon">
-                        +
-                    </div>
-
-                    <strong>
-                        Nuovo soggetto
-                    </strong>
-
-                    <span>
-                        Inserisci un nuovo soggetto
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="coppie.html"
-                    class="action-card"
-                >
-
-                    <div class="action-icon">
-                        +
-                    </div>
-
-                    <strong>
-                        Nuova coppia
-                    </strong>
-
-                    <span>
-                        Crea una nuova coppia
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="covate.html"
-                    class="action-card"
-                >
-
-                    <div class="action-icon">
-                        +
-                    </div>
-
-                    <strong>
-                        Nuova covata
-                    </strong>
-
-                    <span>
-                        Registra una nuova covata
-                    </span>
-
-                </a>
-
-
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             PROSSIME FUNZIONI
-        ================================================== -->
-
-        <div class="dashboard-panel">
-
-            <div class="panel-title">
-
-                <h2>
-                    In sviluppo
-                </h2>
-
-                <span>
-                    Roadmap
-                </span>
-
-            </div>
-
-
-            <div class="future-list">
-
-
-                <div class="future-item">
-
-                    <div class="future-dot"></div>
-
-                    <div>
-
-                        <strong>
-                            Finanze
-                        </strong>
-
-                        <span>
-                            Entrate e uscite
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="future-item">
-
-                    <div class="future-dot"></div>
-
-                    <div>
-
-                        <strong>
-                            Trattamenti
-                        </strong>
-
-                        <span>
-                            Cure e preparazioni
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="future-item">
-
-                    <div class="future-dot"></div>
-
-                    <div>
-
-                        <strong>
-                            Calendario
-                        </strong>
-
-                        <span>
-                            Promemoria e scadenze
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =================================================
-         FOOTER
-    ================================================== -->
-
-    <footer class="dashboard-footer">
-
-        <div>
-            <strong>ALLEVANDO</strong>
-            — Il gestionale degli allevatori.
-        </div>
-
-        <div>
-            © 2026 ALLEVANDO
-        </div>
-
-    </footer>
-
+  </section>
 
 </main>
 
 
-
-<!-- =====================================================
-     SUPABASE
-===================================================== -->
-
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/config.js"></script>
-
 <script src="js/auth.js"></script>
-
-
 
 <script>
 
-/* =========================================================
-   ANNO
-========================================================= */
+  /* =========================
+     NUMERO SOGGETTI
+  ========================= */
 
-const annoCorrente =
-    new Date().getFullYear();
+  async function caricaNumeroSoggetti(userId) {
 
-const selettoreAnno =
-    document.getElementById("anno");
-
-const annoSalvato =
-    localStorage.getItem("allevando_anno");
-
-const annoIniziale =
-    annoSalvato
-        ? parseInt(annoSalvato)
-        : annoCorrente;
-
-
-/* CREA GLI ANNI */
-
-for (
-    let anno = annoCorrente;
-    anno >= 2020;
-    anno--
-) {
-
-    const option =
-        document.createElement("option");
-
-    option.value = anno;
-
-    option.textContent = anno;
-
-    if (anno === annoIniziale) {
-        option.selected = true;
-    }
-
-    selettoreAnno.appendChild(option);
-
-}
-
-
-/* =========================================================
-   CAMBIO ANNO
-========================================================= */
-
-function cambiaAnno() {
-
-    const anno =
-        parseInt(selettoreAnno.value);
-
-    localStorage.setItem(
-        "allevando_anno",
-        anno
-    );
-
-    document.getElementById(
-        "anno-selezionato"
-    ).textContent = anno;
-
-}
-
-
-/* =========================================================
-   CONTEGGIO SOGGETTI
-========================================================= */
-
-async function caricaNumeroSoggetti(userId) {
-
-    const result =
-        await client
-
-            .from("soggetti")
-
-            .select(
-                "*",
-                {
-                    count: "exact",
-                    head: true
-                }
-            )
-
-            .eq(
-                "user_id",
-                userId
-            )
-
-            .eq(
-                "stato",
-                "Attivo"
-            );
-
+    const result = await client
+      .from("soggetti")
+      .select("*", {
+        count: "exact",
+        head: true
+      })
+      .eq("user_id", userId)
+      .eq("stato", "Attivo");
 
     if (result.error) {
-
-        console.error(
-            "Errore conteggio soggetti:",
-            result.error
-        );
-
-        return;
-
+      console.error("Errore conteggio soggetti:", result.error);
+      return;
     }
 
-
-    document.getElementById(
-        "count-soggetti"
-    ).textContent =
-        result.count || 0;
-
-}
+    document.getElementById("count-soggetti").textContent =
+      result.count || 0;
+  }
 
 
-/* =========================================================
-   CONTROLLO UTENTE
-========================================================= */
+  /* =========================
+     NUMERO GABBIE
+  ========================= */
 
-async function checkUser() {
+  async function caricaNumeroGabbie(userId) {
 
-    const result =
-        await client.auth.getUser();
+    const result = await client
+      .from("gabbie")
+      .select("*", {
+        count: "exact",
+        head: true
+      })
+      .eq("user_id", userId);
 
-
-    if (
-        result.error ||
-        !result.data.user
-    ) {
-
-        window.location.href =
-            "login.html";
-
-        return;
-
+    if (result.error) {
+      console.error("Errore conteggio gabbie:", result.error);
+      return;
     }
 
+    document.getElementById("count-gabbie").textContent =
+      result.count || 0;
+  }
 
-    const user =
-        result.data.user;
 
+  /* =========================
+     CONTROLLO UTENTE
+  ========================= */
 
+  async function checkUser() {
+
+    const {
+      data: {
+        user
+      }
+    } = await client.auth.getUser();
+
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    /* Nome utente */
     const nome =
-        user.user_metadata?.nome;
-
+      user.user_metadata?.nome ||
+      user.user_metadata?.name ||
+      "";
 
     if (nome) {
-
-        document.getElementById(
-            "nome-allevatore"
-        ).textContent =
-            nome;
-
+      document.getElementById("welcome-text").textContent =
+        "Bentornato " + nome + ", gestisci il tuo allevamento in modo semplice e ordinato.";
     }
 
+    /* Anno corrente */
+    const yearSelect =
+      document.getElementById("year-select");
 
-    document.getElementById(
-        "anno-selezionato"
-    ).textContent =
-        annoIniziale;
+    const currentYear =
+      new Date().getFullYear();
+
+    for (let year = currentYear; year >= currentYear - 5; year--) {
+
+      const option =
+        document.createElement("option");
+
+      option.value = year;
+      option.textContent = year;
+
+      yearSelect.appendChild(option);
+    }
+
+    yearSelect.value = currentYear;
+
+    /* Caricamento statistiche */
+    await caricaNumeroSoggetti(user.id);
+    await caricaNumeroGabbie(user.id);
+  }
 
 
-    await caricaNumeroSoggetti(
-        user.id
-    );
+  /* =========================
+     LOGOUT
+  ========================= */
 
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logoutUser() {
+  async function logoutUser() {
 
     await client.auth.signOut();
 
-    window.location.href =
-        "login.html";
-
-}
+    window.location.href = "login.html";
+  }
 
 
-/* =========================================================
-   AVVIO
-========================================================= */
+  /* =========================
+     AVVIO
+  ========================= */
 
-checkUser();
+  checkUser();
 
 </script>
 
-
 </body>
-
 </html>
