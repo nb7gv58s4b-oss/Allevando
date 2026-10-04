@@ -4,22 +4,725 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Covate — ALLEVANDO</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* =========================================================
+       COVATE — STILE LOCALE
+       ========================================================= */
 
-  <script src="js/config.js"></script>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(24, 92, 69, 0.045), transparent 30%),
+        #faf8f2;
+      color: #0f172a;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* HEADER */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      background: rgba(250, 248, 242, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid #e8e2d6;
+    }
+
+    .app-header-inner {
+      width: min(1280px, calc(100% - 40px));
+      min-height: 82px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .app-logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      width: 175px !important;
+      min-width: 175px !important;
+      max-width: 175px !important;
+      height: 70px !important;
+      max-height: 70px !important;
+      overflow: hidden !important;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .app-logo img {
+      display: block !important;
+      width: 175px !important;
+      max-width: 175px !important;
+      height: auto !important;
+      max-height: 65px !important;
+      object-fit: contain !important;
+      object-position: left center !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .app-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .app-nav a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 13px;
+      border-radius: 10px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: 0.2s ease;
+    }
+
+    .app-nav a:hover {
+      color: #185c45;
+      background: #f1f6f2;
+    }
+
+    .app-nav a.active {
+      color: #185c45;
+      background: #e8f1eb;
+    }
+
+    .app-nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 4px;
+      height: 2px;
+      border-radius: 2px;
+      background: #185c45;
+    }
+
+    .logout-button {
+      border: 1px solid #d8d2c6;
+      background: #fffdf8;
+      color: #475569;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .logout-button:hover {
+      background: #f3efe3;
+      color: #185c45;
+    }
+
+    /* MAIN */
+    .page-main {
+      width: min(1280px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0 70px;
+    }
+
+    .page-heading {
+      margin-bottom: 34px;
+    }
+
+    .page-kicker {
+      margin: 0 0 8px;
+      color: #185c45;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #0d3d2d;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(46px, 6vw, 72px);
+      line-height: 0.95;
+      font-weight: 600;
+    }
+
+    .page-subtitle {
+      max-width: 720px;
+      margin: 15px 0 0;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* CARD */
+    .content-card {
+      background: rgba(255, 253, 248, 0.96);
+      border: 1px solid #e8e2d6;
+      border-radius: 22px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.055);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .card-header {
+      padding: 24px 26px;
+      border-bottom: 1px solid #ece7dc;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      color: #0d3d2d;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .card-header p {
+      margin: 8px 0 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .card-body {
+      padding: 26px;
+    }
+
+    /* FORM */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      min-width: 0;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #dcd6ca;
+      border-radius: 11px;
+      background: #fff;
+      color: #0f172a;
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #185c45;
+      box-shadow: 0 0 0 3px rgba(24, 92, 69, 0.10);
+    }
+
+    .help-text {
+      margin: 7px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* EGGS */
+    .eggs-section {
+      margin-top: 30px;
+      padding-top: 26px;
+      border-top: 1px solid #ece7dc;
+    }
+
+    .eggs-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    .eggs-heading h3 {
+      margin: 0;
+      color: #0d3d2d;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 29px;
+      font-weight: 600;
+    }
+
+    .eggs-heading p {
+      margin: 5px 0 0;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .egg-count-box {
+      width: 180px;
+      flex-shrink: 0;
+    }
+
+    .egg-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .egg-row {
+      display: grid;
+      grid-template-columns: 60px minmax(150px, 1fr) minmax(130px, 180px) minmax(150px, 1fr);
+      gap: 12px;
+      align-items: end;
+      padding: 16px;
+      background: #f7f4ec;
+      border: 1px solid #e8e2d6;
+      border-radius: 14px;
+    }
+
+    .egg-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+      border-radius: 10px;
+      background: #e8f1eb;
+      color: #185c45;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .egg-row .form-group {
+      min-width: 0;
+    }
+
+    /* BUTTONS */
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 11px;
+      min-height: 45px;
+      padding: 0 18px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .button-primary {
+      background: #185c45;
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: #0d3d2d;
+      transform: translateY(-1px);
+    }
+
+    .button-secondary {
+      background: #f1f6f2;
+      color: #185c45;
+    }
+
+    .button-secondary:hover {
+      background: #e8f1eb;
+    }
+
+    .button-danger {
+      background: #fceee9;
+      color: #a9482c;
+    }
+
+    .button-small {
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+
+    /* ARCHIVE */
+    .archive-empty {
+      padding: 45px 20px;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    .covata-item {
+      border-bottom: 1px solid #ece7dc;
+    }
+
+    .covata-item:last-child {
+      border-bottom: 0;
+    }
+
+    .covata-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 26px;
+    }
+
+    .covata-info h3 {
+      margin: 0;
+      color: #0d3d2d;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .covata-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #f1f6f2;
+      color: #185c45;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .meta-pill.status {
+      background: #f3efe3;
+      color: #6b5a37;
+    }
+
+    .covata-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .egg-table-wrap {
+      padding: 0 26px 25px;
+      overflow-x: auto;
+    }
+
+    .egg-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    .egg-table th {
+      padding: 10px 12px;
+      background: #f7f4ec;
+      color: #64748b;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .egg-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee9df;
+      color: #334155;
+      font-size: 13px;
+    }
+
+    .egg-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .result-pill {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #f1f6f2;
+      color: #185c45;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .result-pill.pending {
+      background: #f3efe3;
+      color: #806c42;
+    }
+
+    .result-pill.bad {
+      background: #fceee9;
+      color: #a9482c;
+    }
+
+    /* ALERT */
+    .alert {
+      display: none;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+      border-radius: 11px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert.error {
+      background: #fceee9;
+      border: 1px solid #f1c8bb;
+      color: #963d26;
+    }
+
+    .alert.success {
+      background: #e8f1eb;
+      border: 1px solid #c9dfd2;
+      color: #185c45;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.48);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: #fffdf8;
+      border-radius: 20px;
+      box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 21px 24px;
+      border-bottom: 1px solid #ece7dc;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #0d3d2d;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 29px;
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 50%;
+      background: #f3efe3;
+      color: #475569;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 18px 24px;
+      border-top: 1px solid #ece7dc;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      width: min(1280px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 0 0 35px;
+      color: #94a3b8;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .app-header-inner {
+        width: calc(100% - 24px);
+        min-height: 72px;
+        gap: 15px;
+      }
+
+      .app-logo {
+        width: 135px !important;
+        min-width: 135px !important;
+        max-width: 135px !important;
+      }
+
+      .app-logo img {
+        width: 135px !important;
+        max-width: 135px !important;
+        max-height: 55px !important;
+      }
+
+      .app-nav a {
+        padding: 0 9px;
+      }
+
+      .page-main {
+        width: calc(100% - 24px);
+        padding-top: 35px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: auto;
+      }
+
+      .egg-row {
+        grid-template-columns: 50px 1fr;
+      }
+
+      .egg-row .form-group {
+        grid-column: span 1;
+      }
+
+      .egg-number {
+        grid-row: span 1;
+      }
+
+      .eggs-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .egg-count-box {
+        width: 100%;
+      }
+
+      .covata-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .covata-actions {
+        width: 100%;
+      }
+
+      .covata-actions .button {
+        flex: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app-header-inner {
+        flex-wrap: wrap;
+        padding: 8px 0;
+      }
+
+      .app-logo {
+        height: 55px !important;
+      }
+
+      .app-nav {
+        order: 3;
+        width: 100%;
+        flex-basis: 100%;
+      }
+
+      .logout-button {
+        margin-left: auto;
+      }
+
+      .page-title {
+        font-size: 50px;
+      }
+
+      .card-header,
+      .card-body {
+        padding: 20px;
+      }
+
+      .egg-table-wrap {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions .button {
+        width: 100%;
+      }
+    }
+  </style>
 
 </head>
 
-<body class="dashboard-page">
+<body>
 
 <header class="app-header">
   <div class="app-header-inner">
@@ -37,280 +740,148 @@
   <a href="gabbie.html">Gabbie</a>
 </nav>
 
-<button id="logoutButton" class="logout-button">Esci</button>
+<button type="button" class="logout-button" id="logoutButton">
+  Esci
+</button>
 ```
 
   </div>
 </header>
 
-<main class="dashboard-main">
+<main class="page-main">
 
-  <section class="page-intro">
+  <section class="page-heading">
+    <p class="page-kicker">Riproduzione</p>
+    <h1 class="page-title">Covate</h1>
+    <p class="page-subtitle">
+      Registra ogni covata, gestisci le singole uova e collega direttamente
+      i nuovi soggetti nati.
+    </p>
+  </section>
+
+  <div id="alertBox" class="alert"></div>
+
+  <!-- NUOVA COVATA -->
+
+  <section class="content-card">
 
 ```
-<div>
-  <div class="page-kicker">Gestione riproduzione</div>
-
-  <h1>Covate</h1>
-
+<div class="card-header">
+  <h2>Nuova covata</h2>
   <p>
-    Registra ogni covata, gestisci le singole uova e collega
-    direttamente i nuovi soggetti nati.
+    Crea una covata e registra ogni uovo singolarmente.
   </p>
 </div>
-```
 
-  </section>
+<div class="card-body">
 
-  <!-- =========================
-       NUOVA COVATA
-  ========================== -->
+  <form id="covataForm">
 
-  <section class="content-card">
+    <div class="form-grid">
 
-```
-<div class="card-heading">
+      <div class="form-group">
+        <label for="coppiaId">Coppia *</label>
+        <select id="coppiaId" required>
+          <option value="">Caricamento delle coppie...</option>
+        </select>
+        <p class="help-text">
+          Seleziona la coppia responsabile della covata.
+        </p>
+      </div>
 
-  <div>
-    <div class="section-kicker">Riproduzione</div>
+      <div class="form-group">
+        <label for="dataInizio">Data inizio covata *</label>
+        <input type="date" id="dataInizio" required>
+      </div>
 
-    <h2>Nuova covata</h2>
+      <div class="form-group">
+        <label for="dataFine">Data fine</label>
+        <input type="date" id="dataFine">
+      </div>
 
-    <p>
-      Crea una covata e registra ogni uovo singolarmente.
-    </p>
-  </div>
+      <div class="form-group">
+        <label for="stato">Stato</label>
+        <select id="stato">
+          <option value="Preparazione">Preparazione</option>
+          <option value="Deposizione">Deposizione</option>
+          <option value="Cova">Cova</option>
+          <option value="Schiusa">Schiusa</option>
+          <option value="Svezzamento">Svezzamento</option>
+          <option value="Terminata">Terminata</option>
+          <option value="Abbandonata">Abbandonata</option>
+          <option value="Fallita">Fallita</option>
+        </select>
+      </div>
 
-</div>
-
-
-<form id="covataForm">
-
-  <div class="form-grid">
-
-    <div class="field field-wide">
-
-      <label for="coppia_id">Coppia</label>
-
-      <select id="coppia_id" required>
-        <option value="">Seleziona una coppia...</option>
-      </select>
-
-      <small id="coppiaHelp" class="field-help">
-        Caricamento delle coppie...
-      </small>
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="data_inizio">
-        Data inizio covata
-      </label>
-
-      <input
-        type="date"
-        id="data_inizio"
-        required
-      >
+      <div class="form-group full">
+        <label for="note">Note</label>
+        <textarea
+          id="note"
+          placeholder="Eventuali osservazioni sulla covata..."
+        ></textarea>
+      </div>
 
     </div>
 
+    <!-- UOVA -->
+    <div class="eggs-section">
 
-    <div class="field">
+      <div class="eggs-heading">
 
-      <label for="data_fine">
-        Data fine
-      </label>
-
-      <input
-        type="date"
-        id="data_fine"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="stato">
-        Stato
-      </label>
-
-      <select id="stato">
-
-        <option value="Preparazione">
-          Preparazione
-        </option>
-
-        <option value="Deposizione">
-          Deposizione
-        </option>
-
-        <option value="Cova">
-          Cova
-        </option>
-
-        <option value="Schiusa">
-          Schiusa
-        </option>
-
-        <option value="Svezzamento">
-          Svezzamento
-        </option>
-
-        <option value="Terminata">
-          Terminata
-        </option>
-
-        <option value="Abbandonata">
-          Abbandonata
-        </option>
-
-        <option value="Fallita">
-          Fallita
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="field field-wide">
-
-      <label for="note">
-        Note
-      </label>
-
-      <textarea
-        id="note"
-        rows="3"
-        placeholder="Eventuali note sulla covata..."
-      ></textarea>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       UOVA
-  ========================== -->
-
-  <div class="subsection">
-
-    <div class="subsection-heading">
-
-      <div>
-
-        <div class="section-kicker">
-          Registro uova
+        <div>
+          <h3>Registro uova</h3>
+          <p>
+            Indica il numero di uova e poi registra ogni uovo singolarmente.
+          </p>
         </div>
 
-        <h3>Uova</h3>
-
-        <p>
-          Indica il numero di uova e poi registra
-          ogni uovo singolarmente.
-        </p>
-
-      </div>
-
-
-      <div class="egg-counter-box">
-
-        <label for="numero_uova">
-          Numero di uova
-        </label>
-
-        <input
-          type="number"
-          id="numero_uova"
-          min="0"
-          max="30"
-          value="0"
-        >
+        <div class="egg-count-box">
+          <label for="numeroUova">Numero di uova *</label>
+          <input
+            type="number"
+            id="numeroUova"
+            min="1"
+            max="30"
+            value="1"
+            required
+          >
+        </div>
 
       </div>
+
+      <div id="eggList" class="egg-list"></div>
 
     </div>
 
-
-    <div id="uovaContainer" class="eggs-list">
-
-      <div class="empty-eggs">
-        Inserisci il numero di uova per generare il registro.
-      </div>
-
+    <div class="form-actions">
+      <button type="submit" class="button button-primary" id="saveButton">
+        Salva covata
+      </button>
     </div>
 
-  </div>
+  </form>
 
-
-  <div id="formMessage" class="form-message"></div>
-
-
-  <div class="form-actions">
-
-    <button
-      type="submit"
-      class="primary-button"
-      id="saveButton"
-    >
-      Salva covata
-    </button>
-
-  </div>
-
-</form>
+</div>
 ```
 
   </section>
 
-  <!-- =========================
-       ARCHIVIO
-  ========================== -->
+  <!-- ARCHIVIO -->
 
   <section class="content-card">
 
 ```
-<div class="card-heading">
-
-  <div>
-
-    <div class="section-kicker">
-      Archivio
-    </div>
-
-    <h2>Le tue covate</h2>
-
-    <p>
-      Visualizza le covate registrate e il dettaglio delle uova.
-    </p>
-
-  </div>
-
-
-  <div
-    class="count-badge"
-    id="covateCount"
-  >
-    0 covate
-  </div>
-
+<div class="card-header">
+  <h2>Le tue covate</h2>
+  <p>
+    Visualizza le covate registrate e il dettaglio delle uova.
+  </p>
 </div>
 
-
-<div
-  id="covateList"
-  class="covate-list"
->
-
-  <div class="loading-state">
+<div id="covateList">
+  <div class="archive-empty">
     Caricamento...
   </div>
-
 </div>
 ```
 
@@ -319,3087 +890,1109 @@
 </main>
 
 <footer class="app-footer">
-
-  <div>
-    ALLEVANDO · Il gestionale degli allevatori, per gli allevatori.
-  </div>
-
+  ALLEVANDO · Il gestionale degli allevatori, per gli allevatori.
 </footer>
 
-<!-- =========================
-     MODALE SOGGETTO
-========================== -->
+<!-- MODAL CREA SOGGETTO -->
 
-<div
-  id="subjectModal"
-  class="modal-overlay hidden"
->
+<div id="subjectModal" class="modal-backdrop">
 
-  <div class="modal-card">
+  <div class="modal">
 
 ```
-<button
-  type="button"
-  class="modal-close"
-  id="closeSubjectModal"
->
-  ×
-</button>
-
-
-<div class="section-kicker">
-  Nuovo soggetto
+<div class="modal-header">
+  <h2>Crea soggetto</h2>
+  <button type="button" class="modal-close" id="closeModal">
+    ×
+  </button>
 </div>
 
+<div class="modal-body">
 
-<h2>
-  Crea soggetto
-</h2>
-
-
-<p class="modal-description">
-
-  Il soggetto verrà collegato automaticamente
-  all'uovo e ai genitori della coppia.
-
-</p>
-
-
-<form id="subjectForm">
-
-  <input
-    type="hidden"
-    id="subjectEggId"
-  >
-
-  <input
-    type="hidden"
-    id="subjectFatherId"
-  >
-
-  <input
-    type="hidden"
-    id="subjectMotherId"
-  >
-
+  <p class="help-text" style="margin-top:0;margin-bottom:20px;">
+    Il soggetto verrà collegato automaticamente all'uovo e ai genitori
+    della coppia.
+  </p>
 
   <div class="form-grid">
 
-    <div class="field field-wide">
-
-      <label for="subjectCodice">
-        Numero di anello *
-      </label>
-
+    <div class="form-group full">
+      <label for="subjectCode">Numero di anello *</label>
       <input
         type="text"
-        id="subjectCodice"
-        required
+        id="subjectCode"
         placeholder="Es. IT26-00123"
+        required
       >
-
     </div>
 
-
-    <div class="field">
-
-      <label for="subjectSesso">
-        Sesso
-      </label>
-
-      <select id="subjectSesso">
-
-        <option value="Da definire">
-          Da definire
-        </option>
-
-        <option value="Maschio">
-          Maschio
-        </option>
-
-        <option value="Femmina">
-          Femmina
-        </option>
-
+    <div class="form-group">
+      <label for="subjectSex">Sesso</label>
+      <select id="subjectSex">
+        <option value="Da definire">Da definire</option>
+        <option value="Maschio">Maschio</option>
+        <option value="Femmina">Femmina</option>
       </select>
-
     </div>
 
-
-    <div class="field">
-
-      <label for="subjectSpecie">
-        Specie
-      </label>
-
-      <input
-        type="text"
-        id="subjectSpecie"
-      >
-
+    <div class="form-group">
+      <label for="subjectSpecies">Specie</label>
+      <input type="text" id="subjectSpecies">
     </div>
 
-
-    <div class="field">
-
-      <label for="subjectMutazione">
-        Mutazione
-      </label>
-
-      <input
-        type="text"
-        id="subjectMutazione"
-      >
-
+    <div class="form-group">
+      <label for="subjectMutation">Mutazione</label>
+      <input type="text" id="subjectMutation">
     </div>
 
-
-    <div class="field">
-
-      <label for="subjectDataNascita">
-        Data di nascita
-      </label>
-
-      <input
-        type="date"
-        id="subjectDataNascita"
-      >
-
+    <div class="form-group">
+      <label for="subjectBirth">Data di nascita *</label>
+      <input type="date" id="subjectBirth" required>
     </div>
 
   </div>
 
+</div>
 
-  <div
-    id="subjectMessage"
-    class="form-message"
-  ></div>
+<div class="modal-footer">
+  <button type="button" class="button button-secondary" id="cancelModal">
+    Annulla
+  </button>
 
-
-  <div class="form-actions">
-
-    <button
-      type="submit"
-      class="primary-button"
-    >
-      Crea soggetto
-    </button>
-
-  </div>
-
-</form>
+  <button type="button" class="button button-primary" id="createSubjectButton">
+    Crea soggetto
+  </button>
+</div>
 ```
 
   </div>
 
 </div>
 
-<style>
+<script src="js/config.js"></script>
 
-body.dashboard-page {
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(24, 92, 69, 0.045),
-      transparent 30%
-    ),
-    #faf8f2;
-}
-
-
-.dashboard-main {
-  width: min(1280px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 48px 0 70px;
-}
-
-
-.page-intro {
-  margin-bottom: 34px;
-}
-
-
-.page-kicker,
-.section-kicker {
-  color: #185c45;
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-
-.page-intro h1 {
-  margin: 0;
-  color: #0d3d2d;
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(46px, 6vw, 68px);
-  line-height: .95;
-}
-
-
-.page-intro p {
-  max-width: 760px;
-  margin: 14px 0 0;
-  color: #647067;
-  font-size: 15px;
-  line-height: 1.7;
-}
-
-
-.content-card {
-  background: rgba(255,255,255,.78);
-  border: 1px solid #e6e0d3;
-  border-radius: 22px;
-  padding: 30px;
-  margin-bottom: 26px;
-  box-shadow: 0 12px 35px rgba(13,61,45,.045);
-}
-
-
-.card-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 28px;
-}
-
-
-.card-heading h2 {
-  margin: 0;
-  color: #0d3d2d;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 38px;
-  line-height: 1;
-}
-
-
-.card-heading p,
-.subsection-heading p {
-  color: #748078;
-  margin: 9px 0 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-
-.count-badge {
-  flex-shrink: 0;
-  background: #e8f1eb;
-  color: #185c45;
-  border-radius: 999px;
-  padding: 9px 14px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-
-.field-wide {
-  grid-column: 1 / -1;
-}
-
-
-.field label,
-.egg-counter-box label {
-  color: #30453b;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-
-.field input,
-.field select,
-.field textarea,
-.egg-counter-box input {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #ddd7c9;
-  background: #fffdf9;
-  color: #26382f;
-  border-radius: 12px;
-  padding: 12px 13px;
-  font: inherit;
-  font-size: 14px;
-  outline: none;
-  transition: border-color .18s, box-shadow .18s;
-}
-
-
-.field textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus,
-.egg-counter-box input:focus {
-  border-color: #185c45;
-  box-shadow: 0 0 0 3px rgba(24,92,69,.09);
-}
-
-
-.field-help {
-  color: #8a918c;
-  font-size: 11px;
-}
-
-
-.subsection {
-  margin-top: 34px;
-  padding-top: 28px;
-  border-top: 1px solid #e8e2d7;
-}
-
-
-.subsection-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  margin-bottom: 22px;
-}
-
-
-.subsection-heading h3 {
-  margin: 0;
-  color: #0d3d2d;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 30px;
-}
-
-
-.egg-counter-box {
-  width: 150px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-
-.egg-counter-box input {
-  text-align: center;
-  font-weight: 700;
-}
-
-
-.eggs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-
-.empty-eggs,
-.loading-state,
-.empty-state {
-  padding: 24px;
-  border: 1px dashed #d9d2c4;
-  border-radius: 14px;
-  color: #8a918c;
-  text-align: center;
-  font-size: 13px;
-}
-
-
-.egg-row {
-  display: grid;
-  grid-template-columns: 60px minmax(150px, 1fr) minmax(150px, 1fr) 140px 42px;
-  gap: 12px;
-  align-items: end;
-  padding: 16px;
-  background: #f8f6ef;
-  border: 1px solid #e5dfd2;
-  border-radius: 15px;
-}
-
-
-.egg-number {
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 11px;
-  background: #e8f1eb;
-  color: #185c45;
-  font-weight: 800;
-  font-size: 14px;
-}
-
-
-.egg-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-
-.egg-field label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: #68736c;
-}
-
-
-.egg-field input,
-.egg-field select {
-  box-sizing: border-box;
-  width: 100%;
-  border: 1px solid #ddd7c9;
-  border-radius: 10px;
-  background: white;
-  padding: 10px;
-  font: inherit;
-  font-size: 13px;
-  color: #26382f;
-}
-
-
-.remove-egg-button {
-  width: 42px;
-  height: 42px;
-  border: 0;
-  border-radius: 11px;
-  background: #f3e4df;
-  color: #9d5037;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 26px;
-}
-
-
-.primary-button {
-  border: 0;
-  border-radius: 12px;
-  padding: 12px 20px;
-  background: #185c45;
-  color: white;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-
-.primary-button:hover {
-  background: #0d3d2d;
-}
-
-
-.primary-button:disabled {
-  opacity: .6;
-  cursor: wait;
-}
-
-
-.form-message {
-  display: none;
-  margin-top: 18px;
-  padding: 12px 14px;
-  border-radius: 11px;
-  font-size: 13px;
-}
-
-
-.form-message.success {
-  display: block;
-  background: #e8f1eb;
-  color: #185c45;
-}
-
-
-.form-message.error {
-  display: block;
-  background: #f7e6e0;
-  color: #9d5037;
-}
-
-
-.covate-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-
-.covata-card {
-  border: 1px solid #e5dfd2;
-  border-radius: 17px;
-  background: #fffdf9;
-  overflow: hidden;
-}
-
-
-.covata-top {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: flex-start;
-  border-bottom: 1px solid #ebe5da;
-}
-
-
-.covata-pair {
-  color: #0d3d2d;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-
-.covata-date {
-  margin-top: 5px;
-  color: #7c857f;
-  font-size: 12px;
-}
-
-
-.status-pill {
-  padding: 7px 11px;
-  border-radius: 999px;
-  background: #e8f1eb;
-  color: #185c45;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-
-.covata-body {
-  padding: 20px;
-}
-
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-
-.summary-item {
-  background: #f5f2e9;
-  border-radius: 12px;
-  padding: 12px;
-}
-
-
-.summary-label {
-  color: #7a837d;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  font-weight: 700;
-}
-
-
-.summary-value {
-  color: #185c45;
-  font-size: 21px;
-  font-weight: 800;
-  margin-top: 4px;
-}
-
-
-.stored-eggs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-
-.stored-egg {
-  display: grid;
-  grid-template-columns: 60px 1fr 120px 150px;
-  gap: 12px;
-  align-items: center;
-  padding: 11px 13px;
-  border: 1px solid #ece6da;
-  border-radius: 11px;
-  background: #faf8f2;
-  font-size: 12px;
-}
-
-
-.stored-egg-number {
-  font-weight: 800;
-  color: #185c45;
-}
-
-
-.stored-egg-info {
-  color: #59655e;
-}
-
-
-.stored-egg-result {
-  font-weight: 700;
-}
-
-
-.stored-egg-result.fertile,
-.stored-egg-result.schiuso {
-  color: #185c45;
-}
-
-
-.stored-egg-result.chiaro,
-.stored-egg-result.rotto,
-.stored-egg-result.perso {
-  color: #a0523b;
-}
-
-
-.subject-created {
-  color: #185c45;
-  font-weight: 700;
-}
-
-
-.create-subject-button {
-  border: 1px solid #185c45;
-  color: #185c45;
-  background: white;
-  border-radius: 9px;
-  padding: 7px 10px;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-
-.create-subject-button:hover {
-  background: #e8f1eb;
-}
-
-
-.covata-notes {
-  margin-top: 18px;
-  padding: 14px;
-  border-radius: 11px;
-  background: #f8f6ef;
-  color: #68736c;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(9,47,35,.35);
-  backdrop-filter: blur(5px);
-}
-
-
-.modal-overlay.hidden {
-  display: none;
-}
-
-
-.modal-card {
-  position: relative;
-  width: min(650px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 30px;
-  background: #fffdf9;
-  border: 1px solid #e5dfd2;
-  border-radius: 22px;
-  box-shadow: 0 25px 80px rgba(9,47,35,.2);
-}
-
-
-.modal-card h2 {
-  margin: 0;
-  color: #0d3d2d;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 38px;
-}
-
-
-.modal-description {
-  color: #748078;
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 8px 0 25px;
-}
-
-
-.modal-close {
-  position: absolute;
-  top: 15px;
-  right: 17px;
-  border: 0;
-  background: transparent;
-  color: #718078;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-
-.app-footer {
-  width: min(1280px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 25px 0 40px;
-  color: #89918b;
-  font-size: 11px;
-}
-
-
-@media (max-width: 900px) {
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .field-wide {
-    grid-column: auto;
-  }
-
-  .egg-row {
-    grid-template-columns: 48px 1fr 1fr;
-  }
-
-  .egg-row .egg-field:last-of-type {
-    grid-column: 2 / -1;
-  }
-
-  .egg-row .remove-egg-button {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stored-egg {
-    grid-template-columns: 45px 1fr;
-  }
-
-  .stored-egg-result,
-  .stored-egg-action {
-    grid-column: 2;
-  }
-
-}
-
-
-@media (max-width: 650px) {
-
-  .dashboard-main {
-    width: min(100% - 24px, 1280px);
-    padding-top: 30px;
-  }
-
-  .content-card {
-    padding: 20px;
-    border-radius: 17px;
-  }
-
-  .card-heading,
-  .subsection-heading,
-  .covata-top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .egg-counter-box {
-    width: 100%;
-  }
-
-  .egg-row {
-    grid-template-columns: 45px 1fr;
-  }
-
-  .egg-row .egg-field,
-  .egg-row .egg-field:last-of-type {
-    grid-column: 1 / -1;
-  }
-
-  .egg-row .remove-egg-button {
-    grid-column: 2;
-    justify-self: end;
-  }
-
-  .summary-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .app-footer {
-    width: calc(100% - 24px);
-  }
-
-}
-
-</style>
+<script src="js/auth.js"></script>
 
 <script>
+  let client = null;
+  let currentUser = null;
+  let subjects = [];
+  let pairs = [];
+  let currentSubjectEgg = null;
 
-const client =
-  window.supabaseClient ||
-  window.supabase;
+  const coppiaId = document.getElementById("coppiaId");
+  const numeroUova = document.getElementById("numeroUova");
+  const eggList = document.getElementById("eggList");
+  const covataForm = document.getElementById("covataForm");
+  const covateList = document.getElementById("covateList");
 
-let currentUser = null;
+  const alertBox = document.getElementById("alertBox");
 
-let coppie = [];
-let soggettiMap = {};
+  function showAlert(message, type = "error") {
+    alertBox.textContent = message;
+    alertBox.className = "alert show " + type;
 
-let editingCovataId = null;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-
-const covataForm =
-  document.getElementById("covataForm");
-
-const coppiaSelect =
-  document.getElementById("coppia_id");
-
-const numeroUovaInput =
-  document.getElementById("numero_uova");
-
-const uovaContainer =
-  document.getElementById("uovaContainer");
-
-const covateList =
-  document.getElementById("covateList");
-
-const covateCount =
-  document.getElementById("covateCount");
-
-const formMessage =
-  document.getElementById("formMessage");
-
-const coppiaHelp =
-  document.getElementById("coppiaHelp");
-
-const logoutButton =
-  document.getElementById("logoutButton");
-
-const subjectModal =
-  document.getElementById("subjectModal");
-
-const closeSubjectModal =
-  document.getElementById("closeSubjectModal");
-
-const subjectForm =
-  document.getElementById("subjectForm");
-
-const subjectMessage =
-  document.getElementById("subjectMessage");
-
-
-function escapeHtml(value) {
-
-  if (value === null || value === undefined) {
-    return "";
+    setTimeout(() => {
+      alertBox.classList.remove("show");
+    }, 6000);
   }
 
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
 
-}
-
-
-function formatDate(date) {
-
-  if (!date) {
-    return "—";
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  const parts = String(date).split("-");
-
-  if (parts.length !== 3) {
-    return date;
+  function today() {
+    return new Date().toISOString().split("T")[0];
   }
 
-  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  function formatDate(value) {
+    if (!value) return "—";
 
-}
+    const parts = value.split("-");
+    if (parts.length !== 3) return value;
 
-
-function showMessage(element, message, type) {
-
-  element.textContent = message;
-  element.className =
-    `form-message ${type}`;
-
-}
-
-
-function clearMessage(element) {
-
-  element.textContent = "";
-  element.className = "form-message";
-
-}
-
-
-function getPairLabel(pair) {
-
-  const male =
-    pair.maschio;
-
-  const female =
-    pair.femmina;
-
-  const maleLabel =
-    male
-      ? `${male.codice || "Maschio"} ♂`
-      : "Maschio";
-
-  const femaleLabel =
-    female
-      ? `${female.codice || "Femmina"} ♀`
-      : "Femmina";
-
-  return `${maleLabel} × ${femaleLabel}`;
-
-}
-
-
-function getEggStatusClass(status) {
-
-  if (status === "Fertile") {
-    return "fertile";
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
   }
 
-  if (status === "Schiuso") {
-    return "schiuso";
+  function getSubjectById(id) {
+    return subjects.find(subject => subject.id === id);
   }
 
-  if (
-    status === "Chiaro" ||
-    status === "Rotto" ||
-    status === "Perso"
-  ) {
-    return "chiaro";
+  function getPairById(id) {
+    return pairs.find(pair => pair.id === id);
   }
 
-  return "";
+  function pairLabel(pair) {
+    const male = getSubjectById(pair.maschio_id);
+    const female = getSubjectById(pair.femmina_id);
 
-}
+    const maleCode = male?.codice || "Maschio";
+    const femaleCode = female?.codice || "Femmina";
 
-
-/* =========================
-   AVVIO
-========================= */
-
-async function init() {
-
-  if (!client) {
-
-    showMessage(
-      formMessage,
-      "Errore: Supabase non disponibile.",
-      "error"
-    );
-
-    return;
-
+    return "♂ " + maleCode + " × ♀ " + femaleCode;
   }
 
+  /* =========================================================
+     GENERAZIONE RIGHE UOVA
+     ========================================================= */
 
-  const {
-    data,
-    error
-  } = await client.auth.getUser();
+  function generateEggRows() {
 
+    let count = parseInt(numeroUova.value, 10);
 
-  if (error || !data.user) {
+    if (!Number.isFinite(count) || count < 1) {
+      eggList.innerHTML = "";
+      return;
+    }
 
-    window.location.href =
-      "index.html";
+    if (count > 30) {
+      count = 30;
+      numeroUova.value = 30;
+    }
 
-    return;
+    const existingRows = [];
 
+    document.querySelectorAll(".egg-row").forEach(row => {
+      existingRows.push({
+        deposition: row.querySelector(".egg-deposition")?.value || "",
+        outcome: row.querySelector(".egg-outcome")?.value || "In attesa",
+        hatch: row.querySelector(".egg-hatch")?.value || ""
+      });
+    });
+
+    eggList.innerHTML = "";
+
+    for (let i = 0; i < count; i++) {
+
+      const old = existingRows[i] || {};
+
+      const row = document.createElement("div");
+      row.className = "egg-row";
+      row.dataset.eggNumber = i + 1;
+
+      row.innerHTML = `
+        <div class="egg-number">${i + 1}</div>
+
+        <div class="form-group">
+          <label>Data deposizione *</label>
+          <input
+            type="date"
+            class="egg-deposition"
+            value="${escapeHtml(old.deposition)}"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Esito</label>
+          <select class="egg-outcome">
+            <option value="In attesa">In attesa</option>
+            <option value="Fertile">Fertile</option>
+            <option value="Chiaro">Chiaro</option>
+            <option value="Rotto">Rotto</option>
+            <option value="Perso">Perso</option>
+            <option value="Schiuso">Schiuso</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Data schiusa</label>
+          <input
+            type="date"
+            class="egg-hatch"
+            value="${escapeHtml(old.hatch)}"
+          >
+        </div>
+      `;
+
+      eggList.appendChild(row);
+
+      const outcome = row.querySelector(".egg-outcome");
+      outcome.value = old.outcome || "In attesa";
+
+      outcome.addEventListener("change", () => {
+
+        const hatch = row.querySelector(".egg-hatch");
+
+        if (outcome.value === "Schiuso" && !hatch.value) {
+          hatch.value = today();
+        }
+
+        if (outcome.value !== "Schiuso") {
+          hatch.value = "";
+        }
+      });
+    }
   }
 
+  numeroUova.addEventListener("input", generateEggRows);
 
-  currentUser =
-    data.user;
+  /* =========================================================
+     CARICAMENTO COPPIE
+     ========================================================= */
 
+  async function loadSubjects() {
 
-  await caricaSoggetti();
+    const { data, error } = await client
+      .from("soggetti")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("codice", { ascending: true });
 
-  await caricaCoppie();
+    if (error) {
+      throw new Error(
+        "Errore caricamento soggetti: " + error.message
+      );
+    }
 
-  await caricaCovate();
-
-}
-
-
-/* =========================
-   SOGGETTI
-========================= */
-
-async function caricaSoggetti() {
-
-  const {
-    data,
-    error
-  } = await client
-    .from("soggetti")
-    .select(`
-      id,
-      codice,
-      specie,
-      mutazione,
-      sesso
-    `)
-    .eq(
-      "user_id",
-      currentUser.id
-    );
-
-
-  if (error) {
-
-    console.error(
-      "Errore soggetti:",
-      error
-    );
-
-    return;
-
+    subjects = data || [];
   }
 
+  async function loadPairs() {
 
-  soggettiMap = {};
-
-  (data || []).forEach(subject => {
-
-    soggettiMap[subject.id] =
-      subject;
-
-  });
-
-}
-
-
-/* =========================
-   COPPIE
-========================= */
-
-async function caricaCoppie() {
-
-  coppiaHelp.textContent =
-    "Caricamento delle coppie...";
-
-
-  coppiaSelect.innerHTML = `
-    <option value="">
-      Seleziona una coppia...
-    </option>
-  `;
-
-
-  const {
-    data,
-    error
-  } = await client
-    .from("coppie")
-    .select(`
-      id,
-      maschio_id,
-      femmina_id,
-      data_inizio,
-      stato,
-      note,
-      created_at
-    `)
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .order(
-      "created_at",
-      {
-        ascending: false
-      }
-    );
-
-
-  if (error) {
-
-    console.error(
-      "Errore coppie:",
-      error
-    );
-
-    coppiaHelp.textContent =
-      `Errore caricamento coppie: ${error.message}`;
-
-    return;
-
-  }
-
-
-  coppie =
-    data || [];
-
-
-  coppie.forEach(pair => {
-
-    pair.maschio =
-      soggettiMap[pair.maschio_id] ||
-      null;
-
-    pair.femmina =
-      soggettiMap[pair.femmina_id] ||
-      null;
-
-
-    const option =
-      document.createElement("option");
-
-    option.value =
-      pair.id;
-
-    option.textContent =
-      getPairLabel(pair);
-
-    coppiaSelect.appendChild(
-      option
-    );
-
-  });
-
-
-  if (!coppie.length) {
-
-    coppiaHelp.textContent =
-      "Non ci sono coppie disponibili. Creane prima una nella sezione Coppie.";
-
-  } else {
-
-    coppiaHelp.textContent =
-      `${coppie.length} ${
-        coppie.length === 1
-          ? "coppia disponibile"
-          : "coppie disponibili"
-      }.`;
-
-  }
-
-}
-
-
-/* =========================
-   UOVA
-========================= */
-
-function creaRigheUova(numero, dati = []) {
-
-  const count =
-    Math.max(
-      0,
-      Math.min(
-        30,
-        parseInt(numero, 10) || 0
-      )
-    );
-
-
-  uovaContainer.innerHTML = "";
-
-
-  if (!count) {
-
-    uovaContainer.innerHTML = `
-      <div class="empty-eggs">
-        Inserisci il numero di uova per generare il registro.
-      </div>
+    coppiaId.innerHTML = `
+      <option value="">Caricamento delle coppie...</option>
     `;
 
-    return;
+    const { data, error } = await client
+      .from("coppie")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
 
+    if (error) {
+      coppiaId.innerHTML = `
+        <option value="">Errore caricamento coppie</option>
+      `;
+
+      throw new Error(
+        "Errore caricamento coppie: " + error.message
+      );
+    }
+
+    pairs = data || [];
+
+    coppiaId.innerHTML = `
+      <option value="">Seleziona una coppia</option>
+    `;
+
+    if (pairs.length === 0) {
+      coppiaId.innerHTML = `
+        <option value="">Nessuna coppia disponibile</option>
+      `;
+      return;
+    }
+
+    pairs.forEach(pair => {
+
+      const option = document.createElement("option");
+
+      option.value = pair.id;
+      option.textContent = pairLabel(pair);
+
+      coppiaId.appendChild(option);
+    });
   }
 
-
-  for (
-    let i = 0;
-    i < count;
-    i++
-  ) {
-
-    creaRigaUovo(
-      i + 1,
-      dati[i] || {}
-    );
-
-  }
-
-}
-
-
-function creaRigaUovo(numero, dati = {}) {
-
-  const row =
-    document.createElement("div");
-
-  row.className =
-    "egg-row";
-
-  row.dataset.numero =
-    numero;
-
-
-  row.innerHTML = `
-
-    <div class="egg-number">
-      ${numero}
-    </div>
-
-    <div class="egg-field">
-
-      <label>
-        Data deposizione
-      </label>
-
-      <input
-        type="date"
-        class="egg-deposizione"
-        value="${escapeHtml(
-          dati.data_deposizione || ""
-        )}"
-        required
-      >
-
-    </div>
-
-    <div class="egg-field">
-
-      <label>
-        Esito
-      </label>
-
-      <select class="egg-esito">
-
-        <option value="In attesa">
-          In attesa
-        </option>
-
-        <option value="Fertile">
-          Fertile
-        </option>
-
-        <option value="Chiaro">
-          Chiaro
-        </option>
-
-        <option value="Rotto">
-          Rotto
-        </option>
-
-        <option value="Perso">
-          Perso
-        </option>
-
-        <option value="Schiuso">
-          Schiuso
-        </option>
-
-      </select>
-
-    </div>
-
-    <div class="egg-field">
-
-      <label>
-        Data schiusa
-      </label>
-
-      <input
-        type="date"
-        class="egg-schiusa"
-        value="${escapeHtml(
-          dati.data_schiusa || ""
-        )}"
-      >
-
-    </div>
-
-    <button
-      type="button"
-      class="remove-egg-button"
-      title="Rimuovi uovo"
-    >
-      ×
-    </button>
-
-  `;
-
-
-  const esito =
-    row.querySelector(
-      ".egg-esito"
-    );
-
-
-  esito.value =
-    dati.esito ||
-    "In attesa";
-
-
-  esito.addEventListener(
-    "change",
-    () => {
-
-      const schiusa =
-        row.querySelector(
-          ".egg-schiusa"
-        );
-
-
-      if (
-        esito.value === "Schiuso" &&
-        !schiusa.value
-      ) {
-
-        schiusa.value =
-          new Date()
-            .toISOString()
-            .split("T")[0];
-
-      }
-
-    }
-  );
-
-
-  row
-    .querySelector(
-      ".remove-egg-button"
-    )
-    .addEventListener(
-      "click",
-      () => {
-
-        row.remove();
-
-        rinumeraUova();
-
-      }
-    );
-
-
-  uovaContainer.appendChild(
-    row
-  );
-
-}
-
-
-function rinumeraUova() {
-
-  const rows =
-    [
-      ...uovaContainer
-        .querySelectorAll(".egg-row")
-    ];
-
-
-  rows.forEach(
-    (row, index) => {
-
-      row.dataset.numero =
-        index + 1;
-
-      const number =
-        row.querySelector(
-          ".egg-number"
-        );
-
-      if (number) {
-        number.textContent =
-          index + 1;
-      }
-
-    }
-  );
-
-
-  numeroUovaInput.value =
-    rows.length;
-
-}
-
-
-numeroUovaInput.addEventListener(
-  "input",
-  () => {
-
-    creaRigheUova(
-      numeroUovaInput.value
-    );
-
-  }
-);
-
-
-/* =========================
-   RACCOLTA UOVA
-========================= */
-
-function raccogliUova() {
-
-  const rows =
-    [
-      ...uovaContainer
-        .querySelectorAll(".egg-row")
-    ];
-
-
-  return rows.map(
-    (row, index) => {
-
-      return {
-
-        numero:
-          index + 1,
-
-        data_deposizione:
-          row
-            .querySelector(
-              ".egg-deposizione"
-            )
-            .value,
-
-        esito:
-          row
-            .querySelector(
-              ".egg-esito"
-            )
-            .value,
-
-        data_schiusa:
-          row
-            .querySelector(
-              ".egg-schiusa"
-            )
-            .value || null
-
-      };
-
-    }
-  );
-
-}
-
-
-/* =========================
-   SALVATAGGIO COVATA
-========================= */
-
-covataForm.addEventListener(
-  "submit",
-  async event => {
+  /* =========================================================
+     SALVATAGGIO COVATA
+     ========================================================= */
+
+  async function saveCovata(event) {
 
     event.preventDefault();
 
-    clearMessage(
-      formMessage
-    );
+    const saveButton = document.getElementById("saveButton");
 
-
-    if (!currentUser) {
+    if (!coppiaId.value) {
+      showAlert("Seleziona una coppia.");
       return;
     }
 
-
-    const coppiaId =
-      coppiaSelect.value;
-
-
-    if (!coppiaId) {
-
-      showMessage(
-        formMessage,
-        "Seleziona una coppia.",
-        "error"
-      );
-
+    if (!document.getElementById("dataInizio").value) {
+      showAlert("Inserisci la data di inizio della covata.");
       return;
-
     }
 
+    const rows = [...document.querySelectorAll(".egg-row")];
 
-    const dataInizio =
-      document.getElementById(
-        "data_inizio"
-      ).value;
-
-
-    if (!dataInizio) {
-
-      showMessage(
-        formMessage,
-        "Inserisci la data di inizio della covata.",
-        "error"
-      );
-
+    if (rows.length === 0) {
+      showAlert("Inserisci almeno un uovo.");
       return;
-
     }
 
+    const eggs = [];
 
-    const uova =
-      raccogliUova();
+    for (let i = 0; i < rows.length; i++) {
 
+      const row = rows[i];
 
-    for (const egg of uova) {
+      const deposition =
+        row.querySelector(".egg-deposition").value;
 
-      if (!egg.data_deposizione) {
+      const outcome =
+        row.querySelector(".egg-outcome").value;
 
-        showMessage(
-          formMessage,
-          `Inserisci la data di deposizione dell'uovo ${egg.numero}.`,
-          "error"
+      const hatch =
+        row.querySelector(".egg-hatch").value || null;
+
+      if (!deposition) {
+        showAlert(
+          "Inserisci la data di deposizione dell'uovo " + (i + 1) + "."
         );
-
         return;
-
       }
 
-
-      if (
-        egg.esito === "Schiuso" &&
-        !egg.data_schiusa
-      ) {
-
-        showMessage(
-          formMessage,
-          `Inserisci la data di schiusa dell'uovo ${egg.numero}.`,
-          "error"
+      if (outcome === "Schiuso" && !hatch) {
+        showAlert(
+          "Inserisci la data di schiusa dell'uovo " + (i + 1) + "."
         );
-
         return;
-
       }
 
+      eggs.push({
+        numero: i + 1,
+        data_deposizione: deposition,
+        esito: outcome,
+        data_schiusa: hatch
+      });
     }
 
-
-    const saveButton =
-      document.getElementById(
-        "saveButton"
-      );
-
-
-    saveButton.disabled =
-      true;
-
-    saveButton.textContent =
-      "Salvataggio...";
-
+    saveButton.disabled = true;
+    saveButton.textContent = "Salvataggio...";
 
     try {
 
       const covataPayload = {
-
-        user_id:
-          currentUser.id,
-
-        coppia_id:
-          coppiaId,
-
-        data_inizio:
-          dataInizio,
-
+        user_id: currentUser.id,
+        coppia_id: coppiaId.value,
+        data_inizio: document.getElementById("dataInizio").value,
         data_fine:
-          document.getElementById(
-            "data_fine"
-          ).value || null,
-
+          document.getElementById("dataFine").value || null,
         stato:
-          document.getElementById(
-            "stato"
-          ).value,
-
+          document.getElementById("stato").value,
         note:
-          document.getElementById(
-            "note"
-          ).value.trim() || null
-
+          document.getElementById("note").value.trim() || null
       };
 
-
-      let covataId;
-
-
-      if (editingCovataId) {
-
-        const {
-          error
-        } = await client
+      const { data: covata, error: covataError } =
+        await client
           .from("covate")
-          .update(
-            covataPayload
-          )
-          .eq(
-            "id",
-            editingCovataId
-          )
-          .eq(
-            "user_id",
-            currentUser.id
-          );
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        const {
-          error: deleteError
-        } = await client
-          .from("uova")
-          .delete()
-          .eq(
-            "covata_id",
-            editingCovataId
-          )
-          .eq(
-            "user_id",
-            currentUser.id
-          );
-
-
-        if (deleteError) {
-          throw deleteError;
-        }
-
-
-        covataId =
-          editingCovataId;
-
-      } else {
-
-        const {
-          data,
-          error
-        } = await client
-          .from("covate")
-          .insert(
-            covataPayload
-          )
-          .select("id")
+          .insert(covataPayload)
+          .select()
           .single();
 
-
-        if (error) {
-          throw error;
-        }
-
-
-        covataId =
-          data.id;
-
+      if (covataError) {
+        throw new Error(
+          "Errore salvataggio covata: " +
+          covataError.message
+        );
       }
 
+      const eggPayload = eggs.map(egg => ({
+        user_id: currentUser.id,
+        covata_id: covata.id,
+        numero: egg.numero,
+        data_deposizione: egg.data_deposizione,
+        esito: egg.esito,
+        data_schiusa: egg.data_schiusa
+      }));
 
-      if (uova.length) {
-
-        const eggPayload =
-          uova.map(
-            egg => ({
-
-              user_id:
-                currentUser.id,
-
-              covata_id:
-                covataId,
-
-              numero:
-                egg.numero,
-
-              data_deposizione:
-                egg.data_deposizione,
-
-              esito:
-                egg.esito,
-
-              data_schiusa:
-                egg.data_schiusa,
-
-              soggetto_id:
-                null,
-
-              note:
-                null
-
-            })
-          );
-
-
-        const {
-          error
-        } = await client
+      const { error: eggsError } =
+        await client
           .from("uova")
-          .insert(
-            eggPayload
-          );
+          .insert(eggPayload);
 
+      if (eggsError) {
 
-        if (error) {
-          throw error;
-        }
+        await client
+          .from("covate")
+          .delete()
+          .eq("id", covata.id)
+          .eq("user_id", currentUser.id);
 
+        throw new Error(
+          "Errore salvataggio uova: " +
+          eggsError.message
+        );
       }
 
-
-      showMessage(
-        formMessage,
-        editingCovataId
-          ? "Covata aggiornata correttamente."
-          : "Covata salvata correttamente.",
+      showAlert(
+        "Covata salvata correttamente.",
         "success"
       );
 
+      covataForm.reset();
 
-      resetForm();
+      numeroUova.value = 1;
+      generateEggRows();
 
-      await caricaCovate();
+      document.getElementById("stato").value =
+        "Preparazione";
 
+      await loadCovate();
 
     } catch (error) {
 
-      console.error(
-        "Errore salvataggio:",
-        error
-      );
+      console.error(error);
 
-
-      showMessage(
-        formMessage,
-        `Errore: ${
-          error.message ||
-          "impossibile salvare la covata."
-        }`,
-        "error"
+      showAlert(
+        error.message || "Errore durante il salvataggio."
       );
 
     } finally {
 
-      saveButton.disabled =
-        false;
-
-      saveButton.textContent =
-        "Salva covata";
-
+      saveButton.disabled = false;
+      saveButton.textContent = "Salva covata";
     }
-
   }
-);
 
+  covataForm.addEventListener("submit", saveCovata);
 
-/* =========================
-   CARICA COVATE
-========================= */
+  /* =========================================================
+     CARICAMENTO ARCHIVIO
+     ========================================================= */
 
-async function caricaCovate() {
-
-  covateList.innerHTML = `
-    <div class="loading-state">
-      Caricamento...
-    </div>
-  `;
-
-
-  const {
-    data,
-    error
-  } = await client
-    .from("covate")
-    .select(`
-      id,
-      coppia_id,
-      data_inizio,
-      data_fine,
-      stato,
-      note,
-      created_at
-    `)
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .order(
-      "data_inizio",
-      {
-        ascending: false
-      }
-    );
-
-
-  if (error) {
-
-    console.error(
-      "Errore covate:",
-      error
-    );
-
+  async function loadCovate() {
 
     covateList.innerHTML = `
-      <div class="empty-state">
-        Errore caricamento covate:
-        ${escapeHtml(error.message)}
+      <div class="archive-empty">
+        Caricamento...
       </div>
     `;
 
-    return;
+    const { data: covate, error } = await client
+      .from("covate")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("data_inizio", { ascending: false });
 
-  }
-
-
-  const covate =
-    data || [];
-
-
-  covateCount.textContent =
-    `${covate.length} ${
-      covate.length === 1
-        ? "covata"
-        : "covate"
-    }`;
-
-
-  if (!covate.length) {
-
-    covateList.innerHTML = `
-      <div class="empty-state">
-        Non hai ancora registrato nessuna covata.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const ids =
-    covate.map(
-      covata => covata.id
-    );
-
-
-  const {
-    data: eggs,
-    error: eggsError
-  } = await client
-    .from("uova")
-    .select(`
-      id,
-      covata_id,
-      numero,
-      data_deposizione,
-      esito,
-      data_schiusa,
-      soggetto_id,
-      note
-    `)
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .in(
-      "covata_id",
-      ids
-    )
-    .order(
-      "numero",
-      {
-        ascending: true
-      }
-    );
-
-
-  if (eggsError) {
-
-    console.error(
-      "Errore uova:",
-      eggsError
-    );
-
-  }
-
-
-  const eggsByCovata = {};
-
-
-  (eggs || []).forEach(
-    egg => {
-
-      if (
-        !eggsByCovata[
-          egg.covata_id
-        ]
-      ) {
-
-        eggsByCovata[
-          egg.covata_id
-        ] = [];
-
-      }
-
-
-      eggsByCovata[
-        egg.covata_id
-      ].push(egg);
-
+    if (error) {
+      throw new Error(
+        "Errore caricamento covate: " + error.message
+      );
     }
-  );
 
+    if (!covate || covate.length === 0) {
 
-  covateList.innerHTML =
-    covate
-      .map(
-        covata => {
+      covateList.innerHTML = `
+        <div class="archive-empty">
+          Nessuna covata registrata.
+        </div>
+      `;
 
-          const pair =
-            coppie.find(
-              pair =>
-                pair.id ===
-                covata.coppia_id
-            );
+      return;
+    }
 
+    const covataIds = covate.map(covata => covata.id);
 
-          return renderCovata(
-            covata,
-            pair,
-            eggsByCovata[
-              covata.id
-            ] || []
-          );
+    const { data: eggs, error: eggsError } =
+      await client
+        .from("uova")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .in("covata_id", covataIds)
+        .order("numero", { ascending: true });
 
-        }
-      )
-      .join("");
+    if (eggsError) {
+      throw new Error(
+        "Errore caricamento uova: " +
+        eggsError.message
+      );
+    }
 
+    const eggsByCovata = {};
 
-  aggiungiEventiCovate();
+    (eggs || []).forEach(egg => {
 
-}
+      if (!eggsByCovata[egg.covata_id]) {
+        eggsByCovata[egg.covata_id] = [];
+      }
 
+      eggsByCovata[egg.covata_id].push(egg);
+    });
 
-/* =========================
-   RENDER COVATA
-========================= */
+    covateList.innerHTML = "";
 
-function renderCovata(
-  covata,
-  pair,
-  eggs
-) {
+    covate.forEach(covata => {
 
-  const schiuse =
-    eggs.filter(
-      egg =>
-        egg.esito ===
-        "Schiuso"
-    ).length;
+      const covataEggs =
+        eggsByCovata[covata.id] || [];
 
+      const item = document.createElement("div");
+      item.className = "covata-item";
 
-  const fertili =
-    eggs.filter(
-      egg =>
-        egg.esito ===
-        "Fertile"
-    ).length;
+      const pair = getPairById(covata.coppia_id);
 
+      item.innerHTML = `
+        <div class="covata-top">
 
-  const chiari =
-    eggs.filter(
-      egg =>
-        egg.esito ===
-        "Chiaro"
-    ).length;
+          <div class="covata-info">
 
+            <h3>
+              ${escapeHtml(
+                pair ? pairLabel(pair) : "Coppia non disponibile"
+              )}
+            </h3>
 
-  return `
+            <div class="covata-meta">
 
-    <article class="covata-card">
+              <span class="meta-pill">
+                Inizio ${formatDate(covata.data_inizio)}
+              </span>
 
-      <div class="covata-top">
+              ${
+                covata.data_fine
+                  ? `
+                    <span class="meta-pill">
+                      Fine ${formatDate(covata.data_fine)}
+                    </span>
+                  `
+                  : ""
+              }
 
-        <div>
+              <span class="meta-pill">
+                ${covataEggs.length} ${
+                  covataEggs.length === 1 ? "uovo" : "uova"
+                }
+              </span>
 
-          <div class="covata-pair">
-            ${escapeHtml(
-              pair
-                ? getPairLabel(pair)
-                : "Coppia non disponibile"
-            )}
+              <span class="meta-pill status">
+                ${escapeHtml(covata.stato)}
+              </span>
+
+            </div>
+
           </div>
 
-          <div class="covata-date">
+          <div class="covata-actions">
 
-            Inizio:
-            ${formatDate(
-              covata.data_inizio
-            )}
-
-            ${
-              covata.data_fine
-                ? ` · Fine:
-                   ${formatDate(
-                     covata.data_fine
-                   )}`
-                : ""
-            }
+            <button
+              type="button"
+              class="button button-danger button-small delete-covata"
+              data-id="${covata.id}"
+            >
+              Elimina
+            </button>
 
           </div>
 
         </div>
-
-
-        <div class="status-pill">
-          ${escapeHtml(
-            covata.stato
-          )}
-        </div>
-
-      </div>
-
-
-      <div class="covata-body">
-
-        <div class="summary-grid">
-
-          <div class="summary-item">
-
-            <div class="summary-label">
-              Uova
-            </div>
-
-            <div class="summary-value">
-              ${eggs.length}
-            </div>
-
-          </div>
-
-
-          <div class="summary-item">
-
-            <div class="summary-label">
-              Fertili
-            </div>
-
-            <div class="summary-value">
-              ${fertili}
-            </div>
-
-          </div>
-
-
-          <div class="summary-item">
-
-            <div class="summary-label">
-              Schiuse
-            </div>
-
-            <div class="summary-value">
-              ${schiuse}
-            </div>
-
-          </div>
-
-
-          <div class="summary-item">
-
-            <div class="summary-label">
-              Chiare
-            </div>
-
-            <div class="summary-value">
-              ${chiari}
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="stored-eggs">
-
-          ${
-            eggs.length
-              ? eggs
-                  .map(
-                    renderStoredEgg
-                  )
-                  .join("")
-              : `
-                <div class="empty-state">
-                  Nessun uovo registrato.
-                </div>
-              `
-          }
-
-        </div>
-
 
         ${
-          covata.note
+          covataEggs.length > 0
             ? `
-              <div class="covata-notes">
-                <strong>Note:</strong>
-                ${escapeHtml(
-                  covata.note
-                )}
+              <div class="egg-table-wrap">
+
+                <table class="egg-table">
+
+                  <thead>
+                    <tr>
+                      <th>Uovo</th>
+                      <th>Deposizione</th>
+                      <th>Esito</th>
+                      <th>Schiusa</th>
+                      <th>Soggetto</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    ${covataEggs.map(egg => {
+
+                      const linkedSubject =
+                        egg.soggetto_id
+                          ? getSubjectById(egg.soggetto_id)
+                          : null;
+
+                      let resultClass = "";
+
+                      if (
+                        egg.esito === "Chiaro" ||
+                        egg.esito === "Rotto" ||
+                        egg.esito === "Perso"
+                      ) {
+                        resultClass = "bad";
+                      }
+
+                      if (egg.esito === "In attesa") {
+                        resultClass = "pending";
+                      }
+
+                      return `
+                        <tr>
+
+                          <td>
+                            <strong>#${egg.numero}</strong>
+                          </td>
+
+                          <td>
+                            ${formatDate(egg.data_deposizione)}
+                          </td>
+
+                          <td>
+                            <span class="result-pill ${resultClass}">
+                              ${escapeHtml(egg.esito)}
+                            </span>
+                          </td>
+
+                          <td>
+                            ${formatDate(egg.data_schiusa)}
+                          </td>
+
+                          <td>
+
+                            ${
+                              linkedSubject
+                                ? `
+                                  <strong>
+                                    ${escapeHtml(linkedSubject.codice)}
+                                  </strong>
+                                `
+                                : egg.esito === "Schiuso"
+                                  ? `
+                                    <button
+                                      type="button"
+                                      class="button button-secondary button-small create-subject"
+                                      data-egg-id="${egg.id}"
+                                      data-covata-id="${covata.id}"
+                                    >
+                                      Crea soggetto
+                                    </button>
+                                  `
+                                  : "—"
+                            }
+
+                          </td>
+
+                        </tr>
+                      `;
+
+                    }).join("")}
+
+                  </tbody>
+
+                </table>
+
               </div>
             `
             : ""
         }
+      `;
 
+      covateList.appendChild(item);
+    });
 
-        <div class="form-actions">
+    document.querySelectorAll(".delete-covata")
+      .forEach(button => {
 
-          <button
-            type="button"
-            class="primary-button edit-covata"
-            data-id="${covata.id}"
-          >
-            Modifica
-          </button>
+        button.addEventListener("click", async () => {
 
-          <button
-            type="button"
-            class="remove-egg-button delete-covata"
-            data-id="${covata.id}"
-            title="Elimina covata"
-          >
-            ×
-          </button>
+          const id = button.dataset.id;
 
-        </div>
+          const confirmed = confirm(
+            "Vuoi davvero eliminare questa covata e tutte le sue uova?"
+          );
 
-      </div>
+          if (!confirmed) return;
 
-    </article>
+          await deleteCovata(id);
+        });
+      });
 
-  `;
+    document.querySelectorAll(".create-subject")
+      .forEach(button => {
 
-}
+        button.addEventListener("click", async () => {
 
-
-function renderStoredEgg(egg) {
-
-  const subject =
-    egg.soggetto_id
-      ? soggettiMap[
-          egg.soggetto_id
-        ]
-      : null;
-
-
-  let action = "";
-
-
-  if (
-    egg.esito === "Schiuso" &&
-    !egg.soggetto_id
-  ) {
-
-    action = `
-
-      <button
-        type="button"
-        class="create-subject-button create-subject"
-        data-egg-id="${egg.id}"
-      >
-        + Crea soggetto
-      </button>
-
-    `;
-
-  } else if (subject) {
-
-    action = `
-
-      <span class="subject-created">
-        ${escapeHtml(
-          subject.codice ||
-          "Soggetto"
-        )}
-      </span>
-
-    `;
-
+          await openSubjectModal(
+            button.dataset.eggId,
+            button.dataset.covataId
+          );
+        });
+      });
   }
 
-
-  return `
-
-    <div class="stored-egg">
-
-      <div class="stored-egg-number">
-        Uovo ${egg.numero}
-      </div>
-
-      <div class="stored-egg-info">
-
-        Deposizione:
-        <strong>
-          ${formatDate(
-            egg.data_deposizione
-          )}
-        </strong>
-
-        ${
-          egg.data_schiusa
-            ? ` · Schiusa:
-               <strong>
-                 ${formatDate(
-                   egg.data_schiusa
-                 )}
-               </strong>`
-            : ""
-        }
-
-      </div>
-
-      <div
-        class="stored-egg-result
-          ${getEggStatusClass(
-            egg.esito
-          )}"
-      >
-        ${escapeHtml(
-          egg.esito
-        )}
-      </div>
-
-      <div class="stored-egg-action">
-        ${action}
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================
-   EVENTI
-========================= */
-
-function aggiungiEventiCovate() {
-
-  document
-    .querySelectorAll(
-      ".create-subject"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            apriCreazioneSoggetto(
-              button.dataset.eggId
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  document
-    .querySelectorAll(
-      ".edit-covata"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            modificaCovata(
-              button.dataset.id
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  document
-    .querySelectorAll(
-      ".delete-covata"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            eliminaCovata(
-              button.dataset.id
-            );
-
-          }
-        );
-
-      }
-    );
-
-}
-
-
-/* =========================
-   MODIFICA
-========================= */
-
-async function modificaCovata(id) {
-
-  const {
-    data: covata,
-    error
-  } = await client
-    .from("covate")
-    .select("*")
-    .eq(
-      "id",
-      id
-    )
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .single();
-
-
-  if (error) {
-
-    alert(
-      `Errore caricamento covata: ${error.message}`
-    );
-
-    return;
-
-  }
-
-
-  const {
-    data: eggs,
-    error: eggsError
-  } = await client
-    .from("uova")
-    .select("*")
-    .eq(
-      "covata_id",
-      id
-    )
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .order(
-      "numero",
-      {
-        ascending: true
-      }
-    );
-
-
-  if (eggsError) {
-
-    alert(
-      `Errore caricamento uova: ${eggsError.message}`
-    );
-
-    return;
-
-  }
-
-
-  editingCovataId =
-    id;
-
-
-  coppiaSelect.value =
-    covata.coppia_id || "";
-
-
-  document.getElementById(
-    "data_inizio"
-  ).value =
-    covata.data_inizio || "";
-
-
-  document.getElementById(
-    "data_fine"
-  ).value =
-    covata.data_fine || "";
-
-
-  document.getElementById(
-    "stato"
-  ).value =
-    covata.stato ||
-    "Preparazione";
-
-
-  document.getElementById(
-    "note"
-  ).value =
-    covata.note || "";
-
-
-  numeroUovaInput.value =
-    eggs.length;
-
-
-  creaRigheUova(
-    eggs.length,
-    eggs
-  );
-
-
-  document.getElementById(
-    "saveButton"
-  ).textContent =
-    "Aggiorna covata";
-
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
-}
-
-
-/* =========================
-   ELIMINA
-========================= */
-
-async function eliminaCovata(id) {
-
-  if (
-    !confirm(
-      "Vuoi eliminare questa covata? Verranno eliminate anche tutte le uova collegate."
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const {
-      error: eggsError
-    } = await client
-      .from("uova")
-      .delete()
-      .eq(
-        "covata_id",
-        id
-      )
-      .eq(
-        "user_id",
-        currentUser.id
-      );
-
-
-    if (eggsError) {
-      throw eggsError;
-    }
-
-
-    const {
-      error
-    } = await client
-      .from("covate")
-      .delete()
-      .eq(
-        "id",
-        id
-      )
-      .eq(
-        "user_id",
-        currentUser.id
-      );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    await caricaCovate();
-
-
-  } catch (error) {
-
-    console.error(
-      "Errore eliminazione:",
-      error
-    );
-
-
-    alert(
-      `Errore eliminazione: ${error.message}`
-    );
-
-  }
-
-}
-
-
-/* =========================
-   CREAZIONE SOGGETTO
-========================= */
-
-async function apriCreazioneSoggetto(
-  eggId
-) {
-
-  clearMessage(
-    subjectMessage
-  );
-
-
-  const {
-    data: egg,
-    error
-  } = await client
-    .from("uova")
-    .select(`
-      id,
-      covata_id,
-      data_schiusa,
-      esito
-    `)
-    .eq(
-      "id",
-      eggId
-    )
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .single();
-
-
-  if (error) {
-
-    alert(
-      `Errore caricamento uovo: ${error.message}`
-    );
-
-    return;
-
-  }
-
-
-  if (
-    egg.esito !==
-    "Schiuso"
-  ) {
-
-    alert(
-      "Puoi creare un soggetto solo da un uovo schiuso."
-    );
-
-    return;
-
-  }
-
-
-  const {
-    data: covata,
-    error: covataError
-  } = await client
-    .from("covate")
-    .select(`
-      id,
-      coppia_id
-    `)
-    .eq(
-      "id",
-      egg.covata_id
-    )
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .single();
-
-
-  if (covataError) {
-
-    alert(
-      `Errore caricamento covata: ${covataError.message}`
-    );
-
-    return;
-
-  }
-
-
-  const pair =
-    coppie.find(
-      item =>
-        item.id ===
-        covata.coppia_id
-    );
-
-
-  if (!pair) {
-
-    alert(
-      "Non riesco a trovare la coppia collegata a questa covata."
-    );
-
-    return;
-
-  }
-
-
-  const male =
-    soggettiMap[
-      pair.maschio_id
-    ];
-
-
-  const female =
-    soggettiMap[
-      pair.femmina_id
-    ];
-
-
-  document.getElementById(
-    "subjectEggId"
-  ).value =
-    egg.id;
-
-
-  document.getElementById(
-    "subjectFatherId"
-  ).value =
-    pair.maschio_id || "";
-
-
-  document.getElementById(
-    "subjectMotherId"
-  ).value =
-    pair.femmina_id || "";
-
-
-  document.getElementById(
-    "subjectCodice"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "subjectSesso"
-  ).value =
-    "Da definire";
-
-
-  document.getElementById(
-    "subjectSpecie"
-  ).value =
-    male?.specie ||
-    female?.specie ||
-    "";
-
-
-  document.getElementById(
-    "subjectMutazione"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "subjectDataNascita"
-  ).value =
-    egg.data_schiusa ||
-    "";
-
-
-  subjectModal.classList.remove(
-    "hidden"
-  );
-
-
-  setTimeout(
-    () => {
-
-      document
-        .getElementById(
-          "subjectCodice"
-        )
-        .focus();
-
-    },
-    100
-  );
-
-}
-
-
-function chiudiSubjectModal() {
-
-  subjectModal.classList.add(
-    "hidden"
-  );
-
-  subjectForm.reset();
-
-  clearMessage(
-    subjectMessage
-  );
-
-}
-
-
-closeSubjectModal.addEventListener(
-  "click",
-  chiudiSubjectModal
-);
-
-
-subjectModal.addEventListener(
-  "click",
-  event => {
-
-    if (
-      event.target ===
-      subjectModal
-    ) {
-
-      chiudiSubjectModal();
-
-    }
-
-  }
-);
-
-
-/* =========================
-   SALVA SOGGETTO
-========================= */
-
-subjectForm.addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    clearMessage(
-      subjectMessage
-    );
-
-
-    const eggId =
-      document.getElementById(
-        "subjectEggId"
-      ).value;
-
-
-    const codice =
-      document.getElementById(
-        "subjectCodice"
-      ).value
-      .trim();
-
-
-    if (!codice) {
-
-      showMessage(
-        subjectMessage,
-        "Il numero di anello è obbligatorio.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    const fatherId =
-      document.getElementById(
-        "subjectFatherId"
-      ).value ||
-      null;
-
-
-    const motherId =
-      document.getElementById(
-        "subjectMotherId"
-      ).value ||
-      null;
-
+  /* =========================================================
+     ELIMINA COVATA
+     ========================================================= */
+
+  async function deleteCovata(id) {
 
     try {
 
-      const {
-        data: existing
-      } = await client
-        .from("soggetti")
-        .select("id")
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .eq(
-          "codice",
-          codice
-        )
-        .maybeSingle();
-
-
-      if (existing) {
-
-        showMessage(
-          subjectMessage,
-          "Esiste già un soggetto con questo numero di anello.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const payload = {
-
-        user_id:
-          currentUser.id,
-
-        codice:
-          codice,
-
-        mutazione:
-          document.getElementById(
-            "subjectMutazione"
-          ).value.trim() ||
-          null,
-
-        sesso:
-          document.getElementById(
-            "subjectSesso"
-          ).value,
-
-        specie:
-          document.getElementById(
-            "subjectSpecie"
-          ).value.trim() ||
-          null,
-
-        data_nascita:
-          document.getElementById(
-            "subjectDataNascita"
-          ).value ||
-          null,
-
-        padre:
-          fatherId,
-
-        madre:
-          motherId
-
-      };
-
-
-      const {
-        data: newSubject,
-        error
-      } = await client
-        .from("soggetti")
-        .insert(payload)
-        .select("id")
-        .single();
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      const {
-        error: eggError
-      } = await client
-        .from("uova")
-        .update({
-          soggetto_id:
-            newSubject.id
-        })
-        .eq(
-          "id",
-          eggId
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        );
-
+      const { error: eggError } =
+        await client
+          .from("uova")
+          .delete()
+          .eq("covata_id", id)
+          .eq("user_id", currentUser.id);
 
       if (eggError) {
-        throw eggError;
+        throw new Error(
+          "Errore eliminazione uova: " +
+          eggError.message
+        );
       }
 
+      const { error } =
+        await client
+          .from("covate")
+          .delete()
+          .eq("id", id)
+          .eq("user_id", currentUser.id);
 
-      showMessage(
-        subjectMessage,
-        "Soggetto creato e collegato correttamente.",
+      if (error) {
+        throw new Error(
+          "Errore eliminazione covata: " +
+          error.message
+        );
+      }
+
+      showAlert(
+        "Covata eliminata.",
         "success"
       );
 
-
-      await caricaSoggetti();
-
-
-      setTimeout(
-        async () => {
-
-          chiudiSubjectModal();
-
-          await caricaCovate();
-
-        },
-        600
-      );
-
+      await loadCovate();
 
     } catch (error) {
 
-      console.error(
-        "Errore creazione soggetto:",
-        error
+      console.error(error);
+
+      showAlert(error.message);
+    }
+  }
+
+  /* =========================================================
+     MODAL SOGGETTO
+     ========================================================= */
+
+  async function openSubjectModal(eggId, covataId) {
+
+    const { data: egg, error: eggError } =
+      await client
+        .from("uova")
+        .select("*")
+        .eq("id", eggId)
+        .eq("user_id", currentUser.id)
+        .single();
+
+    if (eggError || !egg) {
+      showAlert(
+        "Impossibile recuperare l'uovo."
       );
+      return;
+    }
 
+    const { data: covata, error: covataError } =
+      await client
+        .from("covate")
+        .select("*")
+        .eq("id", covataId)
+        .eq("user_id", currentUser.id)
+        .single();
 
-      showMessage(
-        subjectMessage,
-        `Errore: ${
+    if (covataError || !covata) {
+      showAlert(
+        "Impossibile recuperare la covata."
+      );
+      return;
+    }
+
+    const pair =
+      getPairById(covata.coppia_id);
+
+    const father =
+      pair ? getSubjectById(pair.maschio_id) : null;
+
+    const mother =
+      pair ? getSubjectById(pair.femmina_id) : null;
+
+    currentSubjectEgg = {
+      egg,
+      covata,
+      father,
+      mother
+    };
+
+    document.getElementById("subjectCode").value = "";
+    document.getElementById("subjectSex").value = "Da definire";
+
+    document.getElementById("subjectSpecies").value =
+      father?.specie ||
+      mother?.specie ||
+      "";
+
+    document.getElementById("subjectMutation").value = "";
+
+    document.getElementById("subjectBirth").value =
+      egg.data_schiusa ||
+      egg.data_deposizione ||
+      "";
+
+    document.getElementById("subjectModal")
+      .classList.add("show");
+  }
+
+  function closeSubjectModal() {
+
+    currentSubjectEgg = null;
+
+    document.getElementById("subjectModal")
+      .classList.remove("show");
+  }
+
+  document.getElementById("closeModal")
+    .addEventListener("click", closeSubjectModal);
+
+  document.getElementById("cancelModal")
+    .addEventListener("click", closeSubjectModal);
+
+  document.getElementById("subjectModal")
+    .addEventListener("click", event => {
+
+      if (event.target.id === "subjectModal") {
+        closeSubjectModal();
+      }
+    });
+
+  /* =========================================================
+     CREA SOGGETTO
+     ========================================================= */
+
+  document.getElementById("createSubjectButton")
+    .addEventListener("click", async () => {
+
+      if (!currentSubjectEgg) return;
+
+      const code =
+        document.getElementById("subjectCode")
+          .value.trim();
+
+      const sex =
+        document.getElementById("subjectSex").value;
+
+      const species =
+        document.getElementById("subjectSpecies")
+          .value.trim();
+
+      const mutation =
+        document.getElementById("subjectMutation")
+          .value.trim();
+
+      const birth =
+        document.getElementById("subjectBirth").value;
+
+      if (!code) {
+        showAlert("Inserisci il numero di anello.");
+        return;
+      }
+
+      if (!birth) {
+        showAlert("Inserisci la data di nascita.");
+        return;
+      }
+
+      const createButton =
+        document.getElementById("createSubjectButton");
+
+      createButton.disabled = true;
+      createButton.textContent = "Creazione...";
+
+      try {
+
+        /* CONTROLLO NUMERO ANELLO */
+        const { data: existing, error: checkError } =
+          await client
+            .from("soggetti")
+            .select("id")
+            .eq("user_id", currentUser.id)
+            .eq("codice", code)
+            .maybeSingle();
+
+        if (checkError) {
+          throw new Error(
+            "Errore controllo numero di anello: " +
+            checkError.message
+          );
+        }
+
+        if (existing) {
+          throw new Error(
+            "Esiste già un soggetto con questo numero di anello."
+          );
+        }
+
+        const fatherId =
+          currentSubjectEgg.father?.id || null;
+
+        const motherId =
+          currentSubjectEgg.mother?.id || null;
+
+        /* CREA SOGGETTO */
+        const { data: subject, error: subjectError } =
+          await client
+            .from("soggetti")
+            .insert({
+              user_id: currentUser.id,
+              codice: code,
+              mutazione: mutation || null,
+              sesso: sex,
+              specie: species || null,
+              data_nascita: birth,
+              padre: fatherId,
+              madre: motherId
+            })
+            .select()
+            .single();
+
+        if (subjectError) {
+          throw new Error(
+            "Errore creazione soggetto: " +
+            subjectError.message
+          );
+        }
+
+        /* COLLEGA SOGGETTO ALL'UOVO */
+        const { error: eggUpdateError } =
+          await client
+            .from("uova")
+            .update({
+              soggetto_id: subject.id,
+              esito: "Schiuso",
+              data_schiusa:
+                currentSubjectEgg.egg.data_schiusa || birth
+            })
+            .eq("id", currentSubjectEgg.egg.id)
+            .eq("user_id", currentUser.id);
+
+        if (eggUpdateError) {
+          throw new Error(
+            "Soggetto creato, ma impossibile collegarlo all'uovo: " +
+            eggUpdateError.message
+          );
+        }
+
+        closeSubjectModal();
+
+        showAlert(
+          "Soggetto creato e collegato correttamente.",
+          "success"
+        );
+
+        await loadSubjects();
+        await loadCovate();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showAlert(
           error.message ||
-          "impossibile creare il soggetto."
-        }`,
-        "error"
+          "Errore durante la creazione del soggetto."
+        );
+
+      } finally {
+
+        createButton.disabled = false;
+        createButton.textContent = "Crea soggetto";
+      }
+    });
+
+  /* =========================================================
+     LOGOUT
+     ========================================================= */
+
+  document.getElementById("logoutButton")
+    .addEventListener("click", async () => {
+
+      try {
+
+        if (client?.auth) {
+          await client.auth.signOut();
+        }
+
+        window.location.href = "index.html";
+
+      } catch (error) {
+
+        console.error(error);
+
+        window.location.href = "index.html";
+      }
+    });
+
+  /* =========================================================
+     AVVIO
+     ========================================================= */
+
+  async function init() {
+
+    try {
+
+      client =
+        window.supabaseClient ||
+        window.supabase;
+
+      if (!client) {
+        throw new Error(
+          "Connessione Supabase non disponibile."
+        );
+      }
+
+      const { data, error } =
+        await client.auth.getUser();
+
+      if (error || !data?.user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      currentUser = data.user;
+
+      await loadSubjects();
+      await loadPairs();
+      await loadCovate();
+
+      generateEggRows();
+
+    } catch (error) {
+
+      console.error(error);
+
+      coppiaId.innerHTML = `
+        <option value="">
+          Errore caricamento coppie
+        </option>
+      `;
+
+      covateList.innerHTML = `
+        <div class="archive-empty">
+          Impossibile caricare i dati.
+        </div>
+      `;
+
+      showAlert(
+        error.message ||
+        "Errore durante il caricamento della pagina."
       );
-
     }
-
   }
-);
 
-
-/* =========================
-   RESET
-========================= */
-
-function resetForm() {
-
-  editingCovataId =
-    null;
-
-
-  covataForm.reset();
-
-
-  document.getElementById(
-    "stato"
-  ).value =
-    "Preparazione";
-
-
-  numeroUovaInput.value =
-    0;
-
-
-  creaRigheUova(0);
-
-
-  document.getElementById(
-    "saveButton"
-  ).textContent =
-    "Salva covata";
-
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-logoutButton.addEventListener(
-  "click",
-  async () => {
-
-    if (client) {
-
-      await client.auth.signOut();
-
-    }
-
-    window.location.href =
-      "index.html";
-
-  }
-);
-
-
-/* =========================
-   START
-========================= */
-
-init();
-
+  init();
 </script>
 
 </body>
