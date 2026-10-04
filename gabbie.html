@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gabbie - ALLEVANDO</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", Arial, sans-serif;
+            background: #fdf7ee;
+            color: #0f172a;
+        }
+
+        .navbar {
+            background: #166534;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .navbar .logo {
+            font-size: 25px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .navbar nav a:hover {
+            text-decoration: underline;
+        }
+
+        .logout-btn {
+            background: #b91c1c;
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-family: "Cormorant Garamond", Georgia, serif;
+            font-size: 42px;
+            margin-bottom: 8px;
+            color: #166534;
+        }
+
+        .intro {
+            color: #475569;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+        }
+
+        .stat-card .label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            color: #166534;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #166534;
+            font-family: "Cormorant Garamond", Georgia, serif;
+            font-size: 28px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #166534;
+            box-shadow: 0 0 0 3px rgba(22,101,52,0.1);
+        }
+
+        .btn-primary {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .btn-primary:hover {
+            background: #14532d;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f0fdf4;
+            color: #166534;
+            text-align: left;
+            padding: 13px;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            border: none;
+            padding: 7px 11px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        .message {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.55);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #166534;
+            font-family: "Cormorant Garamond", Georgia, serif;
+            font-size: 28px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #0f172a;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        @media (max-width: 800px) {
+            .navbar {
+                padding: 15px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .navbar nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="dashboard.html" class="logo">ALLEVANDO</a>
+
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="soggetti.html">Soggetti</a>
+            <a href="coppie.html">Coppie</a>
+            <a href="covate.html">Covate</a>
+            <a href="gabbie.html">Gabbie</a>
+            <button class="logout-btn" id="logoutBtn">Esci</button>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <h1>Gabbie</h1>
+        <p class="intro">
+            Gestisci e organizza le gabbie del tuo allevamento.
+        </p>
+
+        <div id="message" class="message"></div>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="label">Totale gabbie</div>
+                <div class="value" id="totalGabbie">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="label">Ultima gabbia inserita</div>
+                <div class="value" id="lastGabbia">—</div>
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Aggiungi gabbia</h2>
+
+            <form id="gabbiaForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="numero">Numero gabbia</label>
+                        <input
+                            type="text"
+                            id="numero"
+                            placeholder="Es. G01"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="posizione">Posizione</label>
+                        <input
+                            type="text"
+                            id="posizione"
+                            placeholder="Es. Colonna 1 - Piano 2"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        + Aggiungi
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Le mie gabbie</h2>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Cerca per numero o posizione..."
+                >
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Numero</th>
+                            <th>Posizione</th>
+                            <th>Inserita il</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="gabbieTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+            <div id="emptyMessage" class="empty" style="display:none;">
+                Nessuna gabbia presente.
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- MODALE MODIFICA -->
+
+    <div class="modal" id="editModal">
+
+        <div class="modal-content">
+
+            <h2>Modifica gabbia</h2>
+
+            <form id="editForm">
+
+                <input type="hidden" id="editId">
+
+                <div class="form-group">
+                    <label for="editNumero">Numero gabbia</label>
+                    <input
+                        type="text"
+                        id="editNumero"
+                        required
+                    >
+                </div>
+
+                <br>
+
+                <div class="form-group">
+                    <label for="editPosizione">Posizione</label>
+                    <input
+                        type="text"
+                        id="editPosizione"
+                    >
+                </div>
+
+                <div class="modal-buttons">
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        id="cancelEdit"
+                    >
+                        Annulla
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        Salva modifiche
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+
+        let currentUser = null;
+        let gabbie = [];
+
+        function showMessage(message, type) {
+
+            const box = document.getElementById("message");
+
+            box.textContent = message;
+            box.className = "message " + type;
+
+            setTimeout(() => {
+                box.className = "message";
+                box.textContent = "";
+            }, 4000);
+        }
+
+
+        async function checkUser() {
+
+            try {
+
+                /*
+                 * IMPORTANTE:
+                 * usiamo direttamente "client", creato da auth.js.
+                 * Non creiamo un secondo client.
+                 */
+
+                const result = await client.auth.getUser();
+
+                if (result.error || !result.data.user) {
+
+                    window.location.href = "login.html";
+                    return false;
+                }
+
+                currentUser = result.data.user;
+
+                return true;
+
+            } catch (error) {
+
+                console.error("Errore controllo utente:", error);
+
+                showMessage(
+                    "Errore nel controllo dell'accesso: " + error.message,
+                    "error"
+                );
+
+                return false;
+            }
+        }
+
+
+        async function loadGabbie() {
+
+            try {
+
+                const result = await client
+                    .from("gabbie")
+                    .select("id, user_id, numero, posizione, created_at")
+                    .eq("user_id", currentUser.id)
+                    .order("created_at", { ascending: false });
+
+                if (result.error) {
+
+                    console.error("Errore caricamento gabbie:", result.error);
+
+                    showMessage(
+                        "Errore nel caricamento delle gabbie: " +
+                        result.error.message,
+                        "error"
+                    );
+
+                    return;
+                }
+
+                gabbie = result.data || [];
+
+                renderGabbie();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "Errore inatteso: " + error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        function renderGabbie() {
+
+            const tbody = document.getElementById("gabbieTableBody");
+            const emptyMessage = document.getElementById("emptyMessage");
+            const search = document
+                .getElementById("searchInput")
+                .value
+                .trim()
+                .toLowerCase();
+
+            tbody.innerHTML = "";
+
+            const filtrate = gabbie.filter(gabbia => {
+
+                const numero = String(gabbia.numero || "").toLowerCase();
+                const posizione = String(gabbia.posizione || "").toLowerCase();
+
+                return (
+                    numero.includes(search) ||
+                    posizione.includes(search)
+                );
+
+            });
+
+
+            document.getElementById("totalGabbie").textContent =
+                gabbie.length;
+
+
+            if (gabbie.length > 0) {
+
+                document.getElementById("lastGabbia").textContent =
+                    gabbie[0].numero || "—";
+
+            } else {
+
+                document.getElementById("lastGabbia").textContent = "—";
+            }
+
+
+            if (filtrate.length === 0) {
+
+                emptyMessage.style.display = "block";
+                return;
+
+            } else {
+
+                emptyMessage.style.display = "none";
+            }
+
+
+            filtrate.forEach(gabbia => {
+
+                const tr = document.createElement("tr");
+
+                const data = gabbia.created_at
+                    ? new Date(gabbia.created_at).toLocaleDateString("it-IT")
+                    : "—";
+
+                tr.innerHTML = `
+
+                    <td>
+                        <strong>${escapeHtml(gabbia.numero || "—")}</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(gabbia.posizione || "—")}
+                    </td>
+
+                    <td>
+                        ${data}
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="btn-edit"
+                                onclick="openEditModal('${gabbia.id}')"
+                            >
+                                Modifica
+                            </button>
+
+                            <button
+                                class="btn-delete"
+                                onclick="deleteGabbia('${gabbia.id}')"
+                            >
+                                Elimina
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+                tbody.appendChild(tr);
+
+            });
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        async function addGabbia(event) {
+
+            event.preventDefault();
+
+            const numero = document
+                .getElementById("numero")
+                .value
+                .trim();
+
+            const posizione = document
+                .getElementById("posizione")
+                .value
+                .trim();
+
+
+            if (!numero) {
+
+                showMessage(
+                    "Inserisci il numero della gabbia.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            try {
+
+                const result = await client
+                    .from("gabbie")
+                    .insert({
+
+                        user_id: currentUser.id,
+                        numero: numero,
+                        posizione: posizione || null
+
+                    })
+                    .select(
+                        "id, user_id, numero, posizione, created_at"
+                    )
+                    .single();
+
+
+                if (result.error) {
+
+                    console.error("Errore inserimento:", result.error);
+
+                    showMessage(
+                        "Errore nel salvataggio: " +
+                        result.error.message,
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                gabbie.unshift(result.data);
+
+                renderGabbie();
+
+                document.getElementById("gabbiaForm").reset();
+
+                showMessage(
+                    "Gabbia aggiunta correttamente.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "Errore inatteso: " + error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        function openEditModal(id) {
+
+            const gabbia = gabbie.find(
+                item => String(item.id) === String(id)
+            );
+
+            if (!gabbia) return;
+
+
+            document.getElementById("editId").value = gabbia.id;
+
+            document.getElementById("editNumero").value =
+                gabbia.numero || "";
+
+            document.getElementById("editPosizione").value =
+                gabbia.posizione || "";
+
+
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+
+        function closeEditModal() {
+
+            document.getElementById("editModal").style.display = "none";
+        }
+
+
+        async function updateGabbia(event) {
+
+            event.preventDefault();
+
+
+            const id = document
+                .getElementById("editId")
+                .value;
+
+            const numero = document
+                .getElementById("editNumero")
+                .value
+                .trim();
+
+            const posizione = document
+                .getElementById("editPosizione")
+                .value
+                .trim();
+
+
+            if (!numero) {
+
+                showMessage(
+                    "Inserisci il numero della gabbia.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            try {
+
+                const result = await client
+                    .from("gabbie")
+                    .update({
+
+                        numero: numero,
+                        posizione: posizione || null
+
+                    })
+                    .eq("id", id)
+                    .eq("user_id", currentUser.id)
+                    .select(
+                        "id, user_id, numero, posizione, created_at"
+                    )
+                    .single();
+
+
+                if (result.error) {
+
+                    console.error(
+                        "Errore modifica:",
+                        result.error
+                    );
+
+                    showMessage(
+                        "Errore nella modifica: " +
+                        result.error.message,
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const index = gabbie.findIndex(
+                    item => String(item.id) === String(id)
+                );
+
+
+                if (index !== -1) {
+
+                    gabbie[index] = result.data;
+                }
+
+
+                renderGabbie();
+
+                closeEditModal();
+
+                showMessage(
+                    "Gabbia modificata correttamente.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "Errore inatteso: " + error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        async function deleteGabbia(id) {
+
+            const gabbia = gabbie.find(
+                item => String(item.id) === String(id)
+            );
+
+            if (!gabbia) return;
+
+
+            const conferma = confirm(
+                "Vuoi davvero eliminare la gabbia " +
+                (gabbia.numero || "") +
+                "?"
+            );
+
+
+            if (!conferma) return;
+
+
+            try {
+
+                const result = await client
+                    .from("gabbie")
+                    .delete()
+                    .eq("id", id)
+                    .eq("user_id", currentUser.id);
+
+
+                if (result.error) {
+
+                    console.error(
+                        "Errore eliminazione:",
+                        result.error
+                    );
+
+                    showMessage(
+                        "Errore nell'eliminazione: " +
+                        result.error.message,
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                gabbie = gabbie.filter(
+                    item => String(item.id) !== String(id)
+                );
+
+                renderGabbie();
+
+                showMessage(
+                    "Gabbia eliminata correttamente.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "Errore inatteso: " + error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function () {
+
+                const logged = await checkUser();
+
+                if (!logged) return;
+
+                await loadGabbie();
+
+
+                document
+                    .getElementById("gabbiaForm")
+                    .addEventListener(
+                        "submit",
+                        addGabbia
+                    );
+
+
+                document
+                    .getElementById("editForm")
+                    .addEventListener(
+                        "submit",
+                        updateGabbia
+                    );
+
+
+                document
+                    .getElementById("cancelEdit")
+                    .addEventListener(
+                        "click",
+                        closeEditModal
+                    );
+
+
+                document
+                    .getElementById("searchInput")
+                    .addEventListener(
+                        "input",
+                        renderGabbie
+                    );
+
+
+                document
+                    .getElementById("logoutBtn")
+                    .addEventListener(
+                        "click",
+                        async function () {
+
+                            await client.auth.signOut();
+
+                            window.location.href = "index.html";
+
+                        }
+                    );
+
+
+                document
+                    .getElementById("editModal")
+                    .addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (
+                                event.target ===
+                                document.getElementById("editModal")
+                            ) {
+                                closeEditModal();
+                            }
+
+                        }
+                    );
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
