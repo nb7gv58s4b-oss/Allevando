@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="it">
 
@@ -2070,7 +2069,7 @@
                             </strong>
 
                             <span>
-                                Stato di ogni singolo uovo
+                                Esito di ogni singolo uovo
                             </span>
 
                         </div>
@@ -2938,7 +2937,7 @@ function generaUovaNelForm(
             numeroUovo;
 
 
-        const stati = [
+        const esiti = [
 
             "Da verificare",
             "Fecondo",
@@ -2949,8 +2948,8 @@ function generaUovaNelForm(
         ];
 
 
-        stati.forEach(
-            stato => {
+        esiti.forEach(
+            esito => {
 
                 const option =
                     document.createElement(
@@ -2959,16 +2958,16 @@ function generaUovaNelForm(
 
 
                 option.value =
-                    stato;
+                    esito;
 
 
                 option.textContent =
-                    stato;
+                    esito;
 
 
                 if (
                     uovo &&
-                    uovo.stato === stato
+                    uovo.esito === esito
                 ) {
 
                     option.selected =
@@ -3016,7 +3015,7 @@ function generaUovaNelForm(
             "change",
             async function() {
 
-                const nuovoStato =
+                const nuovoEsito =
                     this.value;
 
 
@@ -3028,7 +3027,7 @@ function generaUovaNelForm(
 
                 await cambiaStatoUovoForm(
                     numero,
-                    nuovoStato,
+                    nuovoEsito,
                     soggettoContainer
                 );
 
@@ -3067,14 +3066,14 @@ function generaUovaNelForm(
 function aggiornaAreaSoggettoUovo(
     container,
     uovo,
-    stato
+    esito
 ) {
 
     container.innerHTML = "";
 
 
     if (
-        stato !== "Schiuso"
+        esito !== "Schiuso"
     ) {
 
         return;
@@ -3149,12 +3148,12 @@ function aggiornaAreaSoggettoUovo(
 
 
 /* =========================================================
-   CAMBIO STATO UOVO
+   CAMBIO ESITO UOVO
    ========================================================= */
 
 async function cambiaStatoUovoForm(
     numero,
-    nuovoStato,
+    nuovoEsito,
     container
 ) {
 
@@ -3166,19 +3165,19 @@ async function cambiaStatoUovoForm(
         );
 
 
+    let uovo;
+
+
     if (
         indice >= 0
     ) {
 
-        uovaCorrenti[indice].stato =
-            nuovoStato;
+        uovaCorrenti[indice].esito =
+            nuovoEsito;
 
 
-        aggiornaAreaSoggettoUovo(
-            container,
-            uovaCorrenti[indice],
-            nuovoStato
-        );
+        uovo =
+            uovaCorrenti[indice];
 
     } else {
 
@@ -3187,10 +3186,28 @@ async function cambiaStatoUovoForm(
             numero:
                 Number(numero),
 
-            stato:
-                nuovoStato,
+            esito:
+                nuovoEsito,
+
+            data_deposizione:
+                document
+                    .getElementById(
+                        "data_inizio"
+                    )
+                    .value ||
+                null,
+
+            data_schiusa:
+                nuovoEsito === "Schiuso"
+                    ? new Date()
+                        .toISOString()
+                        .slice(0, 10)
+                    : null,
 
             soggetto_id:
+                null,
+
+            note:
                 null
 
         };
@@ -3201,36 +3218,49 @@ async function cambiaStatoUovoForm(
         );
 
 
-        aggiornaAreaSoggettoUovo(
-            container,
-            nuovoUovo,
-            nuovoStato
-        );
+        uovo =
+            nuovoUovo;
 
     }
+
+
+    if (
+        nuovoEsito === "Schiuso" &&
+        !uovo.data_schiusa
+    ) {
+
+        uovo.data_schiusa =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
+
+    }
+
+
+    if (
+        nuovoEsito !== "Schiuso"
+    ) {
+
+        uovo.data_schiusa =
+            null;
+
+    }
+
+
+    aggiornaAreaSoggettoUovo(
+        container,
+        uovo,
+        nuovoEsito
+    );
 
 
     if (
         covataInModifica
     ) {
 
-        const uovo =
-            uovaCorrenti.find(
-                elemento =>
-                    Number(elemento.numero) ===
-                    Number(numero)
-            );
-
-
-        if (
+        await salvaUovoSingolo(
             uovo
-        ) {
-
-            await salvaUovoSingolo(
-                uovo
-            );
-
-        }
+        );
 
     }
 
@@ -3313,6 +3343,27 @@ async function salvaUovoSingolo(
     }
 
 
+    const dataDeposizione =
+        uovo.data_deposizione ||
+        document
+            .getElementById(
+                "data_inizio"
+            )
+            .value ||
+        null;
+
+
+    const dataSchiusa =
+        uovo.esito === "Schiuso"
+            ? (
+                uovo.data_schiusa ||
+                new Date()
+                    .toISOString()
+                    .slice(0, 10)
+            )
+            : null;
+
+
     const dati = {
 
         user_id:
@@ -3324,11 +3375,23 @@ async function salvaUovoSingolo(
         numero:
             Number(uovo.numero),
 
-        stato:
-            uovo.stato || "Da verificare",
+        data_deposizione:
+            dataDeposizione,
+
+        esito:
+            uovo.esito ||
+            "Da verificare",
+
+        data_schiusa:
+            dataSchiusa,
 
         soggetto_id:
-            uovo.soggetto_id || null
+            uovo.soggetto_id ||
+            null,
+
+        note:
+            uovo.note ||
+            null
 
     };
 
@@ -3356,10 +3419,12 @@ async function salvaUovoSingolo(
             result.error
         );
 
+
         alert(
             "Errore nel salvataggio dell'uovo: " +
             result.error.message
         );
+
 
         return false;
 
@@ -3377,7 +3442,8 @@ async function salvaUovoSingolo(
 
 async function sincronizzaUova(
     covataId,
-    numeroUova
+    numeroUova,
+    dataDeposizione
 ) {
 
     numeroUova =
@@ -3430,10 +3496,14 @@ async function sincronizzaUova(
 
 
     /*
-       Gli stati scelti nel form vengono conservati
-       in uovaCorrenti anche prima che le uova esistano
-       nel database.
+       Per ogni uovo presente nel form:
+       - recuperiamo l'eventuale record già esistente
+       - recuperiamo l'esito scelto
+       - manteniamo soggetto_id se presente
+       - registriamo data_deposizione
+       - registriamo data_schiusa se schiuso
     */
+
     for (
         let numero = 1;
         numero <= numeroUova;
@@ -3456,15 +3526,50 @@ async function sincronizzaUova(
             );
 
 
-        const stato =
-            selezionata?.stato ||
-            esistente?.stato ||
+        const esito =
+            selezionata?.esito ||
+            esistente?.esito ||
             "Da verificare";
+
+
+        let dataSchiusa =
+            selezionata?.data_schiusa ||
+            esistente?.data_schiusa ||
+            null;
+
+
+        if (
+            esito === "Schiuso" &&
+            !dataSchiusa
+        ) {
+
+            dataSchiusa =
+                new Date()
+                    .toISOString()
+                    .slice(0, 10);
+
+        }
+
+
+        if (
+            esito !== "Schiuso"
+        ) {
+
+            dataSchiusa =
+                null;
+
+        }
 
 
         const soggettoId =
             selezionata?.soggetto_id ||
             esistente?.soggetto_id ||
+            null;
+
+
+        const noteUovo =
+            selezionata?.note ||
+            esistente?.note ||
             null;
 
 
@@ -3483,25 +3588,36 @@ async function sincronizzaUova(
                 numero:
                     numero,
 
-                stato:
-                    stato,
+                data_deposizione:
+                    dataDeposizione ||
+                    null,
+
+                esito:
+                    esito,
+
+                data_schiusa:
+                    dataSchiusa,
 
                 soggetto_id:
-                    soggettoId
+                    soggettoId,
+
+                note:
+                    noteUovo
 
             });
 
         } else {
 
             /*
-               Se l'uovo esiste già, aggiorniamo lo stato
-               solo quando quello scelto nel form è diverso.
+               Aggiorniamo l'uovo esistente.
             */
+
             if (
                 selezionata &&
                 (
-                    selezionata.stato !==
-                    esistente.stato ||
+                    selezionata.esito !==
+                    esistente.esito ||
+
                     (
                         selezionata.soggetto_id ||
                         null
@@ -3509,26 +3625,50 @@ async function sincronizzaUova(
                     (
                         esistente.soggetto_id ||
                         null
+                    ) ||
+
+                    (
+                        selezionata.data_schiusa ||
+                        null
+                    ) !==
+                    (
+                        esistente.data_schiusa ||
+                        null
                     )
                 )
             ) {
 
                 const aggiornamento =
                     await client
+
                         .from("uova")
+
                         .update({
 
-                            stato:
-                                stato,
+                            data_deposizione:
+                                dataDeposizione ||
+                                esistente.data_deposizione ||
+                                null,
+
+                            esito:
+                                esito,
+
+                            data_schiusa:
+                                dataSchiusa,
 
                             soggetto_id:
-                                soggettoId
+                                soggettoId,
+
+                            note:
+                                noteUovo
 
                         })
+
                         .eq(
                             "id",
                             esistente.id
                         )
+
                         .eq(
                             "user_id",
                             utenteCorrente.id
@@ -3550,13 +3690,19 @@ async function sincronizzaUova(
     }
 
 
+    /*
+       Inserisce le nuove uova.
+    */
+
     if (
         daCreare.length > 0
     ) {
 
         const inserimento =
             await client
+
                 .from("uova")
+
                 .insert(
                     daCreare
                 );
@@ -3572,6 +3718,12 @@ async function sincronizzaUova(
 
     }
 
+
+    /*
+       Elimina le uova in eccesso,
+       ma non elimina mai un uovo già collegato
+       a un soggetto.
+    */
 
     const daEliminare =
         uovaEsistenti.filter(
@@ -3628,17 +3780,22 @@ async function sincronizzaUova(
 
 
     /*
-       Aggiorna il numero di uova schiuse nella covata.
-       Non richiede la creazione di alcun soggetto.
+       Aggiorna il numero di uova schiuse
+       nella tabella covate.
     */
+
     const uovaAggiornate =
         await client
+
             .from("uova")
-            .select("stato")
+
+            .select("esito")
+
             .eq(
                 "covata_id",
                 covataId
             )
+
             .eq(
                 "user_id",
                 utenteCorrente.id
@@ -3646,43 +3803,52 @@ async function sincronizzaUova(
 
 
     if (
-        !uovaAggiornate.error
+        uovaAggiornate.error
     ) {
 
-        const numeroSchiuse =
-            (
-                uovaAggiornate.data || []
-            ).filter(
-                uovo =>
-                    uovo.stato ===
-                    "Schiuso"
-            ).length;
+        throw uovaAggiornate.error;
+
+    }
 
 
-        const aggiornamentoCovata =
-            await client
-                .from("covate")
-                .update({
-                    schiuse:
-                        numeroSchiuse
-                })
-                .eq(
-                    "id",
-                    covataId
-                )
-                .eq(
-                    "user_id",
-                    utenteCorrente.id
-                );
+    const numeroSchiuse =
+        (
+            uovaAggiornate.data || []
+        ).filter(
+            uovo =>
+                uovo.esito ===
+                "Schiuso"
+        ).length;
 
 
-        if (
-            aggiornamentoCovata.error
-        ) {
+    const aggiornamentoCovata =
+        await client
 
-            throw aggiornamentoCovata.error;
+            .from("covate")
 
-        }
+            .update({
+
+                schiuse:
+                    numeroSchiuse
+
+            })
+
+            .eq(
+                "id",
+                covataId
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            );
+
+
+    if (
+        aggiornamentoCovata.error
+    ) {
+
+        throw aggiornamentoCovata.error;
 
     }
 
@@ -3692,6 +3858,7 @@ async function sincronizzaUova(
     );
 
 }
+
 
 /* =========================================================
    CARICA COVATE
@@ -4120,7 +4287,7 @@ async function creaCardCovata(
 
 
         titoloUova.textContent =
-            "Stato delle uova";
+            "Esito delle uova";
 
 
         const listaUova =
@@ -4145,7 +4312,7 @@ async function creaCardCovata(
                 elemento.className =
                     "registro-uovo " +
                     classeUovo(
-                        uovo.stato
+                        uovo.esito
                     );
 
 
@@ -4154,9 +4321,22 @@ async function creaCardCovata(
                     uovo.numero +
                     " · " +
                     (
-                        uovo.stato ||
+                        uovo.esito ||
                         "Da verificare"
                     );
+
+
+                if (
+                    uovo.data_schiusa
+                ) {
+
+                    testo +=
+                        " · " +
+                        formattaData(
+                            uovo.data_schiusa
+                        );
+
+                }
 
 
                 if (
@@ -4290,15 +4470,15 @@ async function creaCardCovata(
 
 
 /* =========================================================
-   CLASSE STATO UOVO
+   CLASSE ESITO UOVO
    ========================================================= */
 
 function classeUovo(
-    stato
+    esito
 ) {
 
     switch (
-        stato
+        esito
     ) {
 
         case "Schiuso":
@@ -4666,7 +4846,8 @@ document
 
                     await sincronizzaUova(
                         nuovaCovataSalvata.id,
-                        numeroUova
+                        numeroUova,
+                        dataInizio
                     );
 
                 } catch (
@@ -4763,7 +4944,8 @@ document
 
                     await sincronizzaUova(
                         covataInModifica,
-                        numeroUova
+                        numeroUova,
+                        dataInizio
                     );
 
                 } catch (
@@ -5066,8 +5248,10 @@ function apriModaleSoggetto(
     const relazione =
         coppieDisponibili.find(
             elemento =>
-                elemento.coppia.id ===
-                coppiaId
+                String(
+                    elemento.coppia.id
+                ) ===
+                String(coppiaId)
         );
 
 
@@ -5150,6 +5334,7 @@ function apriModaleSoggetto(
             "nuova_data_nascita"
         )
         .value =
+        uovo.data_schiusa ||
         document
             .getElementById(
                 "data_inizio"
@@ -5296,8 +5481,10 @@ document
             const relazione =
                 coppieDisponibili.find(
                     elemento =>
-                        elemento.coppia.id ===
-                        coppiaId
+                        String(
+                            elemento.coppia.id
+                        ) ===
+                        String(coppiaId)
                 );
 
 
@@ -5507,6 +5694,13 @@ document
                 result.data;
 
 
+            const dataSchiusa =
+                uovoPerNuovoSoggetto.data_schiusa ||
+                new Date()
+                    .toISOString()
+                    .slice(0, 10);
+
+
             const aggiornamentoUovo =
                 await client
 
@@ -5517,8 +5711,11 @@ document
                         soggetto_id:
                             soggettoCreato.id,
 
-                        stato:
-                            "Schiuso"
+                        esito:
+                            "Schiuso",
+
+                        data_schiusa:
+                            dataSchiusa
 
                     })
 
@@ -5585,8 +5782,11 @@ document
                 uovaCorrenti[indice].soggetto_id =
                     soggettoCreato.id;
 
-                uovaCorrenti[indice].stato =
+                uovaCorrenti[indice].esito =
                     "Schiuso";
+
+                uovaCorrenti[indice].data_schiusa =
+                    dataSchiusa;
 
             }
 
@@ -5688,4 +5888,3 @@ controllaUtente();
 
 </body>
 </html>
-```
