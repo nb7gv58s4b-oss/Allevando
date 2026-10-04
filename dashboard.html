@@ -1,870 +1,859 @@
 <!DOCTYPE html>
-
 <html lang="it">
 
 <head>
 
-```
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Dashboard — ALLEVANDO</title>
-
-<link
-    rel="stylesheet"
-    href="css/style.css"
->
-
-<style>
-
-    /* =====================================================
-       DASHBOARD ALLEVANDO — DESIGN PILOTA
-    ===================================================== */
-
-    body.dashboard-page {
-        background:
-            radial-gradient(
-                circle at top left,
-                rgba(24, 92, 69, 0.045),
-                transparent 30%
-            ),
-            #faf8f2;
-    }
-
-
-    /* =====================================================
-       HEADER
-    ===================================================== */
-
-    .app-header {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-
-        background: rgba(250, 248, 242, 0.94);
-
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-
-        border-bottom: 1px solid #e2e5df;
-    }
-
-    .app-header-inner {
-        width: min(1280px, calc(100% - 40px));
-
-        min-height: 82px;
-
-        margin: 0 auto;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        gap: 30px;
-    }
-
-
-    /* =====================================================
-       LOGO
-    ===================================================== */
-
-    .app-logo {
-        display: flex;
-        align-items: center;
-
-        flex-shrink: 0;
-    }
-
-    .app-logo img {
-        width: 175px;
-        height: auto;
-
-        display: block;
-
-        object-fit: contain;
-    }
-
-
-    /* =====================================================
-       NAV
-    ===================================================== */
-
-    .app-nav {
-        display: flex;
-        align-items: center;
-
-        gap: 4px;
-
-        margin-left: auto;
-    }
-
-    .app-nav a {
-        position: relative;
-
-        padding: 10px 14px;
-
-        color: #65716b;
-
-        border-radius: 10px;
-
-        font-size: 13px;
-        font-weight: 600;
-
-        transition:
-            color 0.2s ease,
-            background 0.2s ease;
-    }
-
-    .app-nav a:hover {
-        color: #185c45;
-        background: #e9f3ee;
-    }
-
-    .app-nav a.active {
-        color: #0d3d2d;
-        background: #e4efe8;
-    }
-
-    .app-nav a.active::after {
-        content: "";
-
-        position: absolute;
-
-        left: 14px;
-        right: 14px;
-        bottom: 4px;
-
-        height: 2px;
-
-        background: #185c45;
-
-        border-radius: 999px;
-    }
-
-
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
-
-    .logout-button {
-        min-height: 40px;
-
-        padding: 9px 16px;
-
-        background: transparent;
-
-        color: #68736d;
-
-        border: 1px solid #dfe4de;
-
-        border-radius: 10px;
-
-        font-size: 13px;
-        font-weight: 700;
-
-        cursor: pointer;
-
-        transition:
-            background 0.2s ease,
-            color 0.2s ease,
-            border-color 0.2s ease;
-    }
-
-    .logout-button:hover {
-        color: #b84c4c;
-
-        background: #f9e5e5;
-
-        border-color: #e7c1c1;
-    }
-
-
-    /* =====================================================
-       MAIN
-    ===================================================== */
-
-    .dashboard-main {
-        width: min(1280px, calc(100% - 40px));
-
-        margin: 0 auto;
-
-        padding: 46px 0 80px;
-    }
-
-
-    /* =====================================================
-       TOP AREA
-    ===================================================== */
-
-    .dashboard-top {
-        display: flex;
-
-        align-items: flex-end;
-        justify-content: space-between;
-
-        gap: 30px;
-
-        margin-bottom: 32px;
-    }
-
-    .dashboard-kicker {
-        display: block;
-
-        margin-bottom: 8px;
-
-        color: #185c45;
-
-        font-size: 11px;
-        font-weight: 800;
-
-        letter-spacing: 0.15em;
-
-        text-transform: uppercase;
-    }
-
-    .dashboard-title {
-        margin: 0;
-
-        color: #0d3d2d;
-
-        font-family:
-            "Cormorant Garamond",
-            Georgia,
-            serif;
-
-        font-size: clamp(42px, 5vw, 64px);
-
-        font-weight: 700;
-
-        line-height: 0.95;
-
-        letter-spacing: -0.025em;
-    }
-
-    .dashboard-title span {
-        color: #185c45;
-    }
-
-    .dashboard-subtitle {
-        max-width: 620px;
-
-        margin-top: 12px;
-
-        color: #68736d;
-
-        font-size: 15px;
-    }
-
-
-    /* =====================================================
-       YEAR SELECTOR
-    ===================================================== */
-
-    .year-box {
-        min-width: 220px;
-
-        padding: 14px 16px;
-
-        background: white;
-
-        border: 1px solid #dfe4de;
-
-        border-radius: 14px;
-
-        box-shadow:
-            0 5px 18px rgba(24, 44, 36, 0.05);
-    }
-
-    .year-label {
-        display: block;
-
-        margin-bottom: 5px;
-
-        color: #8a938e;
-
-        font-size: 10px;
-        font-weight: 800;
-
-        letter-spacing: 0.12em;
-
-        text-transform: uppercase;
-    }
-
-    .year-row {
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-    }
-
-    .year-row strong {
-        color: #0d3d2d;
-
-        font-family:
-            "Cormorant Garamond",
-            Georgia,
-            serif;
-
-        font-size: 27px;
-
-        line-height: 1;
-    }
-
-    .year-row select {
-        width: 90px;
-
-        min-height: 34px;
-
-        padding: 5px 8px;
-
-        background: #f7f9f6;
-
-        border: 1px solid #dfe4de;
-
-        border-radius: 8px;
-
-        color: #185c45;
-
-        font-size: 13px;
-        font-weight: 700;
-
-        cursor: pointer;
-    }
-
-
-    /* =====================================================
-       SECTION LABEL
-    ===================================================== */
-
-    .section-label {
-        display: flex;
-
-        align-items: center;
-        justify-content: space-between;
-
-        margin-bottom: 14px;
-    }
-
-    .section-label h2 {
-        margin: 0;
-
-        color: #17211d;
-
-        font-family:
-            "Inter",
-            sans-serif;
-
-        font-size: 14px;
-
-        font-weight: 800;
-
-        letter-spacing: 0.02em;
-    }
-
-    .section-label span {
-        color: #89938d;
-
-        font-size: 12px;
-    }
-
-
-    /* =====================================================
-       STATISTICS
-    ===================================================== */
-
-    .stats-grid-new {
-        display: grid;
-
-        grid-template-columns:
-            repeat(5, 1fr);
-
-        gap: 16px;
-
-        margin-bottom: 38px;
-    }
-
-    .stat-card-new {
-        position: relative;
-
-        min-height: 170px;
-
-        padding: 22px;
-
-        overflow: hidden;
-
-        background: white;
-
-        border: 1px solid #dfe4de;
-
-        border-radius: 17px;
-
-        box-shadow:
-            0 5px 20px rgba(24, 44, 36, 0.045);
-
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease,
-            border-color 0.2s ease;
-    }
-
-    .stat-card-new:hover {
-        transform: translateY(-3px);
-
-        border-color: #cbd8ce;
-
-        box-shadow:
-            0 14px 32px rgba(24, 44, 36, 0.09);
-    }
-
-    .stat-card-new::after {
-        content: "";
-
-        position: absolute;
-
-        width: 100px;
-        height: 100px;
-
-        right: -40px;
-        bottom: -40px;
-
-        background: #e9f3ee;
-
-        border-radius: 50%;
-    }
-
-    .stat-icon {
-        width: 42px;
-        height: 42px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        margin-bottom: 18px;
-
-        background: #e9f3ee;
-
-        border-radius: 12px;
-
-        color: #185c45;
-
-        font-size: 19px;
-        font-weight: 800;
-    }
-
-    .stat-card-new h3 {
-        margin: 0 0 4px;
-
-        color: #68736d;
-
-        font-family:
-            "Inter",
-            sans-serif;
-
-        font-size: 13px;
-
-        font-weight: 600;
-    }
-
-    .stat-number {
-        display: block;
-
-        color: #0d3d2d;
-
-        font-family:
-            "Cormorant Garamond",
-            Georgia,
-            serif;
-
-        font-size: 48px;
-
-        font-weight: 700;
-
-        line-height: 0.9;
-    }
-
-    .stat-description {
-        display: block;
-
-        margin-top: 11px;
-
-        color: #8a938e;
-
-        font-size: 11px;
-    }
-
-
-    /* =====================================================
-       QUICK ACTIONS
-    ===================================================== */
-
-    .dashboard-columns {
-        display: grid;
-
-        grid-template-columns:
-            1.4fr 0.6fr;
-
-        gap: 20px;
-    }
-
-    .dashboard-panel {
-        padding: 24px;
-
-        background: white;
-
-        border: 1px solid #dfe4de;
-
-        border-radius: 17px;
-
-        box-shadow:
-            0 5px 20px rgba(24, 44, 36, 0.045);
-    }
-
-    .panel-title {
-        display: flex;
-
-        align-items: center;
-        justify-content: space-between;
-
-        margin-bottom: 20px;
-    }
-
-    .panel-title h2 {
-        margin: 0;
-
-        color: #17211d;
-
-        font-family:
-            "Inter",
-            sans-serif;
-
-        font-size: 15px;
-
-        font-weight: 800;
-    }
-
-    .panel-title span {
-        color: #8a938e;
-
-        font-size: 11px;
-    }
-
-
-    /* =====================================================
-       ACTION CARDS
-    ===================================================== */
-
-    .action-grid {
-        display: grid;
-
-        grid-template-columns:
-            repeat(4, 1fr);
-
-        gap: 10px;
-    }
-
-    .action-card {
-        display: flex;
-
-        flex-direction: column;
-
-        min-height: 120px;
-
-        padding: 17px;
-
-        background: #f8faf8;
-
-        border: 1px solid #e5eae5;
-
-        border-radius: 12px;
-
-        transition:
-            background 0.2s ease,
-            border-color 0.2s ease,
-            transform 0.2s ease;
-    }
-
-    .action-card:hover {
-        transform: translateY(-2px);
-
-        background: #eef5f0;
-
-        border-color: #cbdacf;
-    }
-
-    .action-icon {
-        margin-bottom: auto;
-
-        color: #185c45;
-
-        font-size: 22px;
-    }
-
-    .action-card strong {
-        display: block;
-
-        margin-top: 16px;
-
-        color: #17211d;
-
-        font-size: 13px;
-    }
-
-    .action-card span {
-        display: block;
-
-        margin-top: 3px;
-
-        color: #87918b;
-
-        font-size: 10px;
-    }
-
-
-    /* =====================================================
-       FUTURE FEATURES
-    ===================================================== */
-
-    .future-list {
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 9px;
-    }
-
-    .future-item {
-        display: flex;
-
-        align-items: center;
-
-        gap: 11px;
-
-        padding: 11px;
-
-        background: #fafbf9;
-
-        border: 1px solid #e8ece8;
-
-        border-radius: 10px;
-    }
-
-    .future-dot {
-        width: 8px;
-        height: 8px;
-
-        flex-shrink: 0;
-
-        background: #b96848;
-
-        border-radius: 50%;
-    }
-
-    .future-item strong {
-        display: block;
-
-        color: #334039;
-
-        font-size: 12px;
-    }
-
-    .future-item span {
-        display: block;
-
-        color: #8a938e;
-
-        font-size: 10px;
-    }
-
-
-    /* =====================================================
-       FOOTER
-    ===================================================== */
-
-    .dashboard-footer {
-        margin-top: 50px;
-
-        padding-top: 20px;
-
-        border-top: 1px solid #e1e5e0;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: space-between;
-
-        color: #8a938e;
-
-        font-size: 11px;
-    }
-
-    .dashboard-footer strong {
-        color: #185c45;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
-
-    @media (max-width: 1100px) {
-
-        .stats-grid-new {
-            grid-template-columns:
-                repeat(3, 1fr);
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard — ALLEVANDO</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           DASHBOARD ALLEVANDO — DESIGN PILOTA
+        ===================================================== */
+
+        body.dashboard-page {
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(24, 92, 69, 0.045),
+                    transparent 30%
+                ),
+                #faf8f2;
         }
 
-        .action-grid {
-            grid-template-columns:
-                repeat(2, 1fr);
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background: rgba(250, 248, 242, 0.94);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid #e2e5df;
         }
-
-    }
-
-
-    @media (max-width: 1000px) {
 
         .app-header-inner {
-            flex-wrap: wrap;
+            width: min(1280px, calc(100% - 40px));
 
-            padding: 14px 0;
+            min-height: 82px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
         }
+
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+        .app-logo img {
+            width: 175px;
+            height: auto;
+
+            display: block;
+
+            object-fit: contain;
+        }
+
+
+        /* =====================================================
+           NAV
+        ===================================================== */
 
         .app-nav {
-            order: 3;
+            display: flex;
+            align-items: center;
 
-            width: 100%;
+            gap: 4px;
 
-            justify-content: center;
-
-            overflow-x: auto;
-
-            padding-bottom: 2px;
+            margin-left: auto;
         }
 
-        .dashboard-columns {
-            grid-template-columns: 1fr;
+        .app-nav a {
+            position: relative;
+
+            padding: 10px 14px;
+
+            color: #65716b;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease;
         }
 
-    }
+        .app-nav a:hover {
+            color: #185c45;
+            background: #e9f3ee;
+        }
+
+        .app-nav a.active {
+            color: #0d3d2d;
+            background: #e4efe8;
+        }
+
+        .app-nav a.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 14px;
+            right: 14px;
+            bottom: 4px;
+
+            height: 2px;
+
+            background: #185c45;
+
+            border-radius: 999px;
+        }
 
 
-    @media (max-width: 650px) {
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
 
-        .app-header-inner {
-            width: min(100% - 24px, 1280px);
+        .logout-button {
+            min-height: 40px;
 
-            min-height: 70px;
+            padding: 9px 16px;
+
+            background: transparent;
+
+            color: #68736d;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .logout-button:hover {
+            color: #b84c4c;
+
+            background: #f9e5e5;
+
+            border-color: #e7c1c1;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .dashboard-main {
+            width: min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 46px 0 80px;
+        }
+
+
+        /* =====================================================
+           TOP AREA
+        ===================================================== */
+
+        .dashboard-top {
+            display: flex;
+
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 30px;
+
+            margin-bottom: 32px;
+        }
+
+        .dashboard-kicker {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #185c45;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.15em;
+
+            text-transform: uppercase;
+        }
+
+        .dashboard-title {
+            margin: 0;
+
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: clamp(42px, 5vw, 64px);
+
+            font-weight: 700;
+
+            line-height: 0.95;
+
+            letter-spacing: -0.025em;
+        }
+
+        .dashboard-title span {
+            color: #185c45;
+        }
+
+        .dashboard-subtitle {
+            max-width: 620px;
+
+            margin-top: 12px;
+
+            color: #68736d;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           YEAR SELECTOR
+        ===================================================== */
+
+        .year-box {
+            min-width: 220px;
+
+            padding: 14px 16px;
+
+            background: white;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 5px 18px rgba(24, 44, 36, 0.05);
+        }
+
+        .year-label {
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #8a938e;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 0.12em;
+
+            text-transform: uppercase;
+        }
+
+        .year-row {
+            display: flex;
+
+            align-items: center;
 
             gap: 10px;
         }
 
-        .app-logo img {
-            width: 135px;
+        .year-row strong {
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: 27px;
+
+            line-height: 1;
         }
 
-        .logout-button {
-            padding: 8px 11px;
+        .year-row select {
+            width: 90px;
+
+            min-height: 34px;
+
+            padding: 5px 8px;
+
+            background: #f7f9f6;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 8px;
+
+            color: #185c45;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           SECTION LABEL
+        ===================================================== */
+
+        .section-label {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+        }
+
+        .section-label h2 {
+            margin: 0;
+
+            color: #17211d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.02em;
+        }
+
+        .section-label span {
+            color: #89938d;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
+
+        .stats-grid-new {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 38px;
+        }
+
+        .stat-card-new {
+            position: relative;
+
+            min-height: 170px;
+
+            padding: 22px;
+
+            overflow: hidden;
+
+            background: white;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 5px 20px rgba(24, 44, 36, 0.045);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .stat-card-new:hover {
+            transform: translateY(-3px);
+
+            border-color: #cbd8ce;
+
+            box-shadow:
+                0 14px 32px rgba(24, 44, 36, 0.09);
+        }
+
+        .stat-card-new::after {
+            content: "";
+
+            position: absolute;
+
+            width: 100px;
+            height: 100px;
+
+            right: -40px;
+            bottom: -40px;
+
+            background: #e9f3ee;
+
+            border-radius: 50%;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 18px;
+
+            background: #e9f3ee;
+
+            border-radius: 12px;
+
+            color: #185c45;
+
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .stat-card-new h3 {
+            margin: 0 0 4px;
+
+            color: #68736d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .stat-number {
+            display: block;
+
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: 48px;
+
+            font-weight: 700;
+
+            line-height: 0.9;
+        }
+
+        .stat-description {
+            display: block;
+
+            margin-top: 11px;
+
+            color: #8a938e;
 
             font-size: 11px;
         }
 
-        .app-nav {
-            justify-content: flex-start;
-        }
 
-        .app-nav a {
-            padding: 8px 11px;
+        /* =====================================================
+           QUICK ACTIONS
+        ===================================================== */
 
-            white-space: nowrap;
+        .dashboard-columns {
+            display: grid;
 
-            font-size: 11px;
-        }
-
-        .dashboard-main {
-            width: min(100% - 24px, 1280px);
-
-            padding-top: 32px;
-        }
-
-        .dashboard-top {
-            align-items: stretch;
-
-            flex-direction: column;
+            grid-template-columns:
+                1.4fr 0.6fr;
 
             gap: 20px;
         }
 
-        .dashboard-title {
-            font-size: 48px;
+        .dashboard-panel {
+            padding: 24px;
+
+            background: white;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 5px 20px rgba(24, 44, 36, 0.045);
         }
 
-        .year-box {
-            width: 100%;
+        .panel-title {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
         }
 
-        .stats-grid-new {
+        .panel-title h2 {
+            margin: 0;
+
+            color: #17211d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 15px;
+
+            font-weight: 800;
+        }
+
+        .panel-title span {
+            color: #8a938e;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           ACTION CARDS
+        ===================================================== */
+
+        .action-grid {
+            display: grid;
+
             grid-template-columns:
-                repeat(2, 1fr);
+                repeat(3, 1fr);
 
             gap: 10px;
         }
 
-        .stat-card-new {
-            min-height: 145px;
+        .action-card {
+            display: flex;
+
+            flex-direction: column;
+
+            min-height: 120px;
 
             padding: 17px;
+
+            background: #f8faf8;
+
+            border: 1px solid #e5eae5;
+
+            border-radius: 12px;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.2s ease;
         }
 
-        .stat-icon {
-            width: 36px;
-            height: 36px;
+        .action-card:hover {
+            transform: translateY(-2px);
 
-            margin-bottom: 13px;
+            background: #eef5f0;
 
-            font-size: 16px;
+            border-color: #cbdacf;
         }
 
-        .stat-number {
-            font-size: 40px;
+        .action-icon {
+            margin-bottom: auto;
+
+            color: #185c45;
+
+            font-size: 22px;
         }
 
-        .stat-description {
+        .action-card strong {
+            display: block;
+
+            margin-top: 16px;
+
+            color: #17211d;
+
+            font-size: 13px;
+        }
+
+        .action-card span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #87918b;
+
             font-size: 10px;
         }
 
-        .dashboard-panel {
-            padding: 18px;
-        }
 
-        .action-grid {
-            grid-template-columns: 1fr;
-        }
+        /* =====================================================
+           FUTURE FEATURES
+        ===================================================== */
 
-        .action-card {
-            min-height: 80px;
-        }
+        .future-list {
+            display: flex;
 
-        .dashboard-footer {
             flex-direction: column;
 
-            align-items: flex-start;
-
-            gap: 5px;
+            gap: 9px;
         }
-    }
 
-</style>
-```
+        .future-item {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 11px;
+
+            background: #fafbf9;
+
+            border: 1px solid #e8ece8;
+
+            border-radius: 10px;
+        }
+
+        .future-dot {
+            width: 8px;
+            height: 8px;
+
+            flex-shrink: 0;
+
+            background: #b96848;
+
+            border-radius: 50%;
+        }
+
+        .future-item strong {
+            display: block;
+
+            color: #334039;
+
+            font-size: 12px;
+        }
+
+        .future-item span {
+            display: block;
+
+            color: #8a938e;
+
+            font-size: 10px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .dashboard-footer {
+            margin-top: 50px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #e1e5e0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            color: #8a938e;
+
+            font-size: 11px;
+        }
+
+        .dashboard-footer strong {
+            color: #185c45;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .app-header-inner {
+                flex-wrap: wrap;
+
+                padding: 14px 0;
+            }
+
+            .app-nav {
+                order: 3;
+
+                width: 100%;
+
+                justify-content: center;
+
+                overflow-x: auto;
+
+                padding-bottom: 2px;
+            }
+
+            .stats-grid-new {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .dashboard-columns {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .app-header-inner {
+                width: min(100% - 24px, 1280px);
+
+                min-height: 70px;
+
+                gap: 10px;
+            }
+
+            .app-logo img {
+                width: 135px;
+            }
+
+            .logout-button {
+                padding: 8px 11px;
+
+                font-size: 11px;
+            }
+
+            .app-nav {
+                justify-content: flex-start;
+            }
+
+            .app-nav a {
+                padding: 8px 11px;
+
+                white-space: nowrap;
+
+                font-size: 11px;
+            }
+
+            .dashboard-main {
+                width: min(100% - 24px, 1280px);
+
+                padding-top: 32px;
+            }
+
+            .dashboard-top {
+                align-items: stretch;
+
+                flex-direction: column;
+
+                gap: 20px;
+            }
+
+            .dashboard-title {
+                font-size: 48px;
+            }
+
+            .year-box {
+                width: 100%;
+            }
+
+            .stats-grid-new {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 10px;
+            }
+
+            .stat-card-new {
+                min-height: 145px;
+
+                padding: 17px;
+            }
+
+            .stat-icon {
+                width: 36px;
+                height: 36px;
+
+                margin-bottom: 13px;
+
+                font-size: 16px;
+            }
+
+            .stat-number {
+                font-size: 40px;
+            }
+
+            .stat-description {
+                font-size: 10px;
+            }
+
+            .dashboard-panel {
+                padding: 18px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-card {
+                min-height: 80px;
+            }
+
+            .dashboard-footer {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 5px;
+            }
+        }
+
+    </style>
 
 </head>
 
+
 <body class="dashboard-page">
+
 
 <!-- =====================================================
      HEADER
@@ -872,69 +861,65 @@
 
 <header class="app-header">
 
-```
-<div class="app-header-inner">
+    <div class="app-header-inner">
 
 
-    <!-- LOGO -->
-
-    <a
-        href="dashboard.html"
-        class="app-logo"
-    >
-
-        <img
-            src="logo.png"
-            alt="ALLEVANDO"
-        >
-
-    </a>
-
-
-    <!-- NAVIGAZIONE -->
-
-    <nav class="app-nav">
+        <!-- LOGO -->
 
         <a
             href="dashboard.html"
-            class="active"
+            class="app-logo"
         >
-            Dashboard
+
+            <img
+                src="logo.png"
+                alt="ALLEVANDO"
+            >
+
         </a>
 
-        <a href="soggetti.html">
-            Soggetti
-        </a>
 
-        <a href="coppie.html">
-            Coppie
-        </a>
+        <!-- NAVIGAZIONE -->
 
-        <a href="covate.html">
-            Covate
-        </a>
+        <nav class="app-nav">
 
-        <a href="gabbie.html">
-            Gabbie
-        </a>
+            <a
+                href="dashboard.html"
+                class="active"
+            >
+                Dashboard
+            </a>
 
-    </nav>
+            <a href="soggetti.html">
+                Soggetti
+            </a>
 
+            <a href="coppie.html">
+                Coppie
+            </a>
 
-    <!-- LOGOUT -->
+            <a href="covate.html">
+                Covate
+            </a>
 
-    <button
-        onclick="logoutUser()"
-        class="logout-button"
-    >
-        Esci
-    </button>
+        </nav>
 
 
-</div>
-```
+        <!-- LOGOUT -->
+
+        <button
+            onclick="logoutUser()"
+            class="logout-button"
+        >
+            Esci
+        </button>
+
+
+    </div>
 
 </header>
+
+
 
 <!-- =====================================================
      MAIN
@@ -942,440 +927,396 @@
 
 <main class="dashboard-main">
 
-```
-<!-- =================================================
-     BENVENUTO + ANNO
-================================================== -->
 
-<section class="dashboard-top">
+    <!-- =================================================
+         BENVENUTO + ANNO
+    ================================================== -->
+
+    <section class="dashboard-top">
 
 
-    <div>
+        <div>
 
-        <span class="dashboard-kicker">
-            Area personale
+            <span class="dashboard-kicker">
+                Area personale
+            </span>
+
+            <h1 class="dashboard-title">
+                Ciao,
+                <span id="nome-allevatore">
+                    allevatore
+                </span>.
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Tutto il tuo allevamento, organizzato
+                in un unico posto.
+            </p>
+
+        </div>
+
+
+        <!-- ANNO -->
+
+        <div class="year-box">
+
+            <span class="year-label">
+                Anno di gestione
+            </span>
+
+            <div class="year-row">
+
+                <strong id="anno-selezionato">
+                    2026
+                </strong>
+
+                <select
+                    id="anno"
+                    onchange="cambiaAnno()"
+                >
+                </select>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         STATISTICHE
+    ================================================== -->
+
+    <div class="section-label">
+
+        <h2>
+            Panoramica
+        </h2>
+
+        <span>
+            Situazione attuale
         </span>
-
-        <h1 class="dashboard-title">
-            Ciao,
-            <span id="nome-allevatore">
-                allevatore
-            </span>.
-        </h1>
-
-        <p class="dashboard-subtitle">
-            Tutto il tuo allevamento, organizzato
-            in un unico posto.
-        </p>
 
     </div>
 
 
-    <!-- ANNO -->
+    <section class="stats-grid-new">
 
-    <div class="year-box">
 
-        <span class="year-label">
-            Anno di gestione
-        </span>
+        <!-- SOGGETTI -->
 
-        <div class="year-row">
+        <div class="stat-card-new">
 
-            <strong id="anno-selezionato">
-                2026
+            <div class="stat-icon">
+                S
+            </div>
+
+            <h3>
+                Soggetti
+            </h3>
+
+            <strong
+                id="count-soggetti"
+                class="stat-number"
+            >
+                0
             </strong>
 
-            <select
-                id="anno"
-                onchange="cambiaAnno()"
-            >
-            </select>
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =================================================
-     STATISTICHE
-================================================== -->
-
-<div class="section-label">
-
-    <h2>
-        Panoramica
-    </h2>
-
-    <span>
-        Situazione attuale
-    </span>
-
-</div>
-
-
-<section class="stats-grid-new">
-
-
-    <!-- SOGGETTI -->
-
-    <div class="stat-card-new">
-
-        <div class="stat-icon">
-            S
-        </div>
-
-        <h3>
-            Soggetti
-        </h3>
-
-        <strong
-            id="count-soggetti"
-            class="stat-number"
-        >
-            0
-        </strong>
-
-        <span class="stat-description">
-            Soggetti attivi nel tuo allevamento
-        </span>
-
-    </div>
-
-
-    <!-- COPPIE -->
-
-    <div class="stat-card-new">
-
-        <div class="stat-icon">
-            C
-        </div>
-
-        <h3>
-            Coppie
-        </h3>
-
-        <strong
-            id="count-coppie"
-            class="stat-number"
-        >
-            0
-        </strong>
-
-        <span class="stat-description">
-            Coppie presenti nell'allevamento
-        </span>
-
-    </div>
-
-
-    <!-- COVATE -->
-
-    <div class="stat-card-new">
-
-        <div class="stat-icon">
-            V
-        </div>
-
-        <h3>
-            Covate
-        </h3>
-
-        <strong
-            id="count-covate"
-            class="stat-number"
-        >
-            0
-        </strong>
-
-        <span class="stat-description">
-            Covate dell'anno selezionato
-        </span>
-
-    </div>
-
-
-    <!-- NASCITE -->
-
-    <div class="stat-card-new">
-
-        <div class="stat-icon">
-            N
-        </div>
-
-        <h3>
-            Nascite
-        </h3>
-
-        <strong
-            id="count-nascite"
-            class="stat-number"
-        >
-            0
-        </strong>
-
-        <span class="stat-description">
-            Nascite dell'anno selezionato
-        </span>
-
-    </div>
-
-
-    <!-- GABBIE -->
-
-    <div class="stat-card-new">
-
-        <div class="stat-icon">
-            G
-        </div>
-
-        <h3>
-            Gabbie
-        </h3>
-
-        <strong
-            id="count-gabbie"
-            class="stat-number"
-        >
-            0
-        </strong>
-
-        <span class="stat-description">
-            Gabbie registrate nell'allevamento
-        </span>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =================================================
-     COLONNE
-================================================== -->
-
-<section class="dashboard-columns">
-
-
-    <!-- =================================================
-         ACCESSI RAPIDI
-    ================================================== -->
-
-    <div class="dashboard-panel">
-
-        <div class="panel-title">
-
-            <h2>
-                Accessi rapidi
-            </h2>
-
-            <span>
-                Gestione allevamento
+            <span class="stat-description">
+                Soggetti attivi nel tuo allevamento
             </span>
 
         </div>
 
 
-        <div class="action-grid">
+        <!-- COPPIE -->
 
+        <div class="stat-card-new">
 
-            <a
-                href="soggetti.html"
-                class="action-card"
+            <div class="stat-icon">
+                C
+            </div>
+
+            <h3>
+                Coppie
+            </h3>
+
+            <strong
+                id="count-coppie"
+                class="stat-number"
             >
+                0
+            </strong>
 
-                <div class="action-icon">
-                    +
-                </div>
-
-                <strong>
-                    Nuovo soggetto
-                </strong>
-
-                <span>
-                    Inserisci un nuovo soggetto
-                </span>
-
-            </a>
-
-
-            <a
-                href="coppie.html"
-                class="action-card"
-            >
-
-                <div class="action-icon">
-                    +
-                </div>
-
-                <strong>
-                    Nuova coppia
-                </strong>
-
-                <span>
-                    Crea una nuova coppia
-                </span>
-
-            </a>
-
-
-            <a
-                href="covate.html"
-                class="action-card"
-            >
-
-                <div class="action-icon">
-                    +
-                </div>
-
-                <strong>
-                    Nuova covata
-                </strong>
-
-                <span>
-                    Registra una nuova covata
-                </span>
-
-            </a>
-
-
-            <a
-                href="gabbie.html"
-                class="action-card"
-            >
-
-                <div class="action-icon">
-                    G
-                </div>
-
-                <strong>
-                    Gestisci gabbie
-                </strong>
-
-                <span>
-                    Organizza le gabbie dell'allevamento
-                </span>
-
-            </a>
-
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =================================================
-         PROSSIME FUNZIONI
-    ================================================== -->
-
-    <div class="dashboard-panel">
-
-        <div class="panel-title">
-
-            <h2>
-                In sviluppo
-            </h2>
-
-            <span>
-                Roadmap
+            <span class="stat-description">
+                Coppie presenti nell'allevamento
             </span>
 
         </div>
 
 
-        <div class="future-list">
+        <!-- COVATE -->
 
+        <div class="stat-card-new">
 
-            <div class="future-item">
-
-                <div class="future-dot"></div>
-
-                <div>
-
-                    <strong>
-                        Finanze
-                    </strong>
-
-                    <span>
-                        Entrate e uscite
-                    </span>
-
-                </div>
-
+            <div class="stat-icon">
+                V
             </div>
 
+            <h3>
+                Covate
+            </h3>
 
-            <div class="future-item">
+            <strong
+                id="count-covate"
+                class="stat-number"
+            >
+                0
+            </strong>
 
-                <div class="future-dot"></div>
-
-                <div>
-
-                    <strong>
-                        Trattamenti
-                    </strong>
-
-                    <span>
-                        Cure e preparazioni
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="future-item">
-
-                <div class="future-dot"></div>
-
-                <div>
-
-                    <strong>
-                        Calendario
-                    </strong>
-
-                    <span>
-                        Promemoria e scadenze
-                    </span>
-
-                </div>
-
-            </div>
-
+            <span class="stat-description">
+                Covate dell'anno selezionato
+            </span>
 
         </div>
 
-    </div>
+
+        <!-- NASCITE -->
+
+        <div class="stat-card-new">
+
+            <div class="stat-icon">
+                N
+            </div>
+
+            <h3>
+                Nascite
+            </h3>
+
+            <strong
+                id="count-nascite"
+                class="stat-number"
+            >
+                0
+            </strong>
+
+            <span class="stat-description">
+                Nascite dell'anno selezionato
+            </span>
+
+        </div>
 
 
-</section>
+    </section>
 
 
 
-<!-- =================================================
-     FOOTER
-================================================== -->
+    <!-- =================================================
+         COLONNE
+    ================================================== -->
 
-<footer class="dashboard-footer">
+    <section class="dashboard-columns">
 
-    <div>
-        <strong>ALLEVANDO</strong>
-        — Il gestionale degli allevatori.
-    </div>
 
-    <div>
-        © 2026 ALLEVANDO
-    </div>
+        <!-- =================================================
+             ACCESSI RAPIDI
+        ================================================== -->
 
-</footer>
-```
+        <div class="dashboard-panel">
+
+            <div class="panel-title">
+
+                <h2>
+                    Accessi rapidi
+                </h2>
+
+                <span>
+                    Gestione allevamento
+                </span>
+
+            </div>
+
+
+            <div class="action-grid">
+
+
+                <a
+                    href="soggetti.html"
+                    class="action-card"
+                >
+
+                    <div class="action-icon">
+                        +
+                    </div>
+
+                    <strong>
+                        Nuovo soggetto
+                    </strong>
+
+                    <span>
+                        Inserisci un nuovo soggetto
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="coppie.html"
+                    class="action-card"
+                >
+
+                    <div class="action-icon">
+                        +
+                    </div>
+
+                    <strong>
+                        Nuova coppia
+                    </strong>
+
+                    <span>
+                        Crea una nuova coppia
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="covate.html"
+                    class="action-card"
+                >
+
+                    <div class="action-icon">
+                        +
+                    </div>
+
+                    <strong>
+                        Nuova covata
+                    </strong>
+
+                    <span>
+                        Registra una nuova covata
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PROSSIME FUNZIONI
+        ================================================== -->
+
+        <div class="dashboard-panel">
+
+            <div class="panel-title">
+
+                <h2>
+                    In sviluppo
+                </h2>
+
+                <span>
+                    Roadmap
+                </span>
+
+            </div>
+
+
+            <div class="future-list">
+
+
+                <div class="future-item">
+
+                    <div class="future-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Finanze
+                        </strong>
+
+                        <span>
+                            Entrate e uscite
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="future-item">
+
+                    <div class="future-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Trattamenti
+                        </strong>
+
+                        <span>
+                            Cure e preparazioni
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="future-item">
+
+                    <div class="future-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Calendario
+                        </strong>
+
+                        <span>
+                            Promemoria e scadenze
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <div>
+            <strong>ALLEVANDO</strong>
+            — Il gestionale degli allevatori.
+        </div>
+
+        <div>
+            © 2026 ALLEVANDO
+        </div>
+
+    </footer>
+
 
 </main>
+
+
 
 <!-- =====================================================
      SUPABASE
@@ -1386,6 +1327,8 @@
 <script src="js/config.js"></script>
 
 <script src="js/auth.js"></script>
+
+
 
 <script>
 
@@ -1504,51 +1447,6 @@ async function caricaNumeroSoggetti(userId) {
 
 
 /* =========================================================
-   CONTEGGIO GABBIE
-========================================================= */
-
-async function caricaNumeroGabbie(userId) {
-
-    const result =
-        await client
-
-            .from("gabbie")
-
-            .select(
-                "*",
-                {
-                    count: "exact",
-                    head: true
-                }
-            )
-
-            .eq(
-                "user_id",
-                userId
-            );
-
-
-    if (result.error) {
-
-        console.error(
-            "Errore conteggio gabbie:",
-            result.error
-        );
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "count-gabbie"
-    ).textContent =
-        result.count || 0;
-
-}
-
-
-/* =========================================================
    CONTROLLO UTENTE
 ========================================================= */
 
@@ -1599,11 +1497,6 @@ async function checkUser() {
         user.id
     );
 
-
-    await caricaNumeroGabbie(
-        user.id
-    );
-
 }
 
 
@@ -1628,6 +1521,7 @@ async function logoutUser() {
 checkUser();
 
 </script>
+
 
 </body>
 
