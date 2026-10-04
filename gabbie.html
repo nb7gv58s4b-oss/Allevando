@@ -1,733 +1,2275 @@
-<script>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  let client = null;
-  let currentUser = null;
-  let gabbie = [];
+  <title>Gabbie | ALLEVANDO</title>
+
+  <meta
+    name="description"
+    content="Gestione delle gabbie dell'allevamento con ALLEVANDO."
+  >
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- FONT ALLEVANDO -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
 
 
-  /* =========================================================
-     CLIENT SUPABASE
-     ========================================================= */
+  <style>
 
-  function getSupabaseClient() {
+    /* =========================================================
+       GABBIE - STILI SPECIFICI
+       ========================================================= */
 
-    if (window.supabaseClient) {
-      return window.supabaseClient;
+    :root {
+      --verde: #185c45;
+      --verde-scuro: #0d3d2d;
+      --verde-chiaro: #e8f1eb;
+      --terracotta: #b96848;
+      --sfondo: #faf8f2;
+      --bianco: #ffffff;
+      --testo: #52625a;
+      --testo-chiaro: #748078;
+      --bordo: #e1e7e2;
+      --ombra: 0 12px 35px rgba(13, 61, 45, 0.08);
     }
 
-    if (
-      window.supabase &&
-      typeof window.supabase.from === "function"
-    ) {
-      return window.supabase;
+
+    /* =========================================================
+       BODY
+       ========================================================= */
+
+    body {
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(232, 241, 235, 0.75),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(185, 104, 72, 0.06),
+          transparent 28%
+        ),
+        var(--sfondo);
+
+      color: var(--testo);
+      font-family: "Inter", sans-serif;
     }
 
-    return null;
-  }
 
+    /* =========================================================
+       PAGINA
+       ========================================================= */
 
-  /* =========================================================
-     MESSAGGI
-     ========================================================= */
-
-  function showMessage(text, type = "success") {
-
-    const message = document.getElementById("message");
-
-    message.textContent = text;
-    message.className = "message " + type;
-
-    clearTimeout(showMessage.timer);
-
-    showMessage.timer = setTimeout(() => {
-      message.textContent = "";
-      message.className = "message";
-    }, 5000);
-  }
-
-
-  /* =========================================================
-     AUTENTICAZIONE
-     ========================================================= */
-
-  async function checkUser() {
-
-    client = getSupabaseClient();
-
-    if (!client) {
-
-      showMessage(
-        "Errore: client Supabase non trovato.",
-        "error"
-      );
-
-      return false;
+    .gabbie-page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 42px 24px 70px;
     }
 
-    const { data, error } = await client.auth.getUser();
 
-    if (error || !data || !data.user) {
-
-      window.location.href = "index.html";
-      return false;
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 30px;
     }
 
-    currentUser = data.user;
 
-    return true;
-  }
-
-
-  /* =========================================================
-     CARICA GABBIE
-     ========================================================= */
-
-  async function loadGabbie() {
-
-    const loading = document.getElementById("loading");
-    const table = document.getElementById("gabbieTable");
-    const emptyState = document.getElementById("emptyState");
-
-    loading.style.display = "block";
-    table.style.display = "none";
-    emptyState.style.display = "none";
-
-    const { data, error } = await client
-      .from("gabbie")
-      .select("id, user_id, numero, posizione, created_at")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-
-      console.error("Errore caricamento gabbie:", error);
-
-      loading.style.display = "none";
-
-      showMessage(
-        "Errore nel caricamento delle gabbie: " +
-        error.message,
-        "error"
-      );
-
-      return;
+    .page-heading-text {
+      max-width: 720px;
     }
 
-    gabbie = data || [];
 
-    updateStats();
-    renderGabbie();
-
-    loading.style.display = "none";
-  }
-
-
-  /* =========================================================
-     STATISTICHE
-     ========================================================= */
-
-  function updateStats() {
-
-    document.getElementById("totalGabbie").textContent =
-      gabbie.length;
-
-    if (gabbie.length === 0) {
-
-      document.getElementById("lastGabbia").textContent = "—";
-
-      return;
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--terracotta);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
-    document.getElementById("lastGabbia").textContent =
-      gabbie[0].numero || "—";
-  }
 
-
-  /* =========================================================
-     FORMATTA DATA
-     ========================================================= */
-
-  function formatDate(value) {
-
-    if (!value) {
-      return "—";
+    .page-title {
+      margin: 0;
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 600;
+      line-height: 0.95;
     }
 
-    const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) {
-      return "—";
+    .page-description {
+      margin: 12px 0 0;
+      color: var(--testo-chiaro);
+      font-size: 0.98rem;
+      line-height: 1.65;
     }
 
-    return date.toLocaleDateString("it-IT", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
-  }
 
+    /* =========================================================
+       STATISTICHE
+       ========================================================= */
 
-  /* =========================================================
-     SICUREZZA HTML
-     ========================================================= */
-
-  function escapeHtml(value) {
-
-    if (value === null || value === undefined) {
-      return "";
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
     }
 
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--bordo);
+      border-radius: 18px;
+      box-shadow: var(--ombra);
+      padding: 20px 22px;
+    }
 
 
-  /* =========================================================
-     RENDER GABBIE
-     ========================================================= */
-
-  function renderGabbie() {
-
-    const tbody = document.getElementById("gabbieBody");
-    const table = document.getElementById("gabbieTable");
-    const emptyState = document.getElementById("emptyState");
-
-    const searchInput =
-      document.getElementById("searchInput");
-
-    const search =
-      searchInput.value.trim().toLowerCase();
-
-    const filtered = gabbie.filter(gabbia => {
-
-      const numero =
-        String(gabbia.numero || "").toLowerCase();
-
-      const posizione =
-        String(gabbia.posizione || "").toLowerCase();
-
-      return (
-        numero.includes(search) ||
-        posizione.includes(search)
-      );
-    });
-
-    tbody.innerHTML = "";
+    .stat-label {
+      margin-bottom: 4px;
+      color: var(--testo-chiaro);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
 
 
-    if (filtered.length === 0) {
+    .stat-value {
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1;
+    }
 
-      table.style.display = "none";
-      emptyState.style.display = "block";
 
-      if (gabbie.length > 0 && search) {
+    /* =========================================================
+       PANNELLO
+       ========================================================= */
 
-        emptyState.querySelector("h3").textContent =
-          "Nessun risultato";
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--bordo);
+      border-radius: 22px;
+      box-shadow: var(--ombra);
+      padding: 26px;
+      margin-bottom: 28px;
+    }
 
-        emptyState.querySelector("p").textContent =
-          "Nessuna gabbia corrisponde alla ricerca.";
 
-      } else {
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
 
-        emptyState.querySelector("h3").textContent =
-          "Nessuna gabbia presente";
 
-        emptyState.querySelector("p").textContent =
-          "Non hai ancora registrato nessuna gabbia. Utilizza il modulo qui sopra per aggiungere la prima.";
+    .panel-title {
+      margin: 0;
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+
+    .panel-subtitle {
+      margin: 4px 0 0;
+      color: var(--testo-chiaro);
+      font-size: 0.86rem;
+    }
+
+
+    /* =========================================================
+       FORM
+       ========================================================= */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      align-items: end;
+      gap: 16px;
+    }
+
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+
+    .field label {
+      color: var(--verde-scuro);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      box-sizing: border-box;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--verde-scuro);
+      font: inherit;
+      padding: 0 13px;
+      outline: none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+
+    .field input:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(24, 92, 69, 0.10);
+    }
+
+
+    .field input::placeholder {
+      color: #a0aaa4;
+    }
+
+
+    /* =========================================================
+       BOTTONI
+       ========================================================= */
+
+    .button {
+      min-height: 46px;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 20px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        opacity 0.18s ease;
+      white-space: nowrap;
+    }
+
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      transform: none;
+    }
+
+
+    .button-primary {
+      background: var(--verde);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(24, 92, 69, 0.18);
+    }
+
+
+    .button-primary:hover {
+      box-shadow: 0 10px 22px rgba(24, 92, 69, 0.24);
+    }
+
+
+    .button-secondary {
+      background: var(--verde-chiaro);
+      color: var(--verde-scuro);
+    }
+
+
+    .button-danger {
+      background: #f7e9e5;
+      color: #9b4932;
+    }
+
+
+    .button-small {
+      min-height: 36px;
+      padding: 0 13px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+    }
+
+
+    /* =========================================================
+       TOOLBAR
+       ========================================================= */
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+
+    .toolbar-title {
+      margin: 0;
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+
+    .search-box {
+      width: min(320px, 100%);
+    }
+
+
+    .search-box input {
+      width: 100%;
+      min-height: 42px;
+      box-sizing: border-box;
+      border: 1px solid var(--bordo);
+      border-radius: 11px;
+      background: #fff;
+      color: var(--verde-scuro);
+      font: inherit;
+      padding: 0 13px;
+      outline: none;
+    }
+
+
+    .search-box input:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(24, 92, 69, 0.08);
+    }
+
+
+    /* =========================================================
+       TABELLA
+       ========================================================= */
+
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--bordo);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--ombra);
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+
+    thead {
+      background: var(--verde-chiaro);
+    }
+
+
+    th {
+      padding: 15px 18px;
+      color: var(--verde-scuro);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+
+    td {
+      padding: 16px 18px;
+      border-top: 1px solid #edf0ed;
+      color: var(--testo);
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+
+    tbody tr {
+      transition: background 0.18s ease;
+    }
+
+
+    tbody tr:hover {
+      background: #fbfcfa;
+    }
+
+
+    .cage-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      height: 42px;
+      padding: 0 11px;
+      border-radius: 12px;
+      background: var(--verde);
+      color: #fff;
+      font-weight: 700;
+    }
+
+
+    .position-text {
+      color: var(--testo);
+    }
+
+
+    .position-empty {
+      color: #9ba59f;
+      font-style: italic;
+    }
+
+
+    .created-date {
+      color: var(--testo-chiaro);
+      font-size: 0.82rem;
+    }
+
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+       ========================================================= */
+
+    .empty-state {
+      display: none;
+      padding: 54px 24px;
+      text-align: center;
+    }
+
+
+    .empty-icon {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--verde-chiaro);
+      color: var(--verde);
+      font-size: 1.7rem;
+    }
+
+
+    .empty-state h3 {
+      margin: 0;
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.7rem;
+    }
+
+
+    .empty-state p {
+      max-width: 430px;
+      margin: 8px auto 0;
+      color: var(--testo-chiaro);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       MESSAGGI
+       ========================================================= */
+
+    .message {
+      display: none;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+
+    .message.success {
+      display: block;
+      background: var(--verde-chiaro);
+      color: var(--verde-scuro);
+      border: 1px solid #cfe0d5;
+    }
+
+
+    .message.error {
+      display: block;
+      background: #f8e9e5;
+      color: #963f2a;
+      border: 1px solid #edcfc6;
+    }
+
+
+    /* =========================================================
+       MODALE
+       ========================================================= */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(9, 47, 35, 0.42);
+      backdrop-filter: blur(4px);
+    }
+
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+
+    .modal {
+      width: min(520px, 100%);
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 25px 70px rgba(9, 47, 35, 0.22);
+      padding: 28px;
+    }
+
+
+    .modal-title {
+      margin: 0;
+      color: var(--verde-scuro);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+
+    .modal-description {
+      margin: 6px 0 22px;
+      color: var(--testo-chiaro);
+      font-size: 0.88rem;
+    }
+
+
+    .modal-fields {
+      display: grid;
+      gap: 15px;
+    }
+
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 23px;
+    }
+
+
+    /* =========================================================
+       LOADING
+       ========================================================= */
+
+    .loading {
+      padding: 45px 20px;
+      text-align: center;
+      color: var(--testo-chiaro);
+      font-size: 0.9rem;
+    }
+
+
+    .loading-spinner {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 12px;
+      border: 3px solid var(--verde-chiaro);
+      border-top-color: var(--verde);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
       }
 
-      return;
+      .form-grid .button {
+        grid-column: 1 / -1;
+      }
+
     }
 
 
-    emptyState.style.display = "none";
-    table.style.display = "table";
+    @media (max-width: 700px) {
+
+      .gabbie-page {
+        padding: 30px 16px 55px;
+      }
+
+      .page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 20px;
+        border-radius: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid .button {
+        grid-column: auto;
+        width: 100%;
+      }
+
+      .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .modal {
+        padding: 23px;
+      }
+
+    }
+
+  </style>
+
+</head>
 
 
-    filtered.forEach(gabbia => {
-
-      const tr = document.createElement("tr");
-
-      const posizione = gabbia.posizione
-        ? `<span class="position-text">${escapeHtml(gabbia.posizione)}</span>`
-        : `<span class="position-empty">Non specificata</span>`;
+<body>
 
 
-      tr.innerHTML = `
+  <!-- =========================================================
+       NAVBAR
+       ========================================================= -->
 
-        <td>
-          <span class="cage-number">
-            ${escapeHtml(gabbia.numero)}
-          </span>
-        </td>
+  <header class="navbar">
 
-        <td>
-          ${posizione}
-        </td>
+    <div class="nav-inner">
 
-        <td>
-          <span class="created-date">
-            ${formatDate(gabbia.created_at)}
-          </span>
-        </td>
+      <a href="dashboard.html" class="brand">
+        <span class="brand-name">ALLEVANDO</span>
+      </a>
 
-        <td>
-          <div class="actions">
 
-            <button
-              type="button"
-              class="button button-secondary button-small"
-              data-action="edit"
-              data-id="${gabbia.id}"
+      <nav class="nav-links">
+
+        <a href="dashboard.html">
+          Dashboard
+        </a>
+
+        <a href="soggetti.html">
+          Soggetti
+        </a>
+
+        <a href="coppie.html">
+          Coppie
+        </a>
+
+        <a href="covate.html">
+          Covate
+        </a>
+
+        <a href="gabbie.html" class="active">
+          Gabbie
+        </a>
+
+      </nav>
+
+
+      <button
+        id="logoutBtn"
+        class="logout-btn"
+        type="button"
+      >
+        Esci
+      </button>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================================================
+       CONTENUTO
+       ========================================================= -->
+
+  <main class="gabbie-page">
+
+
+    <!-- INTRO -->
+
+    <section class="page-heading">
+
+      <div class="page-heading-text">
+
+        <p class="eyebrow">
+          Strutture dell'allevamento
+        </p>
+
+        <h1 class="page-title">
+          Gabbie
+        </h1>
+
+        <p class="page-description">
+          Organizza e identifica le gabbie del tuo allevamento.
+          La posizione ti permette di mantenere una gestione
+          ordinata della struttura.
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =======================================================
+         STATISTICHE
+         ======================================================= -->
+
+    <section class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Gabbie totali
+        </div>
+
+        <div
+          class="stat-value"
+          id="totalGabbie"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-label">
+          Ultimo inserimento
+        </div>
+
+        <div
+          class="stat-value"
+          id="lastGabbia"
+        >
+          —
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =======================================================
+         MESSAGGIO
+         ======================================================= -->
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+
+    <!-- =======================================================
+         NUOVA GABBIA
+         ======================================================= -->
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2 class="panel-title">
+            Aggiungi una gabbia
+          </h2>
+
+          <p class="panel-subtitle">
+            Inserisci il numero e, se vuoi, la posizione.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form id="gabbiaForm">
+
+        <div class="form-grid">
+
+
+          <div class="field">
+
+            <label for="numero">
+              Numero gabbia *
+            </label>
+
+            <input
+              id="numero"
+              name="numero"
+              type="text"
+              placeholder="Es. 01"
+              autocomplete="off"
+              required
             >
-              Modifica
-            </button>
-
-            <button
-              type="button"
-              class="button button-danger button-small"
-              data-action="delete"
-              data-id="${gabbia.id}"
-            >
-              Elimina
-            </button>
 
           </div>
-        </td>
-
-      `;
-
-      tbody.appendChild(tr);
-    });
-  }
 
 
-  /* =========================================================
-     AGGIUNGI GABBIA
-     ========================================================= */
 
-  async function addGabbia(event) {
+          <div class="field">
 
-    event.preventDefault();
+            <label for="posizione">
+              Posizione
+            </label>
 
-    const numeroInput =
-      document.getElementById("numero");
+            <input
+              id="posizione"
+              name="posizione"
+              type="text"
+              placeholder="Es. Batteria A - piano 2"
+              autocomplete="off"
+            >
 
-    const posizioneInput =
-      document.getElementById("posizione");
-
-    const saveBtn =
-      document.getElementById("saveBtn");
-
-    const numero =
-      numeroInput.value.trim();
-
-    const posizione =
-      posizioneInput.value.trim();
+          </div>
 
 
-    if (!numero) {
 
-      showMessage(
-        "Inserisci il numero della gabbia.",
-        "error"
-      );
+          <button
+            class="button button-primary"
+            type="submit"
+            id="saveBtn"
+          >
+            + Aggiungi gabbia
+          </button>
 
-      numeroInput.focus();
 
-      return;
+        </div>
+
+      </form>
+
+    </section>
+
+
+
+    <!-- =======================================================
+         ELENCO
+         ======================================================= -->
+
+    <section>
+
+
+      <div class="toolbar">
+
+        <h2 class="toolbar-title">
+          Le tue gabbie
+        </h2>
+
+
+        <div class="search-box">
+
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Cerca numero o posizione..."
+            autocomplete="off"
+          >
+
+        </div>
+
+      </div>
+
+
+
+      <div class="table-wrapper">
+
+
+        <!-- LOADING -->
+
+        <div
+          id="loading"
+          class="loading"
+        >
+
+          <div class="loading-spinner"></div>
+
+          Caricamento gabbie...
+
+        </div>
+
+
+
+        <!-- TABELLA -->
+
+        <table
+          id="gabbieTable"
+          style="display:none;"
+        >
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Numero
+              </th>
+
+              <th>
+                Posizione
+              </th>
+
+              <th>
+                Inserita il
+              </th>
+
+              <th style="text-align:right;">
+                Azioni
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="gabbieBody"></tbody>
+
+        </table>
+
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+          id="emptyState"
+          class="empty-state"
+        >
+
+          <div class="empty-icon">
+            ⌂
+          </div>
+
+          <h3>
+            Nessuna gabbia presente
+          </h3>
+
+          <p>
+            Non hai ancora registrato nessuna gabbia.
+            Utilizza il modulo qui sopra per aggiungere la prima.
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- =========================================================
+       MODALE MODIFICA
+       ========================================================= -->
+
+  <div
+    id="editModal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="editModalTitle"
+  >
+
+
+    <div class="modal">
+
+
+      <h2
+        id="editModalTitle"
+        class="modal-title"
+      >
+        Modifica gabbia
+      </h2>
+
+
+      <p class="modal-description">
+        Modifica i dati della gabbia selezionata.
+      </p>
+
+
+
+      <form id="editForm">
+
+
+        <input
+          type="hidden"
+          id="editId"
+        >
+
+
+        <div class="modal-fields">
+
+
+          <div class="field">
+
+            <label for="editNumero">
+              Numero gabbia *
+            </label>
+
+            <input
+              id="editNumero"
+              type="text"
+              required
+              autocomplete="off"
+            >
+
+          </div>
+
+
+
+          <div class="field">
+
+            <label for="editPosizione">
+              Posizione
+            </label>
+
+            <input
+              id="editPosizione"
+              type="text"
+              autocomplete="off"
+              placeholder="Es. Batteria A - piano 2"
+            >
+
+          </div>
+
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+
+          <button
+            type="button"
+            id="cancelEditBtn"
+            class="button button-secondary"
+          >
+            Annulla
+          </button>
+
+
+          <button
+            type="submit"
+            class="button button-primary"
+            id="editSaveBtn"
+          >
+            Salva modifiche
+          </button>
+
+
+        </div>
+
+
+      </form>
+
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script>
+
+    let client = null;
+    let currentUser = null;
+    let gabbie = [];
+
+
+    /* =========================================================
+       CLIENT SUPABASE
+       ========================================================= */
+
+    function getSupabaseClient() {
+
+      if (window.supabaseClient) {
+        return window.supabaseClient;
+      }
+
+      if (
+        window.supabase &&
+        typeof window.supabase.from === "function"
+      ) {
+        return window.supabase;
+      }
+
+      return null;
     }
 
 
-    saveBtn.disabled = true;
-    saveBtn.textContent = "Salvataggio...";
+
+    /* =========================================================
+       MESSAGGI
+       ========================================================= */
+
+    function showMessage(text, type = "success") {
+
+      const message =
+        document.getElementById("message");
+
+      if (!message) {
+        return;
+      }
+
+      message.textContent = text;
+      message.className = "message " + type;
+
+      clearTimeout(showMessage.timer);
+
+      showMessage.timer = setTimeout(() => {
+
+        message.textContent = "";
+        message.className = "message";
+
+      }, 5000);
+    }
 
 
-    try {
 
-      const { data, error } = await client
-        .from("gabbie")
-        .insert({
-          user_id: currentUser.id,
-          numero: numero,
-          posizione: posizione || null
-        })
-        .select("id, user_id, numero, posizione, created_at")
-        .single();
+    /* =========================================================
+       AUTENTICAZIONE
+       ========================================================= */
 
+    async function checkUser() {
 
-      if (error) {
-        throw error;
+      client = getSupabaseClient();
+
+      if (!client) {
+
+        showMessage(
+          "Errore: client Supabase non trovato.",
+          "error"
+        );
+
+        return false;
       }
 
 
-      gabbie.unshift(data);
-
-      document
-        .getElementById("gabbiaForm")
-        .reset();
-
-      updateStats();
-      renderGabbie();
-
-      showMessage(
-        "Gabbia " + numero + " aggiunta correttamente."
-      );
-
-    } catch (error) {
-
-      console.error("Errore inserimento:", error);
-
-      showMessage(
-        "Errore nel salvataggio della gabbia: " +
-        error.message,
-        "error"
-      );
-
-    } finally {
-
-      saveBtn.disabled = false;
-      saveBtn.textContent = "+ Aggiungi gabbia";
-    }
-  }
-
-
-  /* =========================================================
-     APRI MODIFICA
-     ========================================================= */
-
-  function openEditModal(id) {
-
-    const gabbia =
-      gabbie.find(item => String(item.id) === String(id));
-
-    if (!gabbia) {
-      return;
-    }
-
-    document.getElementById("editId").value =
-      gabbia.id;
-
-    document.getElementById("editNumero").value =
-      gabbia.numero || "";
-
-    document.getElementById("editPosizione").value =
-      gabbia.posizione || "";
-
-    document
-      .getElementById("editModal")
-      .classList.add("open");
-
-    document
-      .getElementById("editNumero")
-      .focus();
-  }
-
-
-  /* =========================================================
-     CHIUDI MODIFICA
-     ========================================================= */
-
-  function closeEditModal() {
-
-    document
-      .getElementById("editModal")
-      .classList.remove("open");
-  }
-
-
-  /* =========================================================
-     MODIFICA GABBIA
-     ========================================================= */
-
-  async function updateGabbia(event) {
-
-    event.preventDefault();
-
-    const id =
-      document.getElementById("editId").value;
-
-    const numero =
-      document
-        .getElementById("editNumero")
-        .value
-        .trim();
-
-    const posizione =
-      document
-        .getElementById("editPosizione")
-        .value
-        .trim();
-
-    const saveBtn =
-      document.getElementById("editSaveBtn");
-
-
-    if (!numero) {
-
-      showMessage(
-        "Inserisci il numero della gabbia.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    saveBtn.disabled = true;
-    saveBtn.textContent = "Salvataggio...";
-
-
-    try {
-
-      const { data, error } = await client
-        .from("gabbie")
-        .update({
-          numero: numero,
-          posizione: posizione || null
-        })
-        .eq("id", id)
-        .eq("user_id", currentUser.id)
-        .select("id, user_id, numero, posizione, created_at")
-        .single();
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      const index = gabbie.findIndex(
-        item => String(item.id) === String(id)
-      );
-
-      if (index !== -1) {
-        gabbie[index] = data;
-      }
-
-
-      closeEditModal();
-
-      updateStats();
-      renderGabbie();
-
-      showMessage(
-        "Gabbia modificata correttamente."
-      );
-
-    } catch (error) {
-
-      console.error("Errore modifica:", error);
-
-      showMessage(
-        "Errore nella modifica della gabbia: " +
-        error.message,
-        "error"
-      );
-
-    } finally {
-
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Salva modifiche";
-    }
-  }
-
-
-  /* =========================================================
-     ELIMINA GABBIA
-     ========================================================= */
-
-  async function deleteGabbia(id) {
-
-    const gabbia =
-      gabbie.find(item => String(item.id) === String(id));
-
-    if (!gabbia) {
-      return;
-    }
-
-
-    const conferma = window.confirm(
-      "Vuoi davvero eliminare la gabbia " +
-      gabbia.numero +
-      "?"
-    );
-
-
-    if (!conferma) {
-      return;
-    }
-
-
-    try {
-
-      const { error } = await client
-        .from("gabbie")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", currentUser.id);
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      gabbie = gabbie.filter(
-        item => String(item.id) !== String(id)
-      );
-
-      updateStats();
-      renderGabbie();
-
-      showMessage(
-        "Gabbia eliminata correttamente."
-      );
-
-    } catch (error) {
-
-      console.error("Errore eliminazione:", error);
-
-      showMessage(
-        "Errore nell'eliminazione della gabbia: " +
-        error.message,
-        "error"
-      );
-    }
-  }
-
-
-  /* =========================================================
-     EVENTI
-     ========================================================= */
-
-  document
-    .getElementById("gabbiaForm")
-    .addEventListener(
-      "submit",
-      addGabbia
-    );
-
-
-  document
-    .getElementById("editForm")
-    .addEventListener(
-      "submit",
-      updateGabbia
-    );
-
-
-  document
-    .getElementById("cancelEditBtn")
-    .addEventListener(
-      "click",
-      closeEditModal
-    );
-
-
-  document
-    .getElementById("searchInput")
-    .addEventListener(
-      "input",
-      renderGabbie
-    );
-
-
-  document
-    .getElementById("gabbieBody")
-    .addEventListener(
-      "click",
-      event => {
-
-        const button =
-          event.target.closest("button");
-
-        if (!button) {
-          return;
-        }
-
-        const id =
-          button.dataset.id;
-
-        const action =
-          button.dataset.action;
-
-        if (action === "edit") {
-          openEditModal(id);
-        }
-
-        if (action === "delete") {
-          deleteGabbia(id);
-        }
-      }
-    );
-
-
-  document
-    .getElementById("editModal")
-    .addEventListener(
-      "click",
-      event => {
-
-        if (event.target.id === "editModal") {
-          closeEditModal();
-        }
-      }
-    );
-
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Escape") {
-        closeEditModal();
-      }
-    }
-  );
-
-
-  /* =========================================================
-     LOGOUT
-     ========================================================= */
-
-  document
-    .getElementById("logoutBtn")
-    .addEventListener(
-      "click",
-      async () => {
-
-        if (!client) {
-          return;
-        }
-
-        await client.auth.signOut();
+      const {
+        data,
+        error
+      } = await client.auth.getUser();
+
+
+      if (
+        error ||
+        !data ||
+        !data.user
+      ) {
 
         window.location.href = "index.html";
+
+        return false;
+      }
+
+
+      currentUser = data.user;
+
+      return true;
+    }
+
+
+
+    /* =========================================================
+       CARICAMENTO GABBIE
+       ========================================================= */
+
+    async function loadGabbie() {
+
+      const loading =
+        document.getElementById("loading");
+
+      const table =
+        document.getElementById("gabbieTable");
+
+      const emptyState =
+        document.getElementById("emptyState");
+
+
+      loading.style.display = "block";
+      table.style.display = "none";
+      emptyState.style.display = "none";
+
+
+      const {
+        data,
+        error
+      } = await client
+
+        .from("gabbie")
+
+        .select(
+          "id, user_id, numero, posizione, created_at"
+        )
+
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+      if (error) {
+
+        console.error(
+          "Errore caricamento gabbie:",
+          error
+        );
+
+        loading.style.display = "none";
+
+        showMessage(
+          "Errore nel caricamento delle gabbie: " +
+          error.message,
+          "error"
+        );
+
+        return;
+      }
+
+
+      gabbie = data || [];
+
+
+      updateStats();
+      renderGabbie();
+
+
+      loading.style.display = "none";
+    }
+
+
+
+    /* =========================================================
+       STATISTICHE
+       ========================================================= */
+
+    function updateStats() {
+
+      document
+        .getElementById("totalGabbie")
+        .textContent = gabbie.length;
+
+
+      if (gabbie.length === 0) {
+
+        document
+          .getElementById("lastGabbia")
+          .textContent = "—";
+
+        return;
+      }
+
+
+      document
+        .getElementById("lastGabbia")
+        .textContent =
+          gabbie[0].numero || "—";
+    }
+
+
+
+    /* =========================================================
+       DATA
+       ========================================================= */
+
+    function formatDate(value) {
+
+      if (!value) {
+        return "—";
+      }
+
+
+      const date = new Date(value);
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+        return "—";
+      }
+
+
+      return date.toLocaleDateString(
+        "it-IT",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      );
+    }
+
+
+
+    /* =========================================================
+       ESCAPE HTML
+       ========================================================= */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+
+      return String(value)
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+    }
+
+
+
+    /* =========================================================
+       RENDER
+       ========================================================= */
+
+    function renderGabbie() {
+
+      const tbody =
+        document.getElementById("gabbieBody");
+
+      const table =
+        document.getElementById("gabbieTable");
+
+      const emptyState =
+        document.getElementById("emptyState");
+
+      const searchInput =
+        document.getElementById("searchInput");
+
+
+      const search =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      const filtered =
+        gabbie.filter(gabbia => {
+
+          const numero =
+            String(
+              gabbia.numero || ""
+            ).toLowerCase();
+
+
+          const posizione =
+            String(
+              gabbia.posizione || ""
+            ).toLowerCase();
+
+
+          return (
+            numero.includes(search) ||
+            posizione.includes(search)
+          );
+        });
+
+
+      tbody.innerHTML = "";
+
+
+      if (filtered.length === 0) {
+
+        table.style.display = "none";
+        emptyState.style.display = "block";
+
+
+        if (
+          gabbie.length > 0 &&
+          search
+        ) {
+
+          emptyState
+            .querySelector("h3")
+            .textContent =
+              "Nessun risultato";
+
+
+          emptyState
+            .querySelector("p")
+            .textContent =
+              "Nessuna gabbia corrisponde alla ricerca.";
+
+        } else {
+
+          emptyState
+            .querySelector("h3")
+            .textContent =
+              "Nessuna gabbia presente";
+
+
+          emptyState
+            .querySelector("p")
+            .textContent =
+              "Non hai ancora registrato nessuna gabbia. Utilizza il modulo qui sopra per aggiungere la prima.";
+        }
+
+
+        return;
+      }
+
+
+      emptyState.style.display = "none";
+      table.style.display = "table";
+
+
+      filtered.forEach(gabbia => {
+
+        const tr =
+          document.createElement("tr");
+
+
+        const posizione =
+          gabbia.posizione
+
+            ? `
+              <span class="position-text">
+                ${escapeHtml(gabbia.posizione)}
+              </span>
+            `
+
+            : `
+              <span class="position-empty">
+                Non specificata
+              </span>
+            `;
+
+
+        tr.innerHTML = `
+
+          <td>
+
+            <span class="cage-number">
+              ${escapeHtml(gabbia.numero)}
+            </span>
+
+          </td>
+
+
+          <td>
+            ${posizione}
+          </td>
+
+
+          <td>
+
+            <span class="created-date">
+              ${formatDate(gabbia.created_at)}
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <div class="actions">
+
+              <button
+                type="button"
+                class="button button-secondary button-small"
+                data-action="edit"
+                data-id="${escapeHtml(gabbia.id)}"
+              >
+                Modifica
+              </button>
+
+
+              <button
+                type="button"
+                class="button button-danger button-small"
+                data-action="delete"
+                data-id="${escapeHtml(gabbia.id)}"
+              >
+                Elimina
+              </button>
+
+            </div>
+
+          </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+      });
+    }
+
+
+
+    /* =========================================================
+       AGGIUNTA
+       ========================================================= */
+
+    async function addGabbia(event) {
+
+      event.preventDefault();
+
+
+      const numeroInput =
+        document.getElementById("numero");
+
+      const posizioneInput =
+        document.getElementById("posizione");
+
+      const saveBtn =
+        document.getElementById("saveBtn");
+
+
+      const numero =
+        numeroInput.value.trim();
+
+      const posizione =
+        posizioneInput.value.trim();
+
+
+      if (!numero) {
+
+        showMessage(
+          "Inserisci il numero della gabbia.",
+          "error"
+        );
+
+        numeroInput.focus();
+
+        return;
+      }
+
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Salvataggio...";
+
+
+      try {
+
+        const {
+          data,
+          error
+        } = await client
+
+          .from("gabbie")
+
+          .insert({
+            user_id: currentUser.id,
+            numero: numero,
+            posizione: posizione || null
+          })
+
+          .select(
+            "id, user_id, numero, posizione, created_at"
+          )
+
+          .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        gabbie.unshift(data);
+
+
+        document
+          .getElementById("gabbiaForm")
+          .reset();
+
+
+        updateStats();
+        renderGabbie();
+
+
+        showMessage(
+          "Gabbia " +
+          numero +
+          " aggiunta correttamente."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Errore inserimento:",
+          error
+        );
+
+
+        showMessage(
+          "Errore nel salvataggio della gabbia: " +
+          error.message,
+          "error"
+        );
+
+
+      } finally {
+
+        saveBtn.disabled = false;
+        saveBtn.textContent =
+          "+ Aggiungi gabbia";
+      }
+    }
+
+
+
+    /* =========================================================
+       MODIFICA - APERTURA
+       ========================================================= */
+
+    function openEditModal(id) {
+
+      const gabbia =
+        gabbie.find(
+          item =>
+            String(item.id) ===
+            String(id)
+        );
+
+
+      if (!gabbia) {
+        return;
+      }
+
+
+      document
+        .getElementById("editId")
+        .value = gabbia.id;
+
+
+      document
+        .getElementById("editNumero")
+        .value =
+          gabbia.numero || "";
+
+
+      document
+        .getElementById("editPosizione")
+        .value =
+          gabbia.posizione || "";
+
+
+      document
+        .getElementById("editModal")
+        .classList.add("open");
+
+
+      document
+        .getElementById("editNumero")
+        .focus();
+    }
+
+
+
+    /* =========================================================
+       MODIFICA - CHIUSURA
+       ========================================================= */
+
+    function closeEditModal() {
+
+      document
+        .getElementById("editModal")
+        .classList.remove("open");
+    }
+
+
+
+    /* =========================================================
+       MODIFICA - SALVATAGGIO
+       ========================================================= */
+
+    async function updateGabbia(event) {
+
+      event.preventDefault();
+
+
+      const id =
+        document
+          .getElementById("editId")
+          .value;
+
+
+      const numero =
+        document
+          .getElementById("editNumero")
+          .value
+          .trim();
+
+
+      const posizione =
+        document
+          .getElementById("editPosizione")
+          .value
+          .trim();
+
+
+      const saveBtn =
+        document
+          .getElementById("editSaveBtn");
+
+
+      if (!numero) {
+
+        showMessage(
+          "Inserisci il numero della gabbia.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      saveBtn.disabled = true;
+      saveBtn.textContent =
+        "Salvataggio...";
+
+
+      try {
+
+        const {
+          data,
+          error
+        } = await client
+
+          .from("gabbie")
+
+          .update({
+            numero: numero,
+            posizione: posizione || null
+          })
+
+          .eq("id", id)
+
+          .eq(
+            "user_id",
+            currentUser.id
+          )
+
+          .select(
+            "id, user_id, numero, posizione, created_at"
+          )
+
+          .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        const index =
+          gabbie.findIndex(
+            item =>
+              String(item.id) ===
+              String(id)
+          );
+
+
+        if (index !== -1) {
+          gabbie[index] = data;
+        }
+
+
+        closeEditModal();
+
+        updateStats();
+        renderGabbie();
+
+
+        showMessage(
+          "Gabbia modificata correttamente."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Errore modifica:",
+          error
+        );
+
+
+        showMessage(
+          "Errore nella modifica della gabbia: " +
+          error.message,
+          "error"
+        );
+
+
+      } finally {
+
+        saveBtn.disabled = false;
+        saveBtn.textContent =
+          "Salva modifiche";
+      }
+    }
+
+
+
+    /* =========================================================
+       ELIMINAZIONE
+       ========================================================= */
+
+    async function deleteGabbia(id) {
+
+      const gabbia =
+        gabbie.find(
+          item =>
+            String(item.id) ===
+            String(id)
+        );
+
+
+      if (!gabbia) {
+        return;
+      }
+
+
+      const conferma =
+        window.confirm(
+          "Vuoi davvero eliminare la gabbia " +
+          gabbia.numero +
+          "?"
+        );
+
+
+      if (!conferma) {
+        return;
+      }
+
+
+      try {
+
+        const {
+          error
+        } = await client
+
+          .from("gabbie")
+
+          .delete()
+
+          .eq("id", id)
+
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        gabbie =
+          gabbie.filter(
+            item =>
+              String(item.id) !==
+              String(id)
+          );
+
+
+        updateStats();
+        renderGabbie();
+
+
+        showMessage(
+          "Gabbia eliminata correttamente."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Errore eliminazione:",
+          error
+        );
+
+
+        showMessage(
+          "Errore nell'eliminazione della gabbia: " +
+          error.message,
+          "error"
+        );
+      }
+    }
+
+
+
+    /* =========================================================
+       EVENTI + AVVIO
+       ========================================================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+
+        /* -----------------------------------------------
+           FORM NUOVA GABBIA
+           ----------------------------------------------- */
+
+        const gabbiaForm =
+          document.getElementById(
+            "gabbiaForm"
+          );
+
+
+        if (gabbiaForm) {
+
+          gabbiaForm.addEventListener(
+            "submit",
+            addGabbia
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           FORM MODIFICA
+           ----------------------------------------------- */
+
+        const editForm =
+          document.getElementById(
+            "editForm"
+          );
+
+
+        if (editForm) {
+
+          editForm.addEventListener(
+            "submit",
+            updateGabbia
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           ANNULLA MODIFICA
+           ----------------------------------------------- */
+
+        const cancelEditBtn =
+          document.getElementById(
+            "cancelEditBtn"
+          );
+
+
+        if (cancelEditBtn) {
+
+          cancelEditBtn.addEventListener(
+            "click",
+            closeEditModal
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           RICERCA
+           ----------------------------------------------- */
+
+        const searchInput =
+          document.getElementById(
+            "searchInput"
+          );
+
+
+        if (searchInput) {
+
+          searchInput.addEventListener(
+            "input",
+            renderGabbie
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           AZIONI TABELLA
+           ----------------------------------------------- */
+
+        const gabbieBody =
+          document.getElementById(
+            "gabbieBody"
+          );
+
+
+        if (gabbieBody) {
+
+          gabbieBody.addEventListener(
+            "click",
+            function (event) {
+
+              const button =
+                event.target.closest(
+                  "button"
+                );
+
+
+              if (!button) {
+                return;
+              }
+
+
+              const id =
+                button.dataset.id;
+
+
+              const action =
+                button.dataset.action;
+
+
+              if (
+                action === "edit"
+              ) {
+
+                openEditModal(id);
+
+              }
+
+
+              if (
+                action === "delete"
+              ) {
+
+                deleteGabbia(id);
+
+              }
+
+            }
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           CHIUSURA MODALE CLICCANDO FUORI
+           ----------------------------------------------- */
+
+        const editModal =
+          document.getElementById(
+            "editModal"
+          );
+
+
+        if (editModal) {
+
+          editModal.addEventListener(
+            "click",
+            function (event) {
+
+              if (
+                event.target ===
+                editModal
+              ) {
+
+                closeEditModal();
+
+              }
+
+            }
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           ESC
+           ----------------------------------------------- */
+
+        document.addEventListener(
+          "keydown",
+          function (event) {
+
+            if (
+              event.key ===
+              "Escape"
+            ) {
+
+              closeEditModal();
+
+            }
+
+          }
+        );
+
+
+
+        /* -----------------------------------------------
+           LOGOUT
+           ----------------------------------------------- */
+
+        const logoutBtn =
+          document.getElementById(
+            "logoutBtn"
+          );
+
+
+        if (logoutBtn) {
+
+          logoutBtn.addEventListener(
+            "click",
+            async function () {
+
+              if (!client) {
+                return;
+              }
+
+
+              await client.auth.signOut();
+
+
+              window.location.href =
+                "index.html";
+
+            }
+          );
+
+        }
+
+
+
+        /* -----------------------------------------------
+           AVVIO
+           ----------------------------------------------- */
+
+        (async function init() {
+
+          const authenticated =
+            await checkUser();
+
+
+          if (!authenticated) {
+            return;
+          }
+
+
+          await loadGabbie();
+
+        })();
+
       }
     );
 
+  </script>
 
-  /* =========================================================
-     AVVIO
-     ========================================================= */
-
-  (async function init() {
-
-    const authenticated =
-      await checkUser();
-
-    if (!authenticated) {
-      return;
-    }
-
-    await loadGabbie();
-
-  })();
-
-</script>
+</body>
+</html>
