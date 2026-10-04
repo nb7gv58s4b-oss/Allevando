@@ -3429,6 +3429,11 @@ async function sincronizzaUova(
     const daCreare = [];
 
 
+    /*
+       Gli stati scelti nel form vengono conservati
+       in uovaCorrenti anche prima che le uova esistano
+       nel database.
+    */
     for (
         let numero = 1;
         numero <= numeroUova;
@@ -3441,6 +3446,26 @@ async function sincronizzaUova(
                     Number(uovo.numero) ===
                     numero
             );
+
+
+        const selezionata =
+            uovaCorrenti.find(
+                uovo =>
+                    Number(uovo.numero) ===
+                    numero
+            );
+
+
+        const stato =
+            selezionata?.stato ||
+            esistente?.stato ||
+            "Da verificare";
+
+
+        const soggettoId =
+            selezionata?.soggetto_id ||
+            esistente?.soggetto_id ||
+            null;
 
 
         if (
@@ -3459,12 +3484,66 @@ async function sincronizzaUova(
                     numero,
 
                 stato:
-                    "Da verificare",
+                    stato,
 
                 soggetto_id:
-                    null
+                    soggettoId
 
             });
+
+        } else {
+
+            /*
+               Se l'uovo esiste già, aggiorniamo lo stato
+               solo quando quello scelto nel form è diverso.
+            */
+            if (
+                selezionata &&
+                (
+                    selezionata.stato !==
+                    esistente.stato ||
+                    (
+                        selezionata.soggetto_id ||
+                        null
+                    ) !==
+                    (
+                        esistente.soggetto_id ||
+                        null
+                    )
+                )
+            ) {
+
+                const aggiornamento =
+                    await client
+                        .from("uova")
+                        .update({
+
+                            stato:
+                                stato,
+
+                            soggetto_id:
+                                soggettoId
+
+                        })
+                        .eq(
+                            "id",
+                            esistente.id
+                        )
+                        .eq(
+                            "user_id",
+                            utenteCorrente.id
+                        );
+
+
+                if (
+                    aggiornamento.error
+                ) {
+
+                    throw aggiornamento.error;
+
+                }
+
+            }
 
         }
 
@@ -3477,9 +3556,7 @@ async function sincronizzaUova(
 
         const inserimento =
             await client
-
                 .from("uova")
-
                 .insert(
                     daCreare
                 );
@@ -3550,12 +3627,71 @@ async function sincronizzaUova(
     }
 
 
+    /*
+       Aggiorna il numero di uova schiuse nella covata.
+       Non richiede la creazione di alcun soggetto.
+    */
+    const uovaAggiornate =
+        await client
+            .from("uova")
+            .select("stato")
+            .eq(
+                "covata_id",
+                covataId
+            )
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            );
+
+
+    if (
+        !uovaAggiornate.error
+    ) {
+
+        const numeroSchiuse =
+            (
+                uovaAggiornate.data || []
+            ).filter(
+                uovo =>
+                    uovo.stato ===
+                    "Schiuso"
+            ).length;
+
+
+        const aggiornamentoCovata =
+            await client
+                .from("covate")
+                .update({
+                    schiuse:
+                        numeroSchiuse
+                })
+                .eq(
+                    "id",
+                    covataId
+                )
+                .eq(
+                    "user_id",
+                    utenteCorrente.id
+                );
+
+
+        if (
+            aggiornamentoCovata.error
+        ) {
+
+            throw aggiornamentoCovata.error;
+
+        }
+
+    }
+
+
     await caricaUova(
         covataId
     );
 
 }
-
 
 /* =========================================================
    CARICA COVATE
