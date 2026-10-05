@@ -1,623 +1,1287 @@
 ```html
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Gabbie - ALLEVANDO</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
+    <title>Gabbie — ALLEVANDO</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
     <style>
-        * {
-            box-sizing: border-box;
+
+        /* =====================================================
+           GABBIE ALLEVANDO — STILE COERENTE CON DASHBOARD
+        ===================================================== */
+
+        body.dashboard-page {
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(24, 92, 69, 0.045),
+                    transparent 30%
+                ),
+                #faf8f2;
         }
 
-        body {
-            margin: 0;
-            font-family: "Inter", Arial, sans-serif;
-            background: #fdf7ee;
-            color: #0f172a;
-        }
 
-        /* =========================
-           NAVBAR
-        ========================= */
+        /* =====================================================
+           HEADER
+        ===================================================== */
 
-        .navbar {
-            background: #166534;
-            color: white;
-            padding: 16px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.10);
-        }
-
-        .navbar .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: white;
-            text-decoration: none;
-            letter-spacing: -0.3px;
-        }
-
-        .navbar nav {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .navbar nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0.95;
-            transition: opacity 0.2s ease;
-        }
-
-        .navbar nav a:hover {
-            opacity: 1;
-            text-decoration: none;
-        }
-
-        .logout-btn {
-            background: #b91c1c;
-            border: none;
-            color: white;
-            padding: 9px 15px;
-            border-radius: 9px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: transform 0.15s ease, background 0.15s ease;
-        }
-
-        .logout-btn:hover {
-            background: #991b1b;
-            transform: translateY(-1px);
-        }
-
-        /* =========================
-           LAYOUT
-        ========================= */
-
-        .container {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 48px 24px 60px;
-        }
-
-        .page-header {
-            margin-bottom: 30px;
-        }
-
-        .eyebrow {
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-        }
-
-        h1 {
-            margin: 0 0 8px;
-            color: #0f172a;
-            font-size: 38px;
-            line-height: 1.1;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .intro {
-            color: #64748b;
-            margin: 0;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        /* =========================
-           MESSAGGI
-        ========================= */
-
-        .message {
-            padding: 13px 16px;
-            border-radius: 12px;
-            margin-bottom: 22px;
-            display: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .message.success {
-            background: #dcfce7;
-            color: #166534;
-            display: block;
-        }
-
-        .message.error {
-            background: #fee2e2;
-            color: #991b1b;
-            display: block;
-        }
-
-        /* =========================
-           STATISTICHE
-        ========================= */
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            position: relative;
-            background: white;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 18px;
-            padding: 22px 24px;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.055);
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: "";
-            position: absolute;
-            left: 0;
+        .app-header {
+            position: sticky;
             top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #166534;
+            z-index: 100;
+
+            background: rgba(250, 248, 242, 0.94);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid #e2e5df;
         }
 
-        .stat-card .label {
-            color: #64748b;
+        .app-header-inner {
+            width: min(1280px, calc(100% - 40px));
+
+            min-height: 82px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+        .app-logo img {
+            width: 175px;
+            height: auto;
+
+            display: block;
+
+            object-fit: contain;
+        }
+
+
+        /* =====================================================
+           NAV
+        ===================================================== */
+
+        .app-nav {
+            display: flex;
+            align-items: center;
+
+            gap: 4px;
+
+            margin-left: auto;
+        }
+
+        .app-nav a {
+            position: relative;
+
+            padding: 10px 14px;
+
+            color: #65716b;
+
+            border-radius: 10px;
+
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
+
+            text-decoration: none;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease;
         }
 
-        .stat-card .value {
-            color: #166534;
-            font-size: 30px;
-            line-height: 1;
+        .app-nav a:hover {
+            color: #185c45;
+            background: #e9f3ee;
+        }
+
+        .app-nav a.active {
+            color: #0d3d2d;
+            background: #e4efe8;
+        }
+
+        .app-nav a.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 14px;
+            right: 14px;
+            bottom: 4px;
+
+            height: 2px;
+
+            background: #185c45;
+
+            border-radius: 999px;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .logout-button {
+            min-height: 40px;
+
+            padding: 9px 16px;
+
+            background: transparent;
+
+            color: #68736d;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .logout-button:hover {
+            color: #b84c4c;
+
+            background: #f9e5e5;
+
+            border-color: #e7c1c1;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .dashboard-main {
+            width: min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 46px 0 80px;
+        }
+
+
+        /* =====================================================
+           TOP AREA
+        ===================================================== */
+
+        .dashboard-top {
+            display: flex;
+
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 30px;
+
+            margin-bottom: 32px;
+        }
+
+        .dashboard-kicker {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #185c45;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.15em;
+
+            text-transform: uppercase;
+        }
+
+        .dashboard-title {
+            margin: 0;
+
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: clamp(42px, 5vw, 64px);
+
+            font-weight: 700;
+
+            line-height: 0.95;
+
+            letter-spacing: -0.025em;
+        }
+
+        .dashboard-title span {
+            color: #185c45;
+        }
+
+        .dashboard-subtitle {
+            max-width: 620px;
+
+            margin-top: 12px;
+
+            color: #68736d;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           STATISTICHE
+        ===================================================== */
+
+        .stats-grid-new {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 38px;
+        }
+
+        .stat-card-new {
+            position: relative;
+
+            min-height: 150px;
+
+            padding: 22px;
+
+            overflow: hidden;
+
+            background: white;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 5px 20px rgba(24, 44, 36, 0.045);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .stat-card-new:hover {
+            transform: translateY(-3px);
+
+            border-color: #cbd8ce;
+
+            box-shadow:
+                0 14px 32px rgba(24, 44, 36, 0.09);
+        }
+
+        .stat-card-new::after {
+            content: "";
+
+            position: absolute;
+
+            width: 100px;
+            height: 100px;
+
+            right: -40px;
+            bottom: -40px;
+
+            background: #e9f3ee;
+
+            border-radius: 50%;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 18px;
+
+            background: #e9f3ee;
+
+            border-radius: 12px;
+
+            color: #185c45;
+
+            font-size: 19px;
             font-weight: 800;
         }
 
-        /* =========================
-           CARD
-        ========================= */
+        .stat-card-new h3 {
+            margin: 0 0 4px;
 
-        .card {
+            color: #68736d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .stat-number {
+            display: block;
+
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: 48px;
+
+            font-weight: 700;
+
+            line-height: 0.9;
+        }
+
+        .stat-description {
+            display: block;
+
+            margin-top: 11px;
+
+            color: #8a938e;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           PANNELLI
+        ===================================================== */
+
+        .dashboard-panel {
+            padding: 24px;
+
             background: white;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 24px;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.055);
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 5px 20px rgba(24, 44, 36, 0.045);
+
+            margin-bottom: 20px;
         }
 
-        .card-header {
-            margin-bottom: 22px;
+        .panel-title {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
         }
 
-        .card h2 {
+        .panel-title h2 {
             margin: 0;
-            color: #0f172a;
-            font-size: 21px;
-            font-weight: 750;
-            letter-spacing: -0.3px;
+
+            color: #17211d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 15px;
+
+            font-weight: 800;
         }
 
-        .card-subtitle {
-            color: #64748b;
-            font-size: 14px;
-            margin-top: 6px;
+        .panel-title span {
+            color: #8a938e;
+
+            font-size: 11px;
         }
 
-        /* =========================
+
+        /* =====================================================
            FORM
-        ========================= */
+        ===================================================== */
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 16px;
+
+            grid-template-columns:
+                1fr 1fr auto;
+
+            gap: 12px;
+
             align-items: end;
         }
 
         .form-group {
             display: flex;
+
             flex-direction: column;
+
             gap: 7px;
         }
 
         .form-group label {
-            color: #334155;
-            font-weight: 650;
-            font-size: 13px;
+            color: #68736d;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.03em;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 13px;
-            border: 1px solid #d8dee8;
-            border-radius: 11px;
-            background: #fff;
-            color: #0f172a;
-            font-size: 14px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
 
-        .form-group input::placeholder {
-            color: #94a3b8;
+            min-height: 42px;
+
+            padding: 10px 12px;
+
+            box-sizing: border-box;
+
+            background: #f8faf8;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 10px;
+
+            color: #17211d;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #166534;
-            box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.10);
+
+            background: white;
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px rgba(24, 92, 69, 0.08);
         }
 
+        .form-group input::placeholder {
+            color: #9aa39e;
+        }
+
+
+        /* =====================================================
+           PULSANTI
+        ===================================================== */
+
         .btn-primary {
-            background: #166534;
+            min-height: 42px;
+
+            padding: 10px 18px;
+
+            background: #185c45;
+
             color: white;
-            border: none;
-            padding: 12px 19px;
-            min-height: 43px;
-            border-radius: 11px;
+
+            border: 1px solid #185c45;
+
+            border-radius: 10px;
+
             cursor: pointer;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 13px;
+
             font-weight: 700;
-            font-size: 14px;
+
             white-space: nowrap;
-            transition: background 0.2s ease, transform 0.15s ease;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
         }
 
         .btn-primary:hover {
-            background: #14532d;
+            background: #0d3d2d;
+
             transform: translateY(-1px);
         }
 
-        /* =========================
+
+        .btn-secondary {
+            min-height: 40px;
+
+            padding: 9px 16px;
+
+            background: #f1f3f1;
+
+            color: #334039;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .btn-secondary:hover {
+            background: #e8ece8;
+        }
+
+
+        /* =====================================================
            RICERCA
-        ========================= */
+        ===================================================== */
 
         .search-box {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d8dee8;
-            border-radius: 11px;
-            background: #f8fafc;
-            color: #0f172a;
-            font-size: 14px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
 
-        .search-box input::placeholder {
-            color: #94a3b8;
+            min-height: 42px;
+
+            padding: 10px 13px;
+
+            box-sizing: border-box;
+
+            background: #f8faf8;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 10px;
+
+            color: #17211d;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .search-box input:focus {
             outline: none;
+
             background: white;
-            border-color: #166534;
-            box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.10);
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px rgba(24, 92, 69, 0.08);
         }
 
-        /* =========================
+        .search-box input::placeholder {
+            color: #9aa39e;
+        }
+
+
+        /* =====================================================
            TABELLA
-        ========================= */
+        ===================================================== */
 
         .table-wrapper {
+            width: 100%;
+
             overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 13px;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
         }
 
         th {
-            background: #f0fdf4;
-            color: #166534;
+            padding: 12px 13px;
+
+            background: #f8faf8;
+
+            color: #68736d;
+
+            border-top: 1px solid #e5eae5;
+
+            border-bottom: 1px solid #e5eae5;
+
             text-align: left;
-            padding: 13px 15px;
-            font-size: 12px;
-            font-weight: 750;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.06em;
+
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            border-bottom: 1px solid #dcfce7;
+        }
+
+        th:first-child {
+            border-left: 1px solid #e5eae5;
+
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-right: 1px solid #e5eae5;
+
+            border-top-right-radius: 10px;
         }
 
         td {
-            padding: 14px 15px;
-            border-bottom: 1px solid #edf0f3;
-            font-size: 14px;
-            color: #475569;
+            padding: 14px 13px;
+
+            color: #68736d;
+
+            border-bottom: 1px solid #e8ece8;
+
+            font-size: 12px;
+
+            vertical-align: middle;
         }
 
-        tbody tr:last-child td {
-            border-bottom: none;
+        td strong {
+            color: #17211d;
+
+            font-size: 13px;
         }
 
         tbody tr {
             transition: background 0.15s ease;
         }
 
-        tbody tr:hover {
-            background: #f8fafc;
+        tbody tr:hover td {
+            background: #fafcfb;
         }
 
-        td strong {
-            color: #0f172a;
-            font-weight: 700;
-        }
 
-        /* =========================
+        /* =====================================================
            AZIONI
-        ========================= */
+        ===================================================== */
 
         .actions {
             display: flex;
-            gap: 7px;
+
             align-items: center;
+
+            gap: 7px;
         }
 
         .btn-edit,
         .btn-delete {
-            border: none;
-            padding: 8px 11px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
+            min-height: 32px;
 
-        .btn-edit:hover,
-        .btn-delete:hover {
-            transform: translateY(-1px);
+            padding: 6px 10px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 11px;
+
+            font-weight: 700;
         }
 
         .btn-edit {
-            background: #e2e8f0;
-            color: #334155;
+            background: #e9f3ee;
+
+            color: #185c45;
+
+            border: 1px solid #d4e5db;
         }
 
         .btn-edit:hover {
-            background: #cbd5e1;
+            background: #dcece3;
         }
 
         .btn-delete {
-            background: #fee2e2;
-            color: #b91c1c;
+            background: #f9e5e5;
+
+            color: #b84c4c;
+
+            border: 1px solid #e7c1c1;
         }
 
         .btn-delete:hover {
-            background: #fecaca;
+            background: #f4d9d9;
         }
 
-        /* =========================
-           VUOTO
-        ========================= */
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
 
         .empty {
+            padding: 35px 20px;
+
+            color: #8a938e;
+
             text-align: center;
-            padding: 35px 20px 10px;
-            color: #64748b;
-            font-size: 14px;
+
+            font-size: 12px;
         }
 
-        /* =========================
+
+        /* =====================================================
+           MESSAGGI
+        ===================================================== */
+
+        .message {
+            display: none;
+
+            margin-bottom: 20px;
+
+            padding: 12px 15px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #e9f3ee;
+
+            color: #185c45;
+
+            border: 1px solid #cfe2d7;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #f9e5e5;
+
+            color: #a43f3f;
+
+            border: 1px solid #e7c1c1;
+        }
+
+
+        /* =====================================================
            MODALE
-        ========================= */
+        ===================================================== */
 
         .modal {
             display: none;
+
             position: fixed;
+
             inset: 0;
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(2px);
+
             z-index: 1000;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
+
+            box-sizing: border-box;
+
+            background: rgba(13, 61, 45, 0.38);
+
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: white;
             width: 100%;
+
             max-width: 500px;
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.20);
+
+            padding: 24px;
+
+            box-sizing: border-box;
+
+            background: white;
+
+            border: 1px solid #dfe4de;
+
+            border-radius: 17px;
+
+            box-shadow:
+                0 18px 50px rgba(24, 44, 36, 0.16);
         }
 
         .modal-content h2 {
-            margin: 0 0 22px;
-            color: #0f172a;
-            font-size: 22px;
-            font-weight: 750;
+            margin: 0 0 20px;
+
+            color: #0d3d2d;
+
+            font-family:
+                "Cormorant Garamond",
+                Georgia,
+                serif;
+
+            font-size: 32px;
+
+            line-height: 1;
         }
 
         .modal-buttons {
             display: flex;
+
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 24px;
+
+            gap: 8px;
+
+            margin-top: 20px;
         }
 
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #334155;
-            border: none;
-            padding: 11px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .dashboard-footer {
+            margin-top: 50px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #e1e5e0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            color: #8a938e;
+
+            font-size: 11px;
         }
 
-        .btn-secondary:hover {
-            background: #cbd5e1;
+        .dashboard-footer strong {
+            color: #185c45;
         }
 
-        /* =========================
+
+        /* =====================================================
            RESPONSIVE
-        ========================= */
+        ===================================================== */
 
-        @media (max-width: 800px) {
+        @media (max-width: 1000px) {
 
-            .navbar {
-                padding: 15px;
-                flex-direction: column;
-                gap: 13px;
-            }
-
-            .navbar nav {
+            .app-header-inner {
                 flex-wrap: wrap;
+
+                padding: 14px 0;
+            }
+
+            .app-nav {
+                order: 3;
+
+                width: 100%;
+
                 justify-content: center;
-                gap: 10px 14px;
+
+                overflow-x: auto;
+
+                padding-bottom: 2px;
             }
 
-            .container {
-                padding: 35px 16px 45px;
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
             }
 
-            h1 {
-                font-size: 34px;
+            .form-grid .btn-primary {
+                grid-column: 1 / -1;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .app-header-inner {
+                width: min(100% - 24px, 1280px);
+
+                min-height: 70px;
+
+                gap: 10px;
             }
 
-            .stats {
+            .app-logo img {
+                width: 135px;
+            }
+
+            .logout-button {
+                padding: 8px 11px;
+
+                font-size: 11px;
+            }
+
+            .app-nav {
+                justify-content: flex-start;
+            }
+
+            .app-nav a {
+                padding: 8px 11px;
+
+                white-space: nowrap;
+
+                font-size: 11px;
+            }
+
+            .dashboard-main {
+                width: min(100% - 24px, 1280px);
+
+                padding-top: 32px;
+            }
+
+            .dashboard-top {
+                align-items: stretch;
+
+                flex-direction: column;
+
+                gap: 20px;
+            }
+
+            .dashboard-title {
+                font-size: 48px;
+            }
+
+            .stats-grid-new {
                 grid-template-columns: 1fr;
+
+                gap: 10px;
+            }
+
+            .stat-card-new {
+                min-height: 135px;
+
+                padding: 17px;
+            }
+
+            .stat-icon {
+                width: 36px;
+                height: 36px;
+
+                margin-bottom: 13px;
+
+                font-size: 16px;
+            }
+
+            .stat-number {
+                font-size: 40px;
+            }
+
+            .stat-description {
+                font-size: 10px;
+            }
+
+            .dashboard-panel {
+                padding: 18px;
             }
 
             .form-grid {
                 grid-template-columns: 1fr;
             }
 
-            .btn-primary {
-                width: 100%;
+            .form-grid .btn-primary {
+                grid-column: auto;
             }
 
-            .card {
-                padding: 21px 18px;
-                border-radius: 17px;
+            .table-wrapper {
+                margin-left: -18px;
+
+                width: calc(100% + 36px);
+
+                padding: 0 18px;
+
+                box-sizing: border-box;
             }
 
-            .actions {
-                flex-wrap: wrap;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            .navbar .logo {
-                font-size: 22px;
+            table {
+                min-width: 650px;
             }
 
-            .navbar nav {
-                gap: 8px 11px;
-            }
+            .dashboard-footer {
+                flex-direction: column;
 
-            .navbar nav a {
-                font-size: 13px;
-            }
+                align-items: flex-start;
 
-            .logout-btn {
-                padding: 8px 12px;
-            }
-
-            .container {
-                padding-left: 13px;
-                padding-right: 13px;
-            }
-
-            h1 {
-                font-size: 31px;
-            }
-
-            .stat-card {
-                padding: 19px 20px;
-            }
-
-            .stat-card .value {
-                font-size: 28px;
+                gap: 5px;
             }
         }
+
     </style>
+
 </head>
 
-<body>
 
-<header class="navbar">
-    <a href="dashboard.html" class="logo">ALLEVANDO</a>
+<body class="dashboard-page">
 
-    <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="soggetti.html">Soggetti</a>
-        <a href="coppie.html">Coppie</a>
-        <a href="covate.html">Covate</a>
-        <a href="gabbie.html">Gabbie</a>
-        <button class="logout-btn" id="logoutBtn">Esci</button>
-    </nav>
-</header>
 
-<main class="container">
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
-    <div class="page-header">
-        <div class="eyebrow">Gestione allevamento</div>
+<header class="app-header">
 
-        <h1>Gabbie</h1>
+    <div class="app-header-inner">
 
-        <p class="intro">
-            Organizza e gestisci le gabbie del tuo allevamento.
-        </p>
+
+        <!-- LOGO -->
+
+        <a
+            href="dashboard.html"
+            class="app-logo"
+        >
+
+            <img
+                src="logo.png"
+                alt="ALLEVANDO"
+            >
+
+        </a>
+
+
+        <!-- NAVIGAZIONE -->
+
+        <nav class="app-nav">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="soggetti.html">
+                Soggetti
+            </a>
+
+            <a href="coppie.html">
+                Coppie
+            </a>
+
+            <a href="covate.html">
+                Covate
+            </a>
+
+            <a
+                href="gabbie.html"
+                class="active"
+            >
+                Gabbie
+            </a>
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <button
+            onclick="logoutUser()"
+            class="logout-button"
+        >
+            Esci
+        </button>
+
+
     </div>
 
-    <div id="message" class="message"></div>
+</header>
 
-    <section class="stats">
 
-        <div class="stat-card">
-            <div class="label">Totale gabbie</div>
-            <div class="value" id="totalGabbie">0</div>
-        </div>
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
-        <div class="stat-card">
-            <div class="label">Ultima gabbia inserita</div>
-            <div class="value" id="lastGabbia">—</div>
+<main class="dashboard-main">
+
+
+    <!-- =================================================
+         TITOLO
+    ================================================== -->
+
+    <section class="dashboard-top">
+
+        <div>
+
+            <span class="dashboard-kicker">
+                Gestione allevamento
+            </span>
+
+            <h1 class="dashboard-title">
+                Le tue
+                <span>gabbie</span>.
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Organizza e gestisci le gabbie del tuo allevamento.
+            </p>
+
         </div>
 
     </section>
 
-    <section class="card">
 
-        <div class="card-header">
-            <h2>Aggiungi gabbia</h2>
-            <div class="card-subtitle">
-                Inserisci numero e posizione della nuova gabbia.
+    <!-- =================================================
+         MESSAGGI
+    ================================================== -->
+
+    <div id="message" class="message"></div>
+
+
+    <!-- =================================================
+         STATISTICHE
+    ================================================== -->
+
+    <div class="section-label">
+
+        <h2>
+            Panoramica
+        </h2>
+
+        <span>
+            Situazione attuale
+        </span>
+
+    </div>
+
+
+    <section class="stats-grid-new">
+
+
+        <!-- TOTALE -->
+
+        <div class="stat-card-new">
+
+            <div class="stat-icon">
+                G
             </div>
+
+            <h3>
+                Gabbie
+            </h3>
+
+            <strong
+                id="totalGabbie"
+                class="stat-number"
+            >
+                0
+            </strong>
+
+            <span class="stat-description">
+                Gabbie presenti nell'allevamento
+            </span>
+
         </div>
+
+
+        <!-- ULTIMA -->
+
+        <div class="stat-card-new">
+
+            <div class="stat-icon">
+                +
+            </div>
+
+            <h3>
+                Ultima inserita
+            </h3>
+
+            <strong
+                id="lastGabbia"
+                class="stat-number"
+            >
+                —
+            </strong>
+
+            <span class="stat-description">
+                Ultima gabbia registrata
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         AGGIUNGI GABBIA
+    ================================================== -->
+
+    <section class="dashboard-panel">
+
+        <div class="panel-title">
+
+            <h2>
+                Aggiungi gabbia
+            </h2>
+
+            <span>
+                Nuova registrazione
+            </span>
+
+        </div>
+
 
         <form id="gabbiaForm">
 
             <div class="form-grid">
 
+
                 <div class="form-group">
-                    <label for="numero">Numero gabbia</label>
+
+                    <label for="numero">
+                        Numero gabbia
+                    </label>
 
                     <input
                         type="text"
@@ -625,21 +1289,32 @@
                         placeholder="Es. G01"
                         required
                     >
+
                 </div>
 
+
                 <div class="form-group">
-                    <label for="posizione">Posizione</label>
+
+                    <label for="posizione">
+                        Posizione
+                    </label>
 
                     <input
                         type="text"
                         id="posizione"
                         placeholder="Es. Colonna 1 - Piano 2"
                     >
+
                 </div>
 
-                <button type="submit" class="btn-primary">
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
                     + Aggiungi
                 </button>
+
 
             </div>
 
@@ -647,35 +1322,65 @@
 
     </section>
 
-    <section class="card">
 
-        <div class="card-header">
-            <h2>Le mie gabbie</h2>
-            <div class="card-subtitle">
-                Visualizza, cerca e modifica le gabbie del tuo allevamento.
-            </div>
+    <!-- =================================================
+         LISTA GABBIE
+    ================================================== -->
+
+    <section class="dashboard-panel">
+
+        <div class="panel-title">
+
+            <h2>
+                Le mie gabbie
+            </h2>
+
+            <span>
+                Gestione gabbie
+            </span>
+
         </div>
 
+
         <div class="search-box">
+
             <input
                 type="text"
                 id="searchInput"
                 placeholder="Cerca per numero o posizione..."
             >
+
         </div>
+
 
         <div class="table-wrapper">
 
             <table>
 
                 <thead>
+
                     <tr>
-                        <th>Numero</th>
-                        <th>Posizione</th>
-                        <th>Inserita il</th>
-                        <th>Azioni</th>
+
+                        <th>
+                            Numero
+                        </th>
+
+                        <th>
+                            Posizione
+                        </th>
+
+                        <th>
+                            Inserita il
+                        </th>
+
+                        <th>
+                            Azioni
+                        </th>
+
                     </tr>
+
                 </thead>
+
 
                 <tbody id="gabbieTableBody"></tbody>
 
@@ -683,46 +1388,99 @@
 
         </div>
 
-        <div id="emptyMessage" class="empty" style="display:none;">
+
+        <div
+            id="emptyMessage"
+            class="empty"
+            style="display:none;"
+        >
             Nessuna gabbia presente.
         </div>
 
     </section>
 
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <div>
+
+            <strong>
+                ALLEVANDO
+            </strong>
+
+            — Il gestionale degli allevatori.
+
+        </div>
+
+        <div>
+            © 2026 ALLEVANDO
+        </div>
+
+    </footer>
+
+
 </main>
 
-<!-- MODALE MODIFICA -->
 
-<div class="modal" id="editModal">
+<!-- =====================================================
+     MODALE MODIFICA
+===================================================== -->
+
+<div
+    class="modal"
+    id="editModal"
+>
 
     <div class="modal-content">
 
-        <h2>Modifica gabbia</h2>
+        <h2>
+            Modifica gabbia
+        </h2>
+
 
         <form id="editForm">
 
-            <input type="hidden" id="editId">
+            <input
+                type="hidden"
+                id="editId"
+            >
+
 
             <div class="form-group">
-                <label for="editNumero">Numero gabbia</label>
+
+                <label for="editNumero">
+                    Numero gabbia
+                </label>
 
                 <input
                     type="text"
                     id="editNumero"
                     required
                 >
+
             </div>
 
-            <div style="height: 16px;"></div>
 
-            <div class="form-group">
-                <label for="editPosizione">Posizione</label>
+            <div
+                class="form-group"
+                style="margin-top: 14px;"
+            >
+
+                <label for="editPosizione">
+                    Posizione
+                </label>
 
                 <input
                     type="text"
                     id="editPosizione"
                 >
+
             </div>
+
 
             <div class="modal-buttons">
 
@@ -733,6 +1491,7 @@
                 >
                     Annulla
                 </button>
+
 
                 <button
                     type="submit"
@@ -749,173 +1508,302 @@
 
 </div>
 
-<!-- SUPABASE -->
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="js/config.js"></script>
+
 <script src="js/auth.js"></script>
+
 
 <script>
 
-    let currentUser = null;
-    let gabbie = [];
+/* =========================================================
+   VARIABILI
+========================================================= */
 
-    function showMessage(message, type) {
+let currentUser = null;
 
-        const box = document.getElementById("message");
-
-        box.textContent = message;
-        box.className = "message " + type;
-
-        setTimeout(() => {
-            box.className = "message";
-            box.textContent = "";
-        }, 4000);
-    }
+let gabbie = [];
 
 
-    async function checkUser() {
+/* =========================================================
+   MESSAGGI
+========================================================= */
 
-        try {
+function showMessage(message, type) {
 
-            const result = await client.auth.getUser();
+    const box =
+        document.getElementById("message");
 
-            if (result.error || !result.data.user) {
+    box.textContent =
+        message;
 
-                window.location.href = "login.html";
-                return false;
-            }
+    box.className =
+        "message " + type;
 
-            currentUser = result.data.user;
 
-            return true;
+    setTimeout(() => {
 
-        } catch (error) {
+        box.className =
+            "message";
 
-            console.error("Errore controllo utente:", error);
+        box.textContent =
+            "";
 
-            showMessage(
-                "Errore nel controllo dell'accesso: " + error.message,
-                "error"
-            );
+    }, 4000);
+
+}
+
+
+/* =========================================================
+   CONTROLLO UTENTE
+========================================================= */
+
+async function checkUser() {
+
+    try {
+
+        const result =
+            await client.auth.getUser();
+
+
+        if (
+            result.error ||
+            !result.data.user
+        ) {
+
+            window.location.href =
+                "login.html";
 
             return false;
         }
+
+
+        currentUser =
+            result.data.user;
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Errore controllo utente:",
+            error
+        );
+
+
+        showMessage(
+            "Errore nel controllo dell'accesso: " +
+            error.message,
+            "error"
+        );
+
+
+        return false;
     }
 
+}
 
-    async function loadGabbie() {
 
-        try {
+/* =========================================================
+   CARICAMENTO GABBIE
+========================================================= */
 
-            const result = await client
+async function loadGabbie() {
+
+    try {
+
+        const result =
+            await client
+
                 .from("gabbie")
-                .select("id, user_id, numero, posizione, created_at")
-                .eq("user_id", currentUser.id)
-                .order("created_at", { ascending: false });
 
-            if (result.error) {
+                .select(
+                    "id, user_id, numero, posizione, created_at"
+                )
 
-                console.error("Errore caricamento gabbie:", result.error);
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
 
-                showMessage(
-                    "Errore nel caricamento delle gabbie: " +
-                    result.error.message,
-                    "error"
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
                 );
 
-                return;
-            }
 
-            gabbie = result.data || [];
+        if (result.error) {
 
-            renderGabbie();
+            console.error(
+                "Errore caricamento gabbie:",
+                result.error
+            );
 
-        } catch (error) {
-
-            console.error(error);
 
             showMessage(
-                "Errore inatteso: " + error.message,
+                "Errore nel caricamento delle gabbie: " +
+                result.error.message,
                 "error"
             );
+
+
+            return;
         }
+
+
+        gabbie =
+            result.data || [];
+
+
+        renderGabbie();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            "Errore inatteso: " +
+            error.message,
+            "error"
+        );
     }
 
+}
 
-    function renderGabbie() {
 
-        const tbody = document.getElementById("gabbieTableBody");
-        const emptyMessage = document.getElementById("emptyMessage");
+/* =========================================================
+   RENDER
+========================================================= */
 
-        const search = document
+function renderGabbie() {
+
+    const tbody =
+        document.getElementById(
+            "gabbieTableBody"
+        );
+
+
+    const emptyMessage =
+        document.getElementById(
+            "emptyMessage"
+        );
+
+
+    const search =
+        document
             .getElementById("searchInput")
             .value
             .trim()
             .toLowerCase();
 
-        tbody.innerHTML = "";
 
-        const filtrate = gabbie.filter(gabbia => {
-
-            const numero =
-                String(gabbia.numero || "").toLowerCase();
-
-            const posizione =
-                String(gabbia.posizione || "").toLowerCase();
-
-            return (
-                numero.includes(search) ||
-                posizione.includes(search)
-            );
-
-        });
+    tbody.innerHTML =
+        "";
 
 
-        document.getElementById("totalGabbie").textContent =
-            gabbie.length;
+    const filtrate =
+        gabbie.filter(
+            gabbia => {
+
+                const numero =
+                    String(
+                        gabbia.numero || ""
+                    ).toLowerCase();
 
 
-        if (gabbie.length > 0) {
-
-            document.getElementById("lastGabbia").textContent =
-                gabbie[0].numero || "—";
-
-        } else {
-
-            document.getElementById("lastGabbia").textContent = "—";
-        }
+                const posizione =
+                    String(
+                        gabbia.posizione || ""
+                    ).toLowerCase();
 
 
-        if (filtrate.length === 0) {
+                return (
+                    numero.includes(search) ||
+                    posizione.includes(search)
+                );
 
-            emptyMessage.style.display = "block";
-            return;
-
-        } else {
-
-            emptyMessage.style.display = "none";
-        }
+            }
+        );
 
 
-        filtrate.forEach(gabbia => {
+    document.getElementById(
+        "totalGabbie"
+    ).textContent =
+        gabbie.length;
 
-            const tr = document.createElement("tr");
 
-            const data = gabbia.created_at
-                ? new Date(gabbia.created_at)
-                    .toLocaleDateString("it-IT")
-                : "—";
+    if (gabbie.length > 0) {
+
+        document.getElementById(
+            "lastGabbia"
+        ).textContent =
+            gabbie[0].numero || "—";
+
+    } else {
+
+        document.getElementById(
+            "lastGabbia"
+        ).textContent =
+            "—";
+    }
+
+
+    if (filtrate.length === 0) {
+
+        emptyMessage.style.display =
+            "block";
+
+        return;
+    }
+
+
+    emptyMessage.style.display =
+        "none";
+
+
+    filtrate.forEach(
+        gabbia => {
+
+            const tr =
+                document.createElement("tr");
+
+
+            const data =
+                gabbia.created_at
+                    ? new Date(
+                        gabbia.created_at
+                    ).toLocaleDateString(
+                        "it-IT"
+                    )
+                    : "—";
 
 
             tr.innerHTML = `
 
                 <td>
-                    <strong>${escapeHtml(gabbia.numero || "—")}</strong>
+                    <strong>
+                        ${escapeHtml(
+                            gabbia.numero || "—"
+                        )}
+                    </strong>
                 </td>
 
                 <td>
-                    ${escapeHtml(gabbia.posizione || "—")}
+                    ${escapeHtml(
+                        gabbia.posizione || "—"
+                    )}
                 </td>
 
                 <td>
@@ -946,384 +1834,227 @@
 
             `;
 
+
             tbody.appendChild(tr);
 
-        });
-    }
+        }
+    );
+
+}
 
 
-    function escapeHtml(value) {
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
+function escapeHtml(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 
-    async function addGabbia(event) {
+/* =========================================================
+   AGGIUNTA GABBIA
+========================================================= */
 
-        event.preventDefault();
+async function addGabbia(event) {
 
-        const numero = document
+    event.preventDefault();
+
+
+    const numero =
+        document
             .getElementById("numero")
             .value
             .trim();
 
-        const posizione = document
+
+    const posizione =
+        document
             .getElementById("posizione")
             .value
             .trim();
 
 
-        if (!numero) {
+    if (!numero) {
 
-            showMessage(
-                "Inserisci il numero della gabbia.",
-                "error"
-            );
+        showMessage(
+            "Inserisci il numero della gabbia.",
+            "error"
+        );
 
-            return;
-        }
+        return;
+    }
 
 
-        try {
+    try {
 
-            const result = await client
+        const result =
+            await client
+
                 .from("gabbie")
+
                 .insert({
 
-                    user_id: currentUser.id,
-                    numero: numero,
-                    posizione: posizione || null
+                    user_id:
+                        currentUser.id,
+
+                    numero:
+                        numero,
+
+                    posizione:
+                        posizione || null
 
                 })
+
                 .select(
                     "id, user_id, numero, posizione, created_at"
                 )
+
                 .single();
 
 
-            if (result.error) {
+        if (result.error) {
 
-                console.error("Errore inserimento:", result.error);
-
-                showMessage(
-                    "Errore nel salvataggio: " +
-                    result.error.message,
-                    "error"
-                );
-
-                return;
-            }
-
-
-            gabbie.unshift(result.data);
-
-            renderGabbie();
-
-            document.getElementById("gabbiaForm").reset();
-
-            showMessage(
-                "Gabbia aggiunta correttamente.",
-                "success"
+            console.error(
+                "Errore inserimento:",
+                result.error
             );
 
 
-        } catch (error) {
-
-            console.error(error);
-
             showMessage(
-                "Errore inatteso: " + error.message,
+                "Errore nel salvataggio: " +
+                result.error.message,
                 "error"
             );
-        }
-    }
 
-
-    function openEditModal(id) {
-
-        const gabbia = gabbie.find(
-            item => String(item.id) === String(id)
-        );
-
-        if (!gabbia) return;
-
-
-        document.getElementById("editId").value =
-            gabbia.id;
-
-        document.getElementById("editNumero").value =
-            gabbia.numero || "";
-
-        document.getElementById("editPosizione").value =
-            gabbia.posizione || "";
-
-
-        document.getElementById("editModal").style.display =
-            "flex";
-    }
-
-
-    function closeEditModal() {
-
-        document.getElementById("editModal").style.display =
-            "none";
-    }
-
-
-    async function updateGabbia(event) {
-
-        event.preventDefault();
-
-
-        const id = document
-            .getElementById("editId")
-            .value;
-
-        const numero = document
-            .getElementById("editNumero")
-            .value
-            .trim();
-
-        const posizione = document
-            .getElementById("editPosizione")
-            .value
-            .trim();
-
-
-        if (!numero) {
-
-            showMessage(
-                "Inserisci il numero della gabbia.",
-                "error"
-            );
 
             return;
         }
 
 
-        try {
-
-            const result = await client
-                .from("gabbie")
-                .update({
-
-                    numero: numero,
-                    posizione: posizione || null
-
-                })
-                .eq("id", id)
-                .eq("user_id", currentUser.id)
-                .select(
-                    "id, user_id, numero, posizione, created_at"
-                )
-                .single();
-
-
-            if (result.error) {
-
-                console.error(
-                    "Errore modifica:",
-                    result.error
-                );
-
-                showMessage(
-                    "Errore nella modifica: " +
-                    result.error.message,
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const index = gabbie.findIndex(
-                item => String(item.id) === String(id)
-            );
-
-
-            if (index !== -1) {
-
-                gabbie[index] = result.data;
-            }
-
-
-            renderGabbie();
-
-            closeEditModal();
-
-            showMessage(
-                "Gabbia modificata correttamente.",
-                "success"
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "Errore inatteso: " + error.message,
-                "error"
-            );
-        }
-    }
-
-
-    async function deleteGabbia(id) {
-
-        const gabbia = gabbie.find(
-            item => String(item.id) === String(id)
-        );
-
-        if (!gabbia) return;
-
-
-        const conferma = confirm(
-            "Vuoi davvero eliminare la gabbia " +
-            (gabbia.numero || "") +
-            "?"
+        gabbie.unshift(
+            result.data
         );
 
 
-        if (!conferma) return;
+        renderGabbie();
 
 
-        try {
-
-            const result = await client
-                .from("gabbie")
-                .delete()
-                .eq("id", id)
-                .eq("user_id", currentUser.id);
+        document
+            .getElementById(
+                "gabbiaForm"
+            )
+            .reset();
 
 
-            if (result.error) {
-
-                console.error(
-                    "Errore eliminazione:",
-                    result.error
-                );
-
-                showMessage(
-                    "Errore nell'eliminazione: " +
-                    result.error.message,
-                    "error"
-                );
-
-                return;
-            }
+        showMessage(
+            "Gabbia aggiunta correttamente.",
+            "success"
+        );
 
 
-            gabbie = gabbie.filter(
-                item => String(item.id) !== String(id)
-            );
+    } catch (error) {
 
-            renderGabbie();
-
-            showMessage(
-                "Gabbia eliminata correttamente.",
-                "success"
-            );
+        console.error(error);
 
 
-        } catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "Errore inatteso: " + error.message,
-                "error"
-            );
-        }
+        showMessage(
+            "Errore inatteso: " +
+            error.message,
+            "error"
+        );
     }
 
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        async function () {
-
-            const logged = await checkUser();
-
-            if (!logged) return;
-
-            await loadGabbie();
+}
 
 
-            document
-                .getElementById("gabbiaForm")
-                .addEventListener(
-                    "submit",
-                    addGabbia
-                );
+/* =========================================================
+   MODIFICA — APERTURA
+========================================================= */
+
+function openEditModal(id) {
+
+    const gabbia =
+        gabbie.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
 
 
-            document
-                .getElementById("editForm")
-                .addEventListener(
-                    "submit",
-                    updateGabbia
-                );
+    if (!gabbia) return;
 
 
-            document
-                .getElementById("cancelEdit")
-                .addEventListener(
-                    "click",
-                    closeEditModal
-                );
+    document.getElementById(
+        "editId"
+    ).value =
+        gabbia.id;
 
 
-            document
-                .getElementById("searchInput")
-                .addEventListener(
-                    "input",
-                    renderGabbie
-                );
+    document.getElementById(
+        "editNumero"
+    ).value =
+        gabbia.numero || "";
 
 
-            document
-                .getElementById("logoutBtn")
-                .addEventListener(
-                    "click",
-                    async function () {
-
-                        await client.auth.signOut();
-
-                        window.location.href =
-                            "index.html";
-
-                    }
-                );
+    document.getElementById(
+        "editPosizione"
+    ).value =
+        gabbia.posizione || "";
 
 
-            document
-                .getElementById("editModal")
-                .addEventListener(
-                    "click",
-                    function (event) {
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "flex";
 
-                        if (
-                            event.target ===
-                            document.getElementById("editModal")
-                        ) {
+}
 
-                            closeEditModal();
 
-                        }
+/* =========================================================
+   MODIFICA — CHIUSURA
+========================================================= */
 
-                    }
-                );
+function closeEditModal() {
 
-        }
-    );
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "none";
 
-</script>
+}
 
-</body>
-</html>
+
+/* =========================================================
+   MODIFICA — SALVATAGGIO
+========================================================= */
+
+async function u
 ```
