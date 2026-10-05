@@ -21,7 +21,7 @@
     <style>
 
         /* =====================================================
-           GABBIE ALLEVANDO — STILE COERENTE CON DASHBOARD
+           GABBIE — STILE DASHBOARD
         ===================================================== */
 
         body.dashboard-page {
@@ -34,10 +34,7 @@
                 #faf8f2;
         }
 
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        /* HEADER */
 
         .app-header {
             position: sticky;
@@ -54,9 +51,7 @@
 
         .app-header-inner {
             width: min(1280px, calc(100% - 40px));
-
             min-height: 82px;
-
             margin: 0 auto;
 
             display: flex;
@@ -66,38 +61,27 @@
             gap: 30px;
         }
 
-
-        /* =====================================================
-           LOGO
-        ===================================================== */
+        /* LOGO */
 
         .app-logo {
             display: flex;
             align-items: center;
-
             flex-shrink: 0;
         }
 
         .app-logo img {
             width: 175px;
             height: auto;
-
             display: block;
-
             object-fit: contain;
         }
 
-
-        /* =====================================================
-           NAV
-        ===================================================== */
+        /* NAV */
 
         .app-nav {
             display: flex;
             align-items: center;
-
             gap: 4px;
-
             margin-left: auto;
         }
 
@@ -146,10 +130,7 @@
             border-radius: 999px;
         }
 
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
+        /* LOGOUT */
 
         .logout-button {
             min-height: 40px;
@@ -177,16 +158,11 @@
 
         .logout-button:hover {
             color: #b84c4c;
-
             background: #f9e5e5;
-
             border-color: #e7c1c1;
         }
 
-
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        /* MAIN */
 
         .dashboard-main {
             width: min(1280px, calc(100% - 40px));
@@ -196,10 +172,7 @@
             padding: 46px 0 80px;
         }
 
-
-        /* =====================================================
-           TOP AREA
-        ===================================================== */
+        /* TOP */
 
         .dashboard-top {
             display: flex;
@@ -260,10 +233,71 @@
             font-size: 15px;
         }
 
+        /* MESSAGGI */
 
-        /* =====================================================
-           STATISTICHE
-        ===================================================== */
+        .message {
+            display: none;
+
+            margin-bottom: 20px;
+
+            padding: 12px 15px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #e9f3ee;
+            color: #185c45;
+            border: 1px solid #cfe2d7;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #f9e5e5;
+            color: #a43f3f;
+            border: 1px solid #e7c1c1;
+        }
+
+        /* SECTION LABEL */
+
+        .section-label {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+        }
+
+        .section-label h2 {
+            margin: 0;
+
+            color: #17211d;
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.02em;
+        }
+
+        .section-label span {
+            color: #89938d;
+            font-size: 12px;
+        }
+
+        /* STATISTICHE */
 
         .stats-grid-new {
             display: grid;
@@ -279,7 +313,7 @@
         .stat-card-new {
             position: relative;
 
-            min-height: 150px;
+            min-height: 170px;
 
             padding: 22px;
 
@@ -386,10 +420,7 @@
             font-size: 11px;
         }
 
-
-        /* =====================================================
-           PANNELLI
-        ===================================================== */
+        /* PANELLI */
 
         .dashboard-panel {
             padding: 24px;
@@ -431,14 +462,10 @@
 
         .panel-title span {
             color: #8a938e;
-
             font-size: 11px;
         }
 
-
-        /* =====================================================
-           FORM
-        ===================================================== */
+        /* FORM */
 
         .form-grid {
             display: grid;
@@ -511,10 +538,7 @@
             color: #9aa39e;
         }
 
-
-        /* =====================================================
-           PULSANTI
-        ===================================================== */
+        /* PULSANTI */
 
         .btn-primary {
             min-height: 42px;
@@ -550,7 +574,6 @@
             transform: translateY(-1px);
         }
 
-
         .btn-secondary {
             min-height: 40px;
 
@@ -577,10 +600,7 @@
             background: #e8ece8;
         }
 
-
-        /* =====================================================
-           RICERCA
-        ===================================================== */
+        /* RICERCA */
 
         .search-box {
             margin-bottom: 18px;
@@ -628,14 +648,10 @@
             color: #9aa39e;
         }
 
-
-        /* =====================================================
-           TABELLA
-        ===================================================== */
+        /* TABELLA */
 
         .table-wrapper {
             width: 100%;
-
             overflow-x: auto;
         }
 
@@ -643,7 +659,6 @@
             width: 100%;
 
             border-collapse: separate;
-
             border-spacing: 0;
         }
 
@@ -655,7 +670,6 @@
             color: #68736d;
 
             border-top: 1px solid #e5eae5;
-
             border-bottom: 1px solid #e5eae5;
 
             text-align: left;
@@ -671,13 +685,11 @@
 
         th:first-child {
             border-left: 1px solid #e5eae5;
-
             border-top-left-radius: 10px;
         }
 
         th:last-child {
             border-right: 1px solid #e5eae5;
-
             border-top-right-radius: 10px;
         }
 
@@ -695,7 +707,6 @@
 
         td strong {
             color: #17211d;
-
             font-size: 13px;
         }
 
@@ -707,10 +718,7 @@
             background: #fafcfb;
         }
 
-
-        /* =====================================================
-           AZIONI
-        ===================================================== */
+        /* AZIONI */
 
         .actions {
             display: flex;
@@ -761,10 +769,7 @@
             background: #f4d9d9;
         }
 
-
-        /* =====================================================
-           EMPTY
-        ===================================================== */
+        /* EMPTY */
 
         .empty {
             padding: 35px 20px;
@@ -776,49 +781,7 @@
             font-size: 12px;
         }
 
-
-        /* =====================================================
-           MESSAGGI
-        ===================================================== */
-
-        .message {
-            display: none;
-
-            margin-bottom: 20px;
-
-            padding: 12px 15px;
-
-            border-radius: 10px;
-
-            font-size: 12px;
-
-            font-weight: 600;
-        }
-
-        .message.success {
-            display: block;
-
-            background: #e9f3ee;
-
-            color: #185c45;
-
-            border: 1px solid #cfe2d7;
-        }
-
-        .message.error {
-            display: block;
-
-            background: #f9e5e5;
-
-            color: #a43f3f;
-
-            border: 1px solid #e7c1c1;
-        }
-
-
-        /* =====================================================
-           MODALE
-        ===================================================== */
+        /* MODALE */
 
         .modal {
             display: none;
@@ -886,10 +849,7 @@
             margin-top: 20px;
         }
 
-
-        /* =====================================================
-           FOOTER
-        ===================================================== */
+        /* FOOTER */
 
         .dashboard-footer {
             margin-top: 50px;
@@ -912,16 +872,12 @@
             color: #185c45;
         }
 
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
+        /* RESPONSIVE */
 
         @media (max-width: 1000px) {
 
             .app-header-inner {
                 flex-wrap: wrap;
-
                 padding: 14px 0;
             }
 
@@ -946,7 +902,6 @@
             }
         }
 
-
         @media (max-width: 650px) {
 
             .app-header-inner {
@@ -963,7 +918,6 @@
 
             .logout-button {
                 padding: 8px 11px;
-
                 font-size: 11px;
             }
 
@@ -999,13 +953,11 @@
 
             .stats-grid-new {
                 grid-template-columns: 1fr;
-
                 gap: 10px;
             }
 
             .stat-card-new {
-                min-height: 135px;
-
+                min-height: 145px;
                 padding: 17px;
             }
 
@@ -1069,16 +1021,9 @@
 <body class="dashboard-page">
 
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header class="app-header">
 
     <div class="app-header-inner">
-
-
-        <!-- LOGO -->
 
         <a
             href="dashboard.html"
@@ -1092,8 +1037,6 @@
 
         </a>
 
-
-        <!-- NAVIGAZIONE -->
 
         <nav class="app-nav">
 
@@ -1123,8 +1066,6 @@
         </nav>
 
 
-        <!-- LOGOUT -->
-
         <button
             onclick="logoutUser()"
             class="logout-button"
@@ -1132,22 +1073,13 @@
             Esci
         </button>
 
-
     </div>
 
 </header>
 
 
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
 <main class="dashboard-main">
 
-
-    <!-- =================================================
-         TITOLO
-    ================================================== -->
 
     <section class="dashboard-top">
 
@@ -1171,16 +1103,11 @@
     </section>
 
 
-    <!-- =================================================
-         MESSAGGI
-    ================================================== -->
+    <div
+        id="message"
+        class="message"
+    ></div>
 
-    <div id="message" class="message"></div>
-
-
-    <!-- =================================================
-         STATISTICHE
-    ================================================== -->
 
     <div class="section-label">
 
@@ -1196,9 +1123,6 @@
 
 
     <section class="stats-grid-new">
-
-
-        <!-- TOTALE -->
 
         <div class="stat-card-new">
 
@@ -1224,8 +1148,6 @@
         </div>
 
 
-        <!-- ULTIMA -->
-
         <div class="stat-card-new">
 
             <div class="stat-icon">
@@ -1249,13 +1171,8 @@
 
         </div>
 
-
     </section>
 
-
-    <!-- =================================================
-         AGGIUNGI GABBIA
-    ================================================== -->
 
     <section class="dashboard-panel">
 
@@ -1275,7 +1192,6 @@
         <form id="gabbiaForm">
 
             <div class="form-grid">
-
 
                 <div class="form-group">
 
@@ -1315,17 +1231,12 @@
                     + Aggiungi
                 </button>
 
-
             </div>
 
         </form>
 
     </section>
 
-
-    <!-- =================================================
-         LISTA GABBIE
-    ================================================== -->
 
     <section class="dashboard-panel">
 
@@ -1400,10 +1311,6 @@
     </section>
 
 
-    <!-- =================================================
-         FOOTER
-    ================================================== -->
-
     <footer class="dashboard-footer">
 
         <div>
@@ -1422,13 +1329,8 @@
 
     </footer>
 
-
 </main>
 
-
-<!-- =====================================================
-     MODALE MODIFICA
-===================================================== -->
 
 <div
     class="modal"
@@ -1509,10 +1411,6 @@
 </div>
 
 
-<!-- =====================================================
-     SUPABASE
-===================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/config.js"></script>
@@ -1521,10 +1419,6 @@
 
 
 <script>
-
-/* =========================================================
-   VARIABILI
-========================================================= */
 
 let currentUser = null;
 
@@ -1815,6 +1709,7 @@ function renderGabbie() {
                     <div class="actions">
 
                         <button
+                            type="button"
                             class="btn-edit"
                             onclick="openEditModal('${gabbia.id}')"
                         >
@@ -1822,6 +1717,7 @@ function renderGabbie() {
                         </button>
 
                         <button
+                            type="button"
                             class="btn-delete"
                             onclick="deleteGabbia('${gabbia.id}')"
                         >
@@ -1906,6 +1802,17 @@ async function addGabbia(event) {
 
         showMessage(
             "Inserisci il numero della gabbia.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (!currentUser) {
+
+        showMessage(
+            "Utente non autenticato.",
             "error"
         );
 
@@ -2056,5 +1963,337 @@ function closeEditModal() {
    MODIFICA — SALVATAGGIO
 ========================================================= */
 
-async function u
+async function updateGabbia(event) {
+
+    event.preventDefault();
+
+
+    const id =
+        document
+            .getElementById("editId")
+            .value;
+
+
+    const numero =
+        document
+            .getElementById("editNumero")
+            .value
+            .trim();
+
+
+    const posizione =
+        document
+            .getElementById("editPosizione")
+            .value
+            .trim();
+
+
+    if (!numero) {
+
+        showMessage(
+            "Inserisci il numero della gabbia.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await client
+
+                .from("gabbie")
+
+                .update({
+
+                    numero:
+                        numero,
+
+                    posizione:
+                        posizione || null
+
+                })
+
+                .eq(
+                    "id",
+                    id
+                )
+
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+
+                .select(
+                    "id, user_id, numero, posizione, created_at"
+                )
+
+                .single();
+
+
+        if (result.error) {
+
+            console.error(
+                "Errore modifica:",
+                result.error
+            );
+
+
+            showMessage(
+                "Errore nel salvataggio delle modifiche: " +
+                result.error.message,
+                "error"
+            );
+
+
+            return;
+        }
+
+
+        const index =
+            gabbie.findIndex(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+
+        if (index !== -1) {
+
+            gabbie[index] =
+                result.data;
+
+        }
+
+
+        renderGabbie();
+
+        closeEditModal();
+
+
+        showMessage(
+            "Gabbia modificata correttamente.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            "Errore inatteso: " +
+            error.message,
+            "error"
+        );
+    }
+
+}
+
+
+/* =========================================================
+   ELIMINAZIONE
+========================================================= */
+
+async function deleteGabbia(id) {
+
+    const conferma =
+        confirm(
+            "Sei sicuro di voler eliminare questa gabbia?"
+        );
+
+
+    if (!conferma) {
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await client
+
+                .from("gabbie")
+
+                .delete()
+
+                .eq(
+                    "id",
+                    id
+                )
+
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+
+        if (result.error) {
+
+            console.error(
+                "Errore eliminazione:",
+                result.error
+            );
+
+
+            showMessage(
+                "Errore nell'eliminazione: " +
+                result.error.message,
+                "error"
+            );
+
+
+            return;
+        }
+
+
+        gabbie =
+            gabbie.filter(
+                item =>
+                    String(item.id) !==
+                    String(id)
+            );
+
+
+        renderGabbie();
+
+
+        showMessage(
+            "Gabbia eliminata correttamente.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            "Errore inatteso: " +
+            error.message,
+            "error"
+        );
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutUser() {
+
+    try {
+
+        await client.auth.signOut();
+
+    } catch (error) {
+
+        console.error(
+            "Errore logout:",
+            error
+        );
+
+    }
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================================================
+   AVVIO
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        const autenticato =
+            await checkUser();
+
+
+        if (!autenticato) {
+            return;
+        }
+
+
+        await loadGabbie();
+
+
+        document
+            .getElementById(
+                "gabbiaForm"
+            )
+            .addEventListener(
+                "submit",
+                addGabbia
+            );
+
+
+        document
+            .getElementById(
+                "editForm"
+            )
+            .addEventListener(
+                "submit",
+                updateGabbia
+            );
+
+
+        document
+            .getElementById(
+                "cancelEdit"
+            )
+            .addEventListener(
+                "click",
+                closeEditModal
+            );
+
+
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .addEventListener(
+                "input",
+                renderGabbie
+            );
+
+
+        document
+            .getElementById(
+                "editModal"
+            )
+            .addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target ===
+                        this
+                    ) {
+
+                        closeEditModal();
+
+                    }
+
+                }
+            );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
 ```
