@@ -1,0 +1,5971 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Covate — ALLEVANDO</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+
+    <style>
+
+        /* =========================================================
+           COVATE — ALLEVANDO
+           ========================================================= */
+
+        body.dashboard-page {
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(24, 92, 69, 0.045),
+                    transparent 30%
+                ),
+                #faf8f2;
+
+            color: #18251f;
+        }
+
+
+        /* =========================================================
+           HEADER
+           ========================================================= */
+
+        .app-header {
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background:
+                rgba(250, 248, 242, 0.88);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border-bottom:
+                1px solid rgba(24, 92, 69, 0.10);
+        }
+
+
+        .app-header-inner {
+
+            width:
+                min(1280px, calc(100% - 40px));
+
+            min-height: 82px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 32px;
+        }
+
+
+        .app-logo {
+
+            display: flex;
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+
+        .app-logo img {
+
+            display: block;
+
+            width: 175px;
+            height: auto;
+        }
+
+
+        /* =========================================================
+           NAV
+           ========================================================= */
+
+        .app-nav {
+
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-left: auto;
+        }
+
+
+        .app-nav a {
+
+            position: relative;
+
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 42px;
+
+            padding: 0 15px;
+
+            border-radius: 10px;
+
+            color: #52625a;
+
+            text-decoration: none;
+
+            font-size: 0.88rem;
+            font-weight: 600;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .app-nav a:hover {
+
+            color: #185c45;
+
+            background:
+                rgba(24, 92, 69, 0.06);
+        }
+
+
+        .app-nav a.active {
+
+            color: #185c45;
+
+            background: #e8f1eb;
+        }
+
+
+        .app-nav a.active::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 15px;
+            right: 15px;
+            bottom: 5px;
+
+            height: 2px;
+
+            border-radius: 99px;
+
+            background: #185c45;
+        }
+
+
+        /* =========================================================
+           LOGOUT
+           ========================================================= */
+
+        .logout-button {
+
+            flex-shrink: 0;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.18);
+
+            background: transparent;
+
+            color: #185c45;
+
+            border-radius: 10px;
+
+            padding: 10px 16px;
+
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        .logout-button:hover {
+
+            background: #185c45;
+
+            color: white;
+
+            border-color: #185c45;
+        }
+
+
+        /* =========================================================
+           MAIN
+           ========================================================= */
+
+        .dashboard-main {
+
+            width:
+                min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 46px 0 80px;
+        }
+
+
+        /* =========================================================
+           INTRO
+           ========================================================= */
+
+        .dashboard-top {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 40px;
+
+            margin-bottom: 46px;
+        }
+
+
+        .dashboard-kicker {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            color: #b96848;
+
+            font-size: 0.72rem;
+            font-weight: 800;
+
+            letter-spacing: 0.16em;
+
+            text-transform: uppercase;
+        }
+
+
+        .dashboard-title {
+
+            margin: 0;
+
+            max-width: 760px;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size:
+                clamp(3rem, 6vw, 5rem);
+
+            font-weight: 500;
+
+            line-height: 0.95;
+
+            letter-spacing: -0.045em;
+
+            color: #092f23;
+        }
+
+
+        .dashboard-title span {
+
+            color: #185c45;
+        }
+
+
+        .dashboard-subtitle {
+
+            max-width: 680px;
+
+            margin: 20px 0 0;
+
+            color: #65736d;
+
+            font-size: 1rem;
+
+            line-height: 1.75;
+        }
+
+
+        /* =========================================================
+           CONTATORE
+           ========================================================= */
+
+        .page-intro-box {
+
+            flex-shrink: 0;
+
+            min-width: 220px;
+
+            padding: 20px 22px;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.12);
+
+            border-radius: 16px;
+
+            background:
+                rgba(255, 255, 255, 0.55);
+        }
+
+
+        .page-intro-box-label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #8a968f;
+
+            font-size: 0.7rem;
+            font-weight: 800;
+
+            letter-spacing: 0.12em;
+
+            text-transform: uppercase;
+        }
+
+
+        .page-intro-box strong {
+
+            display: block;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.8rem;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           SEZIONI
+           ========================================================= */
+
+        .section-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+
+            color: #718079;
+
+            font-size: 0.72rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.14em;
+
+            text-transform: uppercase;
+        }
+
+
+        .section-label::before {
+
+            content: "";
+
+            width: 24px;
+
+            height: 1px;
+
+            background: #b96848;
+        }
+
+
+        /* =========================================================
+           PANEL
+           ========================================================= */
+
+        .dashboard-panel {
+
+            padding: 28px;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.10);
+
+            border-radius: 20px;
+
+            background:
+                rgba(255, 255, 255, 0.68);
+
+            box-shadow:
+                0 10px 35px
+                rgba(9, 47, 35, 0.045);
+        }
+
+
+        .panel-heading {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 26px;
+        }
+
+
+        .panel-title {
+
+            margin: 0;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 2rem;
+
+            font-weight: 600;
+
+            line-height: 1;
+        }
+
+
+        .panel-description {
+
+            margin: 7px 0 0;
+
+            color: #7a8680;
+
+            font-size: 0.88rem;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           FORM
+           ========================================================= */
+
+        .covata-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+
+        .form-field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+
+        .form-field.full {
+
+            grid-column: 1 / -1;
+        }
+
+
+        .form-field label {
+
+            color: #4e5d56;
+
+            font-size: 0.78rem;
+
+            font-weight: 700;
+        }
+
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            border:
+                1px solid #dfe5df;
+
+            border-radius: 11px;
+
+            background: #fff;
+
+            color: #18251f;
+
+            font-family: inherit;
+
+            font-size: 0.9rem;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .form-field input,
+        .form-field select {
+
+            min-height: 46px;
+
+            padding: 0 13px;
+        }
+
+
+        .form-field textarea {
+
+            min-height: 110px;
+
+            padding: 13px;
+
+            resize: vertical;
+        }
+
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(24, 92, 69, 0.09);
+        }
+
+
+        /* =========================================================
+           UOVA
+           ========================================================= */
+
+        .uova-wrapper {
+
+            grid-column: 1 / -1;
+
+            display: none;
+
+            margin-top: 2px;
+
+            padding: 20px;
+
+            border:
+                1px solid #e4eae5;
+
+            border-radius: 15px;
+
+            background:
+                #f8faf8;
+        }
+
+
+        .uova-wrapper.visible {
+
+            display: block;
+        }
+
+
+        .uova-heading {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .uova-heading strong {
+
+            color: #092f23;
+
+            font-size: 0.9rem;
+        }
+
+
+        .uova-heading span {
+
+            color: #84908a;
+
+            font-size: 0.75rem;
+        }
+
+
+        .uova-lista {
+
+            display: grid;
+
+            gap: 9px;
+        }
+
+
+        .uovo-riga {
+
+            display: grid;
+
+            grid-template-columns:
+                55px minmax(0, 1fr) auto;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-height: 58px;
+
+            padding: 9px 12px;
+
+            border:
+                1px solid #e2e8e3;
+
+            border-radius: 11px;
+
+            background: white;
+        }
+
+
+        .uovo-numero {
+
+            color: #185c45;
+
+            font-size: 0.78rem;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+
+        .uovo-stato {
+
+            width: 100%;
+
+            min-height: 39px;
+
+            padding: 0 10px;
+
+            border:
+                1px solid #dfe5df;
+
+            border-radius: 9px;
+
+            background: white;
+
+            color: #334039;
+
+            font-family: inherit;
+
+            font-size: 0.82rem;
+
+            outline: none;
+        }
+
+
+        .uovo-stato:focus {
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(24, 92, 69, 0.07);
+        }
+
+
+        .uovo-soggetto {
+
+            min-width: 115px;
+
+            text-align: right;
+        }
+
+
+        .crea-soggetto-button {
+
+            min-height: 37px;
+
+            padding: 0 12px;
+
+            border:
+                1px solid #185c45;
+
+            border-radius: 9px;
+
+            background: #185c45;
+
+            color: white;
+
+            font-family: inherit;
+
+            font-size: 0.73rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .crea-soggetto-button:hover {
+
+            background: #0d3d2d;
+
+            border-color: #0d3d2d;
+        }
+
+
+        .soggetto-creato {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            min-height: 30px;
+
+            padding: 0 9px;
+
+            border-radius: 999px;
+
+            background: #e8f1eb;
+
+            color: #185c45;
+
+            font-size: 0.7rem;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================================
+           BOTTONI
+           ========================================================= */
+
+        .form-actions {
+
+            grid-column: 1 / -1;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 4px;
+        }
+
+
+        .primary-button,
+        .secondary-button {
+
+            min-height: 45px;
+
+            padding: 0 18px;
+
+            border-radius: 11px;
+
+            font-family: inherit;
+
+            font-size: 0.84rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .primary-button {
+
+            border:
+                1px solid #185c45;
+
+            background: #185c45;
+
+            color: white;
+        }
+
+
+        .primary-button:hover {
+
+            background: #0d3d2d;
+
+            border-color: #0d3d2d;
+        }
+
+
+        .secondary-button {
+
+            border:
+                1px solid #d7dfd9;
+
+            background: transparent;
+
+            color: #52625a;
+        }
+
+
+        .secondary-button:hover {
+
+            border-color: #185c45;
+
+            color: #185c45;
+
+            background: #f1f6f2;
+        }
+
+
+        /* =========================================================
+           LISTA COVATE
+           ========================================================= */
+
+        .covate-list {
+
+            display: grid;
+
+            gap: 14px;
+        }
+
+
+        .covata-card {
+
+            padding: 22px;
+
+            border:
+                1px solid #e4e9e4;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, 0.82);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .covata-card:hover {
+
+            transform: translateY(-1px);
+
+            border-color:
+                rgba(24, 92, 69, 0.20);
+
+            box-shadow:
+                0 8px 24px
+                rgba(9, 47, 35, 0.05);
+        }
+
+
+        .covata-header {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .covata-title {
+
+            margin: 0;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.55rem;
+
+            font-weight: 600;
+
+            line-height: 1.1;
+        }
+
+
+        .covata-coppia {
+
+            margin-top: 5px;
+
+            color: #77837d;
+
+            font-size: 0.82rem;
+        }
+
+
+        .status-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            min-height: 26px;
+
+            padding: 0 10px;
+
+            border-radius: 999px;
+
+            font-size: 0.68rem;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        .status-preparazione {
+
+            background: #f3eee5;
+
+            color: #866c48;
+        }
+
+
+        .status-cova {
+
+            background: #f5eadb;
+
+            color: #9a5b35;
+        }
+
+
+        .status-terminata {
+
+            background: #e8f1eb;
+
+            color: #185c45;
+        }
+
+
+        .status-abbandonata {
+
+            background: #f9e5e5;
+
+            color: #b84c4c;
+        }
+
+
+        /* =========================================================
+           DATI COVATA
+           ========================================================= */
+
+        .covata-meta {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 9px;
+
+            margin-top: 17px;
+        }
+
+
+        .covata-dato {
+
+            padding: 11px;
+
+            border:
+                1px solid #e8ece8;
+
+            border-radius: 10px;
+
+            background: #f8faf8;
+        }
+
+
+        .covata-dato-label {
+
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: #8a938e;
+
+            font-size: 0.62rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.06em;
+
+            text-transform: uppercase;
+        }
+
+
+        .covata-dato-value {
+
+            display: block;
+
+            color: #334039;
+
+            font-size: 0.82rem;
+
+            font-weight: 700;
+        }
+
+
+        .covata-note {
+
+            margin: 14px 0 0;
+
+            padding-top: 13px;
+
+            border-top:
+                1px solid #edf0ec;
+
+            color: #77837d;
+
+            font-size: 0.78rem;
+
+            line-height: 1.55;
+        }
+
+
+        /* =========================================================
+           UOVA NEL REGISTRO
+           ========================================================= */
+
+        .registro-uova {
+
+            margin-top: 17px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid #edf0ec;
+        }
+
+
+        .registro-uova-titolo {
+
+            margin-bottom: 10px;
+
+            color: #718079;
+
+            font-size: 0.68rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.12em;
+
+            text-transform: uppercase;
+        }
+
+
+        .registro-uova-lista {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+        }
+
+
+        .registro-uovo {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            min-height: 29px;
+
+            padding: 0 9px;
+
+            border:
+                1px solid #e0e7e1;
+
+            border-radius: 999px;
+
+            background: #f8faf8;
+
+            color: #53615a;
+
+            font-size: 0.7rem;
+
+            font-weight: 700;
+        }
+
+
+        .registro-uovo strong {
+
+            color: #185c45;
+        }
+
+
+        .registro-uovo.schiuso {
+
+            background: #e8f1eb;
+
+            border-color: #cfe1d4;
+
+            color: #185c45;
+        }
+
+
+        .registro-uovo.rosso {
+
+            background: #f9e5e5;
+
+            border-color: #efd0d0;
+
+            color: #a64b4b;
+        }
+
+
+        .registro-uovo.fecondo {
+
+            background: #f5eadb;
+
+            border-color: #ead9c3;
+
+            color: #8d6138;
+        }
+
+
+        /* =========================================================
+           AZIONI
+           ========================================================= */
+
+        .covata-actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-top: 16px;
+
+            padding-top: 14px;
+
+            border-top:
+                1px solid #edf0ec;
+        }
+
+
+        .edit-button {
+
+            min-height: 38px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid #dce4de;
+
+            border-radius: 9px;
+
+            background: #fff;
+
+            color: #185c45;
+
+            font-family: inherit;
+
+            font-size: 0.76rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .edit-button:hover {
+
+            border-color: #185c45;
+
+            background: #f1f6f2;
+        }
+
+
+        /* =========================================================
+           MODALE SOGGETTO
+           ========================================================= */
+
+        .modal-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            box-sizing: border-box;
+
+            background:
+                rgba(9, 47, 35, 0.38);
+
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+
+        .modal-overlay.visible {
+
+            display: flex;
+        }
+
+
+        .modal-box {
+
+            width:
+                min(620px, 100%);
+
+            max-height:
+                calc(100vh - 40px);
+
+            overflow-y: auto;
+
+            padding: 28px;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.12);
+
+            border-radius: 20px;
+
+            background: #faf8f2;
+
+            box-shadow:
+                0 25px 70px
+                rgba(9, 47, 35, 0.20);
+        }
+
+
+        .modal-header {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .modal-kicker {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #b96848;
+
+            font-size: 0.68rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.14em;
+
+            text-transform: uppercase;
+        }
+
+
+        .modal-title {
+
+            margin: 0;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 2rem;
+
+            line-height: 1;
+        }
+
+
+        .modal-close {
+
+            width: 35px;
+
+            height: 35px;
+
+            border:
+                1px solid #dce4de;
+
+            border-radius: 9px;
+
+            background: white;
+
+            color: #52625a;
+
+            font-size: 1.1rem;
+
+            cursor: pointer;
+        }
+
+
+        .modal-close:hover {
+
+            border-color: #185c45;
+
+            color: #185c45;
+        }
+
+
+        .modal-info {
+
+            margin-bottom: 20px;
+
+            padding: 13px 15px;
+
+            border:
+                1px solid #dfe8e1;
+
+            border-radius: 11px;
+
+            background: #f1f6f2;
+
+            color: #52625a;
+
+            font-size: 0.78rem;
+
+            line-height: 1.55;
+        }
+
+
+        .modal-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 17px;
+        }
+
+
+        .modal-field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+
+        .modal-field.full {
+
+            grid-column: 1 / -1;
+        }
+
+
+        .modal-field label {
+
+            color: #4e5d56;
+
+            font-size: 0.76rem;
+
+            font-weight: 700;
+        }
+
+
+        .modal-field input,
+        .modal-field select {
+
+            width: 100%;
+
+            min-height: 44px;
+
+            padding: 0 12px;
+
+            box-sizing: border-box;
+
+            border:
+                1px solid #dfe5df;
+
+            border-radius: 10px;
+
+            background: white;
+
+            color: #18251f;
+
+            font-family: inherit;
+
+            font-size: 0.86rem;
+
+            outline: none;
+        }
+
+
+        .modal-field input:focus,
+        .modal-field select:focus {
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(24, 92, 69, 0.08);
+        }
+
+
+        .modal-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 9px;
+
+            margin-top: 24px;
+        }
+
+
+        /* =========================================================
+           EMPTY
+           ========================================================= */
+
+        .empty-state {
+
+            padding: 42px 20px;
+
+            text-align: center;
+
+            border:
+                1px dashed #d9e1db;
+
+            border-radius: 14px;
+
+            color: #7b8781;
+
+            font-size: 0.88rem;
+        }
+
+
+        .empty-state strong {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #435149;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.45rem;
+        }
+
+
+        /* =========================================================
+           FOOTER
+           ========================================================= */
+
+        .dashboard-footer {
+
+            width:
+                min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 28px 0 36px;
+
+            border-top:
+                1px solid rgba(24, 92, 69, 0.10);
+
+            color: #7c8781;
+
+            font-size: 0.76rem;
+        }
+
+
+        .dashboard-footer-inner {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+
+        .dashboard-footer strong {
+
+            color: #185c45;
+
+            letter-spacing: 0.04em;
+        }
+
+
+        .dashboard-footer p {
+
+            margin: 4px 0 0;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .app-header-inner {
+                gap: 18px;
+            }
+
+
+            .app-nav {
+                gap: 2px;
+            }
+
+
+            .app-nav a {
+                padding: 0 10px;
+                font-size: 0.78rem;
+            }
+
+
+            .app-nav a.active::after {
+                left: 10px;
+                right: 10px;
+            }
+
+
+            .dashboard-top {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .page-intro-box {
+
+                width: 100%;
+
+                box-sizing: border-box;
+            }
+
+
+            .covata-meta {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .app-header {
+
+                position: static;
+            }
+
+
+            .app-header-inner {
+
+                width:
+                    calc(100% - 28px);
+
+                min-height: auto;
+
+                padding: 16px 0;
+
+                flex-wrap: wrap;
+            }
+
+
+            .app-logo img {
+                width: 145px;
+            }
+
+
+            .app-nav {
+
+                order: 3;
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                padding-bottom: 2px;
+
+                margin-left: 0;
+            }
+
+
+            .app-nav a {
+
+                flex-shrink: 0;
+
+                min-height: 38px;
+            }
+
+
+            .logout-button {
+                margin-left: auto;
+            }
+
+
+            .dashboard-main {
+
+                width:
+                    calc(100% - 28px);
+
+                padding:
+                    34px 0 55px;
+            }
+
+
+            .dashboard-title {
+
+                font-size:
+                    clamp(2.7rem, 15vw, 4rem);
+            }
+
+
+            .dashboard-panel {
+
+                padding: 21px;
+
+                border-radius: 16px;
+            }
+
+
+            .covata-form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-field.full,
+            .form-actions {
+
+                grid-column: auto;
+            }
+
+
+            .uova-wrapper {
+
+                grid-column: auto;
+            }
+
+
+            .form-actions {
+
+                flex-wrap: wrap;
+            }
+
+
+            .primary-button,
+            .secondary-button {
+
+                flex: 1;
+            }
+
+
+            .covata-header {
+
+                flex-direction: column;
+            }
+
+
+            .covata-meta {
+
+                grid-template-columns: 1fr 1fr;
+            }
+
+
+            .uovo-riga {
+
+                grid-template-columns: 1fr;
+
+                gap: 7px;
+
+                padding: 12px;
+            }
+
+
+            .uovo-soggetto {
+
+                min-width: 0;
+
+                text-align: left;
+            }
+
+
+            .crea-soggetto-button {
+
+                width: 100%;
+            }
+
+
+            .modal-form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .modal-field.full {
+
+                grid-column: auto;
+            }
+
+
+            .modal-box {
+
+                padding: 21px;
+
+                border-radius: 16px;
+            }
+
+
+            .modal-actions {
+
+                flex-direction: column;
+            }
+
+
+            .modal-actions button {
+
+                width: 100%;
+            }
+
+
+            .dashboard-footer {
+
+                width:
+                    calc(100% - 28px);
+            }
+
+
+            .dashboard-footer-inner {
+
+                flex-direction: column;
+
+                gap: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+<header class="app-header">
+
+    <div class="app-header-inner">
+
+        <a
+            href="dashboard.html"
+            class="app-logo"
+        >
+            <img
+                src="logo.png"
+                alt="ALLEVANDO"
+            >
+        </a>
+
+
+        <nav class="app-nav">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="soggetti.html">
+                Soggetti
+            </a>
+
+            <a href="coppie.html">
+                Coppie
+            </a>
+
+            <a
+                href="covate.html"
+                class="active"
+            >
+                Covate
+            </a>
+
+                        <a href="gabbie.html">
+                            Gabbie
+                        </a>
+
+        </nav>
+
+
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logoutUser()"
+        >
+            Esci
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="dashboard-main">
+
+
+    <!-- =====================================================
+         INTRO
+         ===================================================== -->
+
+    <section class="dashboard-top">
+
+        <div>
+
+            <span class="dashboard-kicker">
+                Riproduzione
+            </span>
+
+
+            <h1 class="dashboard-title">
+
+                Le tue
+                <span>covate</span>.
+
+            </h1>
+
+
+            <p class="dashboard-subtitle">
+
+                Registra e monitora le covate
+                del tuo allevamento.
+
+            </p>
+
+        </div>
+
+
+        <div class="page-intro-box">
+
+            <span class="page-intro-box-label">
+                Registro
+            </span>
+
+
+            <strong id="numero-covate">
+                — covate
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         NUOVA COVATA
+         ===================================================== -->
+
+    <section>
+
+        <div class="section-label">
+            Gestione covata
+        </div>
+
+
+        <div class="dashboard-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2
+                        class="panel-title"
+                        id="titolo-form"
+                    >
+                        Nuova covata
+                    </h2>
+
+
+                    <p class="panel-description">
+
+                        Collega la covata a una coppia
+                        già presente nel tuo allevamento.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="form-covata">
+
+                <div class="covata-form-grid">
+
+
+                    <!-- COPPIA -->
+
+                    <div class="form-field full">
+
+                        <label for="coppia_id">
+                            Coppia
+                        </label>
+
+
+                        <select
+                            id="coppia_id"
+                            required
+                        >
+
+                            <option value="">
+                                Caricamento coppie...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA INIZIO -->
+
+                    <div class="form-field">
+
+                        <label for="data_inizio">
+                            Data inizio covata
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="data_inizio"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- STATO -->
+
+                    <div class="form-field">
+
+                        <label for="stato">
+                            Stato
+                        </label>
+
+
+                        <select
+                            id="stato"
+                            required
+                        >
+
+                            <option value="Preparazione">
+                                Preparazione
+                            </option>
+
+                            <option value="In cova">
+                                In cova
+                            </option>
+
+                            <option value="Terminata">
+                                Terminata
+                            </option>
+
+                            <option value="Abbandonata">
+                                Abbandonata
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- UOVA -->
+
+                    <div class="form-field">
+
+                        <label for="numero_uova">
+                            Numero uova
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="numero_uova"
+                            min="0"
+                            max="30"
+                            value="0"
+                            placeholder="Es. 5"
+                        >
+
+                    </div>
+
+
+                    <!-- NOTE -->
+
+                    <div class="form-field">
+
+                        <label for="note">
+                            Note
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="note"
+                            placeholder="Eventuali note..."
+                        >
+
+                    </div>
+
+
+                    <!-- UOVA -->
+
+                    <div
+                        id="uova-wrapper"
+                        class="uova-wrapper"
+                    >
+
+                        <div class="uova-heading">
+
+                            <strong>
+                                Gestione uova
+                            </strong>
+
+                            <span>
+                                Esito di ogni singolo uovo
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="uova-lista"
+                            class="uova-lista"
+                        ></div>
+
+                    </div>
+
+
+                    <!-- AZIONI -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            id="bottone-salva"
+                        >
+                            Salva covata
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="bottone-annulla"
+                            onclick="annullaModifica()"
+                            style="display:none;"
+                        >
+                            Annulla
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         REGISTRO
+         ===================================================== -->
+
+    <section style="margin-top:46px;">
+
+        <div class="section-label">
+            Registro covate
+        </div>
+
+
+        <div class="dashboard-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2 class="panel-title">
+                        Le tue covate
+                    </h2>
+
+
+                    <p class="panel-description">
+
+                        Tutte le covate registrate nel tuo allevamento.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="lista-covate"
+                class="covate-list"
+            >
+
+                <div class="empty-state">
+
+                    Caricamento covate...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
+     MODALE SOGGETTO
+     ========================================================= -->
+
+<div
+    id="modale-soggetto"
+    class="modal-overlay"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-kicker">
+                    Nuovo soggetto
+                </span>
+
+
+                <h2 class="modal-title">
+                    Registra il pullo
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="chiudiModaleSoggetto()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="modale-info"
+            class="modal-info"
+        >
+            Il nuovo soggetto verrà collegato automaticamente
+            al padre e alla madre della coppia.
+        </div>
+
+
+        <form id="form-soggetto">
+
+            <div class="modal-form-grid">
+
+
+                <div class="modal-field">
+
+                    <label for="nuovo_codice">
+                        Codice / anello
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nuovo_codice"
+                        required
+                        placeholder="Es. 26-001"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label for="nuovo_sesso">
+                        Sesso
+                    </label>
+
+
+                    <select id="nuovo_sesso">
+
+                        <option value="Da definire">
+                            Da definire
+                        </option>
+
+                        <option value="Maschio">
+                            Maschio
+                        </option>
+
+                        <option value="Femmina">
+                            Femmina
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label for="nuovo_specie">
+                        Specie
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nuovo_specie"
+                        placeholder="Specie"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label for="nuova_mutazione">
+                        Mutazione
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nuova_mutazione"
+                        placeholder="Mutazione"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label for="nuova_data_nascita">
+                        Data di nascita
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="nuova_data_nascita"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label>
+                        Padre
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nuovo_padre_visuale"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label>
+                        Madre
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nuova_madre_visuale"
+                        readonly
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    onclick="chiudiModaleSoggetto()"
+                >
+                    Annulla
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Crea soggetto
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="dashboard-footer">
+
+    <div class="dashboard-footer-inner">
+
+        <div>
+
+            <strong>
+                ALLEVANDO
+            </strong>
+
+
+            <p>
+                Il gestionale fatto dagli allevatori,
+                per gli allevatori.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                © 2026 ALLEVANDO.
+                Tutti i diritti riservati.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+let utenteCorrente = null;
+
+let covataInModifica = null;
+
+let coppiaInModifica = null;
+
+let coppieConCovataAperta = new Set();
+
+let coppieDisponibili = [];
+
+let uovaCorrenti = [];
+
+let uovoPerNuovoSoggetto = null;
+
+
+/* =========================================================
+   CONTROLLO CLIENT SUPABASE
+   ========================================================= */
+
+if (
+    typeof client === "undefined" ||
+    !client
+) {
+
+    document.body.innerHTML = `
+
+        <div style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:30px;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+            background:#faf8f2;
+            color:#18251f;
+            text-align:center;
+        ">
+
+            <div>
+
+                <h2 style="color:#092f23;">
+                    Errore di configurazione
+                </h2>
+
+                <p>
+                    Client Supabase non trovato.
+                </p>
+
+                <p style="font-size:13px;color:#718079;">
+                    Controlla js/config.js e l'ordine degli script.
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+    throw new Error(
+        "Client Supabase non trovato."
+    );
+
+}
+
+
+/* =========================================================
+   CONTROLLO UTENTE
+   ========================================================= */
+
+async function controllaUtente() {
+
+    const result =
+        await client.auth.getUser();
+
+
+    if (
+        result.error ||
+        !result.data.user
+    ) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    utenteCorrente =
+        result.data.user;
+
+
+    await caricaCoppie();
+
+    await caricaCovate();
+
+}
+
+
+/* =========================================================
+   CARICA COPPIE
+   ========================================================= */
+
+async function caricaCoppie() {
+
+    const select =
+        document.getElementById(
+            "coppia_id"
+        );
+
+
+    select.innerHTML = `
+        <option value="">
+            Caricamento coppie...
+        </option>
+    `;
+
+
+    const result =
+        await client
+
+            .from("coppie")
+
+            .select("*")
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore caricamento coppie:",
+            result.error
+        );
+
+
+        select.innerHTML = `
+            <option value="">
+                Errore caricamento coppie
+            </option>
+        `;
+
+
+        alert(
+            "Errore nel caricamento delle coppie: " +
+            result.error.message
+        );
+
+
+        return;
+
+    }
+
+
+    const coppie =
+        result.data || [];
+
+    const covateResult =
+        await client
+            .from("covate")
+            .select("id, coppia_id, stato")
+            .eq("user_id", utenteCorrente.id);
+
+    if (covateResult.error) {
+        console.error("Errore controllo covate aperte:", covateResult.error);
+        coppieConCovataAperta = new Set(coppie.map(coppia => String(coppia.id)));
+        select.innerHTML = `<option value="">Impossibile verificare le covate aperte</option>`;
+        alert("Non è stato possibile verificare quali coppie hanno già una covata non terminata. Ricarica la pagina e riprova.");
+        return;
+    }
+
+    coppieConCovataAperta = new Set(
+        (covateResult.data || [])
+            .filter(covata => covata.stato !== "Terminata" && covata.coppia_id)
+            .map(covata => String(covata.coppia_id))
+    );
+
+
+    coppieDisponibili = [];
+
+
+    select.innerHTML = `
+        <option value="">
+            Seleziona la coppia
+        </option>
+    `;
+
+
+    for (
+        const coppia of coppie
+    ) {
+
+        let maschio = null;
+
+        let femmina = null;
+
+
+        if (
+            coppia.maschio_id
+        ) {
+
+            const resultMaschio =
+                await client
+
+                    .from("soggetti")
+
+                    .select("*")
+
+                    .eq(
+                        "id",
+                        coppia.maschio_id
+                    )
+
+                    .eq(
+                        "user_id",
+                        utenteCorrente.id
+                    )
+
+                    .single();
+
+
+            if (
+                !resultMaschio.error
+            ) {
+
+                maschio =
+                    resultMaschio.data;
+
+            }
+
+        }
+
+
+        if (
+            coppia.femmina_id
+        ) {
+
+            const resultFemmina =
+                await client
+
+                    .from("soggetti")
+
+                    .select("*")
+
+                    .eq(
+                        "id",
+                        coppia.femmina_id
+                    )
+
+                    .eq(
+                        "user_id",
+                        utenteCorrente.id
+                    )
+
+                    .single();
+
+
+            if (
+                !resultFemmina.error
+            ) {
+
+                femmina =
+                    resultFemmina.data;
+
+            }
+
+        }
+
+
+        const nomeMaschio =
+            maschio
+                ? creaNomeSoggetto(maschio)
+                : "Maschio non disponibile";
+
+
+        const nomeFemmina =
+            femmina
+                ? creaNomeSoggetto(femmina)
+                : "Femmina non disponibile";
+
+
+        coppieDisponibili.push({
+
+            coppia: coppia,
+
+            maschio: maschio,
+
+            femmina: femmina
+
+        });
+
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            coppia.id;
+
+
+        option.dataset.nomeCoppia =
+            nomeMaschio +
+            " × " +
+            nomeFemmina;
+
+        option.textContent =
+            option.dataset.nomeCoppia;
+
+
+        select.appendChild(
+            option
+        );
+
+    }
+
+
+    aggiornaDisponibilitaCoppie();
+
+    if (
+        coppie.length === 0
+    ) {
+
+        select.innerHTML = `
+            <option value="">
+                Nessuna coppia disponibile
+            </option>
+        `;
+
+    }
+
+}
+
+
+function aggiornaDisponibilitaCoppie() {
+    const select = document.getElementById("coppia_id");
+    if (!select) return;
+    for (const option of select.options) {
+        if (!option.value) continue;
+        const occupata = coppieConCovataAperta.has(String(option.value));
+        const coppiaCorrente = covataInModifica && String(option.value) === String(coppiaInModifica);
+        option.disabled = occupata && !coppiaCorrente;
+        option.textContent = (option.dataset.nomeCoppia || option.textContent.replace(" — covata non terminata", "")) + (occupata && !coppiaCorrente ? " — covata non terminata" : "");
+    }
+}
+/* =========================================================
+   NOME SOGGETTO
+   ========================================================= */
+
+function creaNomeSoggetto(
+    soggetto
+) {
+
+    let nome = "";
+
+
+    nome +=
+        soggetto.codice ||
+        "Soggetto";
+
+
+    if (
+        soggetto.specie
+    ) {
+
+        nome +=
+            " — " +
+            soggetto.specie;
+
+    }
+
+
+    if (
+        soggetto.mutazione
+    ) {
+
+        nome +=
+            " — " +
+            soggetto.mutazione;
+
+    }
+
+
+    return nome;
+
+}
+
+
+/* =========================================================
+   GESTIONE NUMERO UOVA
+   ========================================================= */
+
+document
+    .getElementById(
+        "numero_uova"
+    )
+    .addEventListener(
+        "input",
+        function() {
+
+            let numero =
+                Number(this.value) || 0;
+
+
+            if (
+                numero < 0
+            ) {
+
+                numero = 0;
+
+                this.value = 0;
+
+            }
+
+
+            if (
+                numero > 30
+            ) {
+
+                numero = 30;
+
+                this.value = 30;
+
+            }
+
+
+            generaUovaNelForm(
+                numero
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   GENERA UOVA NEL FORM
+   ========================================================= */
+
+function generaUovaNelForm(
+    numero
+) {
+
+    const wrapper =
+        document.getElementById(
+            "uova-wrapper"
+        );
+
+
+    const lista =
+        document.getElementById(
+            "uova-lista"
+        );
+
+
+    numero =
+        Number(numero) || 0;
+
+
+    if (
+        numero <= 0
+    ) {
+
+        wrapper.classList.remove(
+            "visible"
+        );
+
+
+        lista.innerHTML = "";
+
+        return;
+
+    }
+
+
+    wrapper.classList.add(
+        "visible"
+    );
+
+
+    const uovaEsistenti =
+        new Map();
+
+
+    uovaCorrenti.forEach(
+        uovo => {
+
+            uovaEsistenti.set(
+                Number(uovo.numero),
+                uovo
+            );
+
+        }
+    );
+
+
+    lista.innerHTML = "";
+
+
+    for (
+        let numeroUovo = 1;
+        numeroUovo <= numero;
+        numeroUovo++
+    ) {
+
+        const uovo =
+            uovaEsistenti.get(
+                numeroUovo
+            );
+
+
+        const riga =
+            document.createElement(
+                "div"
+            );
+
+
+        riga.className =
+            "uovo-riga";
+
+
+        const numeroElement =
+            document.createElement(
+                "div"
+            );
+
+
+        numeroElement.className =
+            "uovo-numero";
+
+
+        numeroElement.textContent =
+            "Uovo " +
+            numeroUovo;
+
+
+        const select =
+            document.createElement(
+                "select"
+            );
+
+
+        select.className =
+            "uovo-stato";
+
+
+        select.dataset.numero =
+            numeroUovo;
+
+
+        const esiti = [
+
+            "Da verificare",
+            "Fecondo",
+            "Rotto",
+            "Embrione morto",
+            "Schiuso"
+
+        ];
+
+
+        esiti.forEach(
+            esito => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    esito;
+
+
+                option.textContent =
+                    esito;
+
+
+                if (
+                    uovo &&
+                    uovo.esito === esito
+                ) {
+
+                    option.selected =
+                        true;
+
+                }
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        if (
+            !uovo
+        ) {
+
+            select.value =
+                "Da verificare";
+
+        }
+
+
+        const soggettoContainer =
+            document.createElement(
+                "div"
+            );
+
+
+        soggettoContainer.className =
+            "uovo-soggetto";
+
+
+        aggiornaAreaSoggettoUovo(
+            soggettoContainer,
+            uovo,
+            select.value
+        );
+
+
+        select.addEventListener(
+            "change",
+            async function() {
+
+                const nuovoEsito =
+                    this.value;
+
+
+                const numero =
+                    Number(
+                        this.dataset.numero
+                    );
+
+
+                await cambiaStatoUovoForm(
+                    numero,
+                    nuovoEsito,
+                    soggettoContainer
+                );
+
+            }
+        );
+
+
+        riga.appendChild(
+            numeroElement
+        );
+
+
+        riga.appendChild(
+            select
+        );
+
+
+        riga.appendChild(
+            soggettoContainer
+        );
+
+
+        lista.appendChild(
+            riga
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   AREA SOGGETTO UOVO
+   ========================================================= */
+
+function aggiornaAreaSoggettoUovo(
+    container,
+    uovo,
+    esito
+) {
+
+    container.innerHTML = "";
+
+
+    if (
+        esito !== "Schiuso"
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        uovo &&
+        uovo.soggetto_id
+    ) {
+
+        const span =
+            document.createElement(
+                "span"
+            );
+
+
+        span.className =
+            "soggetto-creato";
+
+
+        span.textContent =
+            "✓ Soggetto creato";
+
+
+        container.appendChild(
+            span
+        );
+
+
+        return;
+
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.type =
+        "button";
+
+
+    button.className =
+        "crea-soggetto-button";
+
+
+    button.textContent =
+        "🐣 Crea soggetto";
+
+
+    button.addEventListener(
+        "click",
+        function() {
+
+            apriModaleSoggetto(
+                uovo
+            );
+
+        }
+    );
+
+
+    container.appendChild(
+        button
+    );
+
+}
+
+
+/* =========================================================
+   CAMBIO ESITO UOVO
+   ========================================================= */
+
+async function cambiaStatoUovoForm(
+    numero,
+    nuovoEsito,
+    container
+) {
+
+    const indice =
+        uovaCorrenti.findIndex(
+            uovo =>
+                Number(uovo.numero) ===
+                Number(numero)
+        );
+
+
+    let uovo;
+
+
+    if (
+        indice >= 0
+    ) {
+
+        uovaCorrenti[indice].esito =
+            nuovoEsito;
+
+
+        uovo =
+            uovaCorrenti[indice];
+
+    } else {
+
+        const nuovoUovo = {
+
+            numero:
+                Number(numero),
+
+            esito:
+                nuovoEsito,
+
+            data_deposizione:
+                document
+                    .getElementById(
+                        "data_inizio"
+                    )
+                    .value ||
+                null,
+
+            data_schiusa:
+                nuovoEsito === "Schiuso"
+                    ? new Date()
+                        .toISOString()
+                        .slice(0, 10)
+                    : null,
+
+            soggetto_id:
+                null,
+
+            note:
+                null
+
+        };
+
+
+        uovaCorrenti.push(
+            nuovoUovo
+        );
+
+
+        uovo =
+            nuovoUovo;
+
+    }
+
+
+    if (
+        nuovoEsito === "Schiuso" &&
+        !uovo.data_schiusa
+    ) {
+
+        uovo.data_schiusa =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
+
+    }
+
+
+    if (
+        nuovoEsito !== "Schiuso"
+    ) {
+
+        uovo.data_schiusa =
+            null;
+
+    }
+
+
+    aggiornaAreaSoggettoUovo(
+        container,
+        uovo,
+        nuovoEsito
+    );
+
+
+    if (
+        covataInModifica
+    ) {
+
+        await salvaUovoSingolo(
+            uovo
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARICA UOVA
+   ========================================================= */
+
+async function caricaUova(
+    covataId
+) {
+
+    const result =
+        await client
+
+            .from("uova")
+
+            .select("*")
+
+            .eq(
+                "covata_id",
+                covataId
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .order(
+                "numero",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (
+        result.error
+    ) {
+
+        console.error(
+            "Errore caricamento uova:",
+            result.error
+        );
+
+
+        uovaCorrenti = [];
+
+        return [];
+
+    }
+
+
+    uovaCorrenti =
+        result.data || [];
+
+
+    return uovaCorrenti;
+
+}
+
+
+/* =========================================================
+   SALVA SINGOLA UOVO
+   ========================================================= */
+
+async function salvaUovoSingolo(
+    uovo
+) {
+
+    if (
+        !covataInModifica
+    ) {
+
+        return;
+
+    }
+
+
+    const dataDeposizione =
+        uovo.data_deposizione ||
+        document
+            .getElementById(
+                "data_inizio"
+            )
+            .value ||
+        null;
+
+
+    const dataSchiusa =
+        uovo.esito === "Schiuso"
+            ? (
+                uovo.data_schiusa ||
+                new Date()
+                    .toISOString()
+                    .slice(0, 10)
+            )
+            : null;
+
+
+    const dati = {
+
+        user_id:
+            utenteCorrente.id,
+
+        covata_id:
+            covataInModifica,
+
+        numero:
+            Number(uovo.numero),
+
+        data_deposizione:
+            dataDeposizione,
+
+        esito:
+            uovo.esito ||
+            "Da verificare",
+
+        data_schiusa:
+            dataSchiusa,
+
+        soggetto_id:
+            uovo.soggetto_id ||
+            null,
+
+        note:
+            uovo.note ||
+            null
+
+    };
+
+
+    const result =
+        await client
+
+            .from("uova")
+
+            .upsert(
+                dati,
+                {
+                    onConflict:
+                        "covata_id,numero"
+                }
+            );
+
+
+    if (
+        result.error
+    ) {
+
+        console.error(
+            "Errore salvataggio uovo:",
+            result.error
+        );
+
+
+        alert(
+            "Errore nel salvataggio dell'uovo: " +
+            result.error.message
+        );
+
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   SINCRONIZZA UOVA
+   ========================================================= */
+
+async function sincronizzaUova(
+    covataId,
+    numeroUova,
+    dataDeposizione
+) {
+
+    numeroUova =
+        Number(numeroUova) || 0;
+
+
+    const result =
+        await client
+
+            .from("uova")
+
+            .select("*")
+
+            .eq(
+                "covata_id",
+                covataId
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .order(
+                "numero",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (
+        result.error
+    ) {
+
+        console.error(
+            result.error
+        );
+
+        throw result.error;
+
+    }
+
+
+    const uovaEsistenti =
+        result.data || [];
+
+
+    const daCreare = [];
+
+
+    /*
+       Per ogni uovo presente nel form:
+       - recuperiamo l'eventuale record già esistente
+       - recuperiamo l'esito scelto
+       - manteniamo soggetto_id se presente
+       - registriamo data_deposizione
+       - registriamo data_schiusa se schiuso
+    */
+
+    for (
+        let numero = 1;
+        numero <= numeroUova;
+        numero++
+    ) {
+
+        const esistente =
+            uovaEsistenti.find(
+                uovo =>
+                    Number(uovo.numero) ===
+                    numero
+            );
+
+
+        const selezionata =
+            uovaCorrenti.find(
+                uovo =>
+                    Number(uovo.numero) ===
+                    numero
+            );
+
+
+        const esito =
+            selezionata?.esito ||
+            esistente?.esito ||
+            "Da verificare";
+
+
+        let dataSchiusa =
+            selezionata?.data_schiusa ||
+            esistente?.data_schiusa ||
+            null;
+
+
+        if (
+            esito === "Schiuso" &&
+            !dataSchiusa
+        ) {
+
+            dataSchiusa =
+                new Date()
+                    .toISOString()
+                    .slice(0, 10);
+
+        }
+
+
+        if (
+            esito !== "Schiuso"
+        ) {
+
+            dataSchiusa =
+                null;
+
+        }
+
+
+        const soggettoId =
+            selezionata?.soggetto_id ||
+            esistente?.soggetto_id ||
+            null;
+
+
+        const noteUovo =
+            selezionata?.note ||
+            esistente?.note ||
+            null;
+
+
+        if (
+            !esistente
+        ) {
+
+            daCreare.push({
+
+                user_id:
+                    utenteCorrente.id,
+
+                covata_id:
+                    covataId,
+
+                numero:
+                    numero,
+
+                data_deposizione:
+                    dataDeposizione ||
+                    null,
+
+                esito:
+                    esito,
+
+                data_schiusa:
+                    dataSchiusa,
+
+                soggetto_id:
+                    soggettoId,
+
+                note:
+                    noteUovo
+
+            });
+
+        } else {
+
+            /*
+               Aggiorniamo l'uovo esistente.
+            */
+
+            if (
+                selezionata &&
+                (
+                    selezionata.esito !==
+                    esistente.esito ||
+
+                    (
+                        selezionata.soggetto_id ||
+                        null
+                    ) !==
+                    (
+                        esistente.soggetto_id ||
+                        null
+                    ) ||
+
+                    (
+                        selezionata.data_schiusa ||
+                        null
+                    ) !==
+                    (
+                        esistente.data_schiusa ||
+                        null
+                    )
+                )
+            ) {
+
+                const aggiornamento =
+                    await client
+
+                        .from("uova")
+
+                        .update({
+
+                            data_deposizione:
+                                dataDeposizione ||
+                                esistente.data_deposizione ||
+                                null,
+
+                            esito:
+                                esito,
+
+                            data_schiusa:
+                                dataSchiusa,
+
+                            soggetto_id:
+                                soggettoId,
+
+                            note:
+                                noteUovo
+
+                        })
+
+                        .eq(
+                            "id",
+                            esistente.id
+                        )
+
+                        .eq(
+                            "user_id",
+                            utenteCorrente.id
+                        );
+
+
+                if (
+                    aggiornamento.error
+                ) {
+
+                    throw aggiornamento.error;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /*
+       Inserisce le nuove uova.
+    */
+
+    if (
+        daCreare.length > 0
+    ) {
+
+        const inserimento =
+            await client
+
+                .from("uova")
+
+                .insert(
+                    daCreare
+                );
+
+
+        if (
+            inserimento.error
+        ) {
+
+            throw inserimento.error;
+
+        }
+
+    }
+
+
+    /*
+       Elimina le uova in eccesso,
+       ma non elimina mai un uovo già collegato
+       a un soggetto.
+    */
+
+    const daEliminare =
+        uovaEsistenti.filter(
+            uovo =>
+                Number(uovo.numero) >
+                numeroUova &&
+                !uovo.soggetto_id
+        );
+
+
+    if (
+        daEliminare.length > 0
+    ) {
+
+        const numeri =
+            daEliminare.map(
+                uovo =>
+                    Number(uovo.numero)
+            );
+
+
+        const eliminazione =
+            await client
+
+                .from("uova")
+
+                .delete()
+
+                .eq(
+                    "covata_id",
+                    covataId
+                )
+
+                .eq(
+                    "user_id",
+                    utenteCorrente.id
+                )
+
+                .in(
+                    "numero",
+                    numeri
+                );
+
+
+        if (
+            eliminazione.error
+        ) {
+
+            throw eliminazione.error;
+
+        }
+
+    }
+
+
+    /*
+       Aggiorna il numero di uova schiuse
+       nella tabella covate.
+    */
+
+    const uovaAggiornate =
+        await client
+
+            .from("uova")
+
+            .select("esito")
+
+            .eq(
+                "covata_id",
+                covataId
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            );
+
+
+    if (
+        uovaAggiornate.error
+    ) {
+
+        throw uovaAggiornate.error;
+
+    }
+
+
+    const numeroSchiuse =
+        (
+            uovaAggiornate.data || []
+        ).filter(
+            uovo =>
+                uovo.esito ===
+                "Schiuso"
+        ).length;
+
+
+    const aggiornamentoCovata =
+        await client
+
+            .from("covate")
+
+            .update({
+
+                schiuse:
+                    numeroSchiuse
+
+            })
+
+            .eq(
+                "id",
+                covataId
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            );
+
+
+    if (
+        aggiornamentoCovata.error
+    ) {
+
+        throw aggiornamentoCovata.error;
+
+    }
+
+
+    await caricaUova(
+        covataId
+    );
+
+}
+
+
+/* =========================================================
+   CARICA COVATE
+   ========================================================= */
+
+async function caricaCovate() {
+
+    const lista =
+        document.getElementById(
+            "lista-covate"
+        );
+
+
+    const contatore =
+        document.getElementById(
+            "numero-covate"
+        );
+
+
+    lista.innerHTML = `
+        <div class="empty-state">
+            Caricamento covate...
+        </div>
+    `;
+
+
+    const result =
+        await client
+
+            .from("covate")
+
+            .select("*")
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .order(
+                "data_inizio",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (
+        result.error
+    ) {
+
+        console.error(
+            "Errore caricamento covate:",
+            result.error
+        );
+
+
+        lista.innerHTML = `
+            <div class="empty-state">
+
+                <strong>
+                    Errore nel caricamento
+                </strong>
+
+                Impossibile recuperare
+                le covate dal database.
+
+                <br><br>
+
+                ${result.error.message}
+
+            </div>
+        `;
+
+
+        contatore.textContent =
+            "— covate";
+
+
+        return;
+
+    }
+
+
+    const covate =
+        result.data || [];
+
+
+    contatore.textContent =
+        covate.length +
+        (
+            covate.length === 1
+                ? " covata"
+                : " covate"
+        );
+
+
+    if (
+        covate.length === 0
+    ) {
+
+        lista.innerHTML = `
+
+            <div class="empty-state">
+
+                <strong>
+                    Nessuna covata registrata
+                </strong>
+
+                Registra la prima covata
+                utilizzando il modulo qui sopra.
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    for (
+        const covata of covate
+    ) {
+
+        await creaCardCovata(
+            covata,
+            lista
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARD COVATA
+   ========================================================= */
+
+async function creaCardCovata(
+    covata,
+    lista
+) {
+
+    const relazione =
+        coppieDisponibili.find(
+            elemento =>
+                elemento.coppia.id ===
+                covata.coppia_id
+        );
+
+
+    let nomeCoppia =
+        "Coppia non disponibile";
+
+
+    let mutazioni =
+        "—";
+
+
+    if (
+        relazione
+    ) {
+
+        const maschio =
+            relazione.maschio;
+
+
+        const femmina =
+            relazione.femmina;
+
+
+        const nomeMaschio =
+            maschio
+                ? creaNomeSoggetto(maschio)
+                : "Maschio";
+
+
+        const nomeFemmina =
+            femmina
+                ? creaNomeSoggetto(femmina)
+                : "Femmina";
+
+
+        nomeCoppia =
+            nomeMaschio +
+            " × " +
+            nomeFemmina;
+
+
+        mutazioni =
+            (
+                maschio?.mutazione ||
+                "—"
+            ) +
+            " / " +
+            (
+                femmina?.mutazione ||
+                "—"
+            );
+
+    }
+
+
+    const uovaResult =
+        await client
+
+            .from("uova")
+
+            .select("*")
+
+            .eq(
+                "covata_id",
+                covata.id
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .order(
+                "numero",
+                {
+                    ascending: true
+                }
+            );
+
+
+    const uova =
+        uovaResult.error
+            ? []
+            : (
+                uovaResult.data || []
+            );
+
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "covata-card";
+
+
+    const header =
+        document.createElement(
+            "div"
+        );
+
+
+    header.className =
+        "covata-header";
+
+
+    const titoloContainer =
+        document.createElement(
+            "div"
+        );
+
+
+    const titolo =
+        document.createElement(
+            "h3"
+        );
+
+
+    titolo.className =
+        "covata-title";
+
+
+    titolo.textContent =
+        "Covata del " +
+        formattaData(
+            covata.data_inizio
+        );
+
+
+    const coppia =
+        document.createElement(
+            "div"
+        );
+
+
+    coppia.className =
+        "covata-coppia";
+
+
+    coppia.textContent =
+        nomeCoppia;
+
+
+    titoloContainer.appendChild(
+        titolo
+    );
+
+
+    titoloContainer.appendChild(
+        coppia
+    );
+
+
+    const badge =
+        document.createElement(
+            "span"
+        );
+
+
+    badge.className =
+        "status-badge " +
+        classeStatoCovata(
+            covata.stato
+        );
+
+
+    badge.textContent =
+        covata.stato ||
+        "Non specificato";
+
+
+    header.appendChild(
+        titoloContainer
+    );
+
+
+    header.appendChild(
+        badge
+    );
+
+
+    card.appendChild(
+        header
+    );
+
+
+    /* =====================================================
+       DATI
+       ===================================================== */
+
+    const meta =
+        document.createElement(
+            "div"
+        );
+
+
+    meta.className =
+        "covata-meta";
+
+
+    meta.appendChild(
+        creaDato(
+            "Data inizio",
+            formattaData(
+                covata.data_inizio
+            )
+        )
+    );
+
+
+    meta.appendChild(
+        creaDato(
+            "Anno",
+            covata.data_inizio
+                ? new Date(
+                    covata.data_inizio
+                ).getFullYear()
+                : "—"
+        )
+    );
+
+
+    meta.appendChild(
+        creaDato(
+            "Uova",
+            covata.uova ??
+            uova.length ??
+            0
+        )
+    );
+
+
+    meta.appendChild(
+        creaDato(
+            "Mutazioni",
+            mutazioni
+        )
+    );
+
+
+    card.appendChild(
+        meta
+    );
+
+
+    /* =====================================================
+       REGISTRO UOVA
+       ===================================================== */
+
+    if (
+        uova.length > 0
+    ) {
+
+        const registroUova =
+            document.createElement(
+                "div"
+            );
+
+
+        registroUova.className =
+            "registro-uova";
+
+
+        const titoloUova =
+            document.createElement(
+                "div"
+            );
+
+
+        titoloUova.className =
+            "registro-uova-titolo";
+
+
+        titoloUova.textContent =
+            "Esito delle uova";
+
+
+        const listaUova =
+            document.createElement(
+                "div"
+            );
+
+
+        listaUova.className =
+            "registro-uova-lista";
+
+
+        uova.forEach(
+            uovo => {
+
+                const elemento =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                elemento.className =
+                    "registro-uovo " +
+                    classeUovo(
+                        uovo.esito
+                    );
+
+
+                let testo =
+                    "Uovo " +
+                    uovo.numero +
+                    " · " +
+                    (
+                        uovo.esito ||
+                        "Da verificare"
+                    );
+
+
+                if (
+                    uovo.data_schiusa
+                ) {
+
+                    testo +=
+                        " · " +
+                        formattaData(
+                            uovo.data_schiusa
+                        );
+
+                }
+
+
+                if (
+                    uovo.soggetto_id
+                ) {
+
+                    testo +=
+                        " · ✓ soggetto";
+
+                }
+
+
+                elemento.textContent =
+                    testo;
+
+
+                listaUova.appendChild(
+                    elemento
+                );
+
+            }
+        );
+
+
+        registroUova.appendChild(
+            titoloUova
+        );
+
+
+        registroUova.appendChild(
+            listaUova
+        );
+
+
+        card.appendChild(
+            registroUova
+        );
+
+    }
+
+
+    /* =====================================================
+       NOTE
+       ===================================================== */
+
+    if (
+        covata.note
+    ) {
+
+        const note =
+            document.createElement(
+                "p"
+            );
+
+
+        note.className =
+            "covata-note";
+
+
+        note.textContent =
+            "Note: " +
+            covata.note;
+
+
+        card.appendChild(
+            note
+        );
+
+    }
+
+
+    /* =====================================================
+       AZIONI
+       ===================================================== */
+
+    const actions =
+        document.createElement(
+            "div"
+        );
+
+
+    actions.className =
+        "covata-actions";
+
+
+    const modifica =
+        document.createElement(
+            "button"
+        );
+
+
+    modifica.type =
+        "button";
+
+
+    modifica.className =
+        "edit-button";
+
+
+    modifica.textContent =
+        "Modifica";
+
+
+    modifica.addEventListener(
+        "click",
+        function() {
+
+            modificaCovata(
+                covata.id
+            );
+
+        }
+    );
+
+
+    actions.appendChild(
+        modifica
+    );
+
+
+    card.appendChild(
+        actions
+    );
+
+
+    lista.appendChild(
+        card
+    );
+
+}
+
+
+/* =========================================================
+   CLASSE ESITO UOVO
+   ========================================================= */
+
+function classeUovo(
+    esito
+) {
+
+    switch (
+        esito
+    ) {
+
+        case "Schiuso":
+
+            return "schiuso";
+
+
+        case "Rotto":
+
+        case "Embrione morto":
+
+            return "rosso";
+
+
+        case "Fecondo":
+
+            return "fecondo";
+
+
+        default:
+
+            return "";
+
+    }
+
+}
+
+
+/* =========================================================
+   CREA DATO
+   ========================================================= */
+
+function creaDato(
+    label,
+    valore
+) {
+
+    const wrapper =
+        document.createElement(
+            "div"
+        );
+
+
+    wrapper.className =
+        "covata-dato";
+
+
+    const labelElement =
+        document.createElement(
+            "span"
+        );
+
+
+    labelElement.className =
+        "covata-dato-label";
+
+
+    labelElement.textContent =
+        label;
+
+
+    const valueElement =
+        document.createElement(
+            "span"
+        );
+
+
+    valueElement.className =
+        "covata-dato-value";
+
+
+    valueElement.textContent =
+        valore;
+
+
+    wrapper.appendChild(
+        labelElement
+    );
+
+
+    wrapper.appendChild(
+        valueElement
+    );
+
+
+    return wrapper;
+
+}
+
+
+/* =========================================================
+   STATO COVATA
+   ========================================================= */
+
+function classeStatoCovata(
+    stato
+) {
+
+    switch (
+        stato
+    ) {
+
+        case "In cova":
+
+            return "status-cova";
+
+
+        case "Terminata":
+
+            return "status-terminata";
+
+
+        case "Abbandonata":
+
+            return "status-abbandonata";
+
+
+        case "Preparazione":
+
+        default:
+
+            return "status-preparazione";
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMATTA DATA
+   ========================================================= */
+
+function formattaData(
+    data
+) {
+
+    if (
+        !data
+    ) {
+
+        return "—";
+
+    }
+
+
+    const parti =
+        data.split("-");
+
+
+    if (
+        parti.length !== 3
+    ) {
+
+        return data;
+
+    }
+
+
+    return (
+        parti[2] +
+        "/" +
+        parti[1] +
+        "/" +
+        parti[0]
+    );
+
+}
+
+
+/* =========================================================
+   SALVA COVATA
+   ========================================================= */
+
+document
+    .getElementById(
+        "form-covata"
+    )
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const coppiaId =
+                document
+                    .getElementById(
+                        "coppia_id"
+                    )
+                    .value;
+
+
+            const dataInizio =
+                document
+                    .getElementById(
+                        "data_inizio"
+                    )
+                    .value;
+
+
+            const stato =
+                document
+                    .getElementById(
+                        "stato"
+                    )
+                    .value;
+
+
+            const numeroUova =
+                Number(
+                    document
+                        .getElementById(
+                            "numero_uova"
+                        )
+                        .value
+                ) || 0;
+
+
+            const note =
+                document
+                    .getElementById(
+                        "note"
+                    )
+                    .value
+                    .trim();
+
+
+            if (
+                !coppiaId
+            ) {
+
+                alert(
+                    "Seleziona una coppia."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !dataInizio
+            ) {
+
+                alert(
+                    "Inserisci la data di inizio della covata."
+                );
+
+                return;
+
+            }
+
+
+            const verificaCoppia =
+                await client
+
+                    .from("coppie")
+
+                    .select("id")
+
+                    .eq(
+                        "id",
+                        coppiaId
+                    )
+
+                    .eq(
+                        "user_id",
+                        utenteCorrente.id
+                    )
+
+                    .single();
+
+
+            if (
+                verificaCoppia.error
+            ) {
+
+                alert(
+                    "La coppia selezionata non è disponibile."
+                );
+
+                console.error(
+                    verificaCoppia.error
+                );
+
+                return;
+
+            }
+            const covateCoppiaResult =
+                await client
+                    .from("covate")
+                    .select("id, stato")
+                    .eq("user_id", utenteCorrente.id)
+                    .eq("coppia_id", coppiaId);
+
+            if (covateCoppiaResult.error) {
+                alert("Non è stato possibile verificare le covate già associate a questa coppia. Riprova.");
+                console.error(covateCoppiaResult.error);
+                return;
+            }
+
+            const altraCovataNonTerminata =
+                (covateCoppiaResult.data || []).some(
+                    covata =>
+                        covata.stato !== "Terminata" &&
+                        String(covata.id) !== String(covataInModifica)
+                );
+
+            if (altraCovataNonTerminata) {
+                alert("Questa coppia ha già una covata non terminata. Potrai crearne un'altra quando la covata precedente risulterà Terminata.");
+                await caricaCoppie();
+                return;
+            }
+
+
+
+            /* =================================================
+               NUOVA COVATA
+               ================================================= */
+
+            if (
+                !covataInModifica
+            ) {
+
+                const nuovaCovata = {
+
+                    user_id:
+                        utenteCorrente.id,
+
+                    coppia_id:
+                        coppiaId,
+
+                    data_inizio:
+                        dataInizio,
+
+                    stato:
+                        stato,
+
+                    uova:
+                        numeroUova,
+
+                    schiuse:
+                        0,
+
+                    svezzati:
+                        0,
+
+                    note:
+                        note ||
+                        null
+
+                };
+
+
+                const result =
+                    await client
+
+                        .from("covate")
+
+                        .insert([
+                            nuovaCovata
+                        ])
+
+                        .select()
+                        .single();
+
+
+                if (
+                    result.error
+                ) {
+
+                    alert(
+                        "Errore durante il salvataggio: " +
+                        result.error.message
+                    );
+
+                    console.error(
+                        result.error
+                    );
+
+                    return;
+
+                }
+
+
+                const nuovaCovataSalvata =
+                    result.data;
+
+
+                try {
+
+                    await sincronizzaUova(
+                        nuovaCovataSalvata.id,
+                        numeroUova,
+                        dataInizio
+                    );
+
+                } catch (
+                    erroreUova
+                ) {
+
+                    console.error(
+                        erroreUova
+                    );
+
+
+                    alert(
+                        "La covata è stata salvata, " +
+                        "ma si è verificato un errore nella creazione delle uova: " +
+                        erroreUova.message
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Covata registrata correttamente."
+                );
+
+            } else {
+
+
+                /* =================================================
+                   MODIFICA COVATA
+                   ================================================= */
+
+                const datiModifica = {
+
+                    coppia_id:
+                        coppiaId,
+
+                    data_inizio:
+                        dataInizio,
+
+                    stato:
+                        stato,
+
+                    uova:
+                        numeroUova,
+
+                    note:
+                        note ||
+                        null
+
+                };
+
+
+                const result =
+                    await client
+
+                        .from("covate")
+
+                        .update(
+                            datiModifica
+                        )
+
+                        .eq(
+                            "id",
+                            covataInModifica
+                        )
+
+                        .eq(
+                            "user_id",
+                            utenteCorrente.id
+                        );
+
+
+                if (
+                    result.error
+                ) {
+
+                    alert(
+                        "Errore durante la modifica: " +
+                        result.error.message
+                    );
+
+                    console.error(
+                        result.error
+                    );
+
+                    return;
+
+                }
+
+
+                try {
+
+                    await sincronizzaUova(
+                        covataInModifica,
+                        numeroUova,
+                        dataInizio
+                    );
+
+                } catch (
+                    erroreUova
+                ) {
+
+                    console.error(
+                        erroreUova
+                    );
+
+
+                    alert(
+                        "La covata è stata modificata, " +
+                        "ma si è verificato un errore nella gestione delle uova: " +
+                        erroreUova.message
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Covata modificata correttamente."
+                );
+
+            }
+
+
+            annullaModifica();
+
+
+            await caricaCoppie();
+
+            await caricaCovate();
+
+        }
+    );
+
+
+/* =========================================================
+   MODIFICA COVATA
+   ========================================================= */
+
+async function modificaCovata(
+    id
+) {
+
+    const result =
+        await client
+
+            .from("covate")
+
+            .select("*")
+
+            .eq(
+                "id",
+                id
+            )
+
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+
+            .single();
+
+
+    if (
+        result.error
+    ) {
+
+        alert(
+            "Errore nel caricamento della covata: " +
+            result.error.message
+        );
+
+        console.error(
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    const covata =
+        result.data;
+
+
+    covataInModifica =
+        covata.id;
+
+    coppiaInModifica = covata.coppia_id;
+    aggiornaDisponibilitaCoppie();
+
+
+    await caricaUova(
+        covata.id
+    );
+
+
+    document
+        .getElementById(
+            "coppia_id"
+        )
+        .value =
+        covata.coppia_id ||
+        "";
+
+
+    document
+        .getElementById(
+            "data_inizio"
+        )
+        .value =
+        covata.data_inizio ||
+        "";
+
+
+    document
+        .getElementById(
+            "stato"
+        )
+        .value =
+        covata.stato ||
+        "Preparazione";
+
+
+    document
+        .getElementById(
+            "numero_uova"
+        )
+        .value =
+        covata.uova ??
+        uovaCorrenti.length ??
+        0;
+
+
+    document
+        .getElementById(
+            "note"
+        )
+        .value =
+        covata.note ||
+        "";
+
+
+    generaUovaNelForm(
+        Number(
+            covata.uova ??
+            uovaCorrenti.length ??
+            0
+        )
+    );
+
+
+    document
+        .getElementById(
+            "titolo-form"
+        )
+        .textContent =
+        "Modifica covata";
+
+
+    document
+        .getElementById(
+            "bottone-salva"
+        )
+        .textContent =
+        "Salva modifiche";
+
+
+    document
+        .getElementById(
+            "bottone-annulla"
+        )
+        .style.display =
+        "inline-flex";
+
+
+    document
+        .getElementById(
+            "form-covata"
+        )
+        .scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+}
+
+
+/* =========================================================
+   ANNULLA MODIFICA
+   ========================================================= */
+
+function annullaModifica() {
+
+    covataInModifica =
+        null;
+
+    coppiaInModifica = null;
+    aggiornaDisponibilitaCoppie();
+
+
+    uovaCorrenti = [];
+
+
+    document
+        .getElementById(
+            "form-covata"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "stato"
+        )
+        .value =
+        "Preparazione";
+
+
+    document
+        .getElementById(
+            "numero_uova"
+        )
+        .value =
+        0;
+
+
+    document
+        .getElementById(
+            "uova-wrapper"
+        )
+        .classList.remove(
+            "visible"
+        );
+
+
+    document
+        .getElementById(
+            "uova-lista"
+        )
+        .innerHTML =
+        "";
+
+
+    document
+        .getElementById(
+            "titolo-form"
+        )
+        .textContent =
+        "Nuova covata";
+
+
+    document
+        .getElementById(
+            "bottone-salva"
+        )
+        .textContent =
+        "Salva covata";
+
+
+    document
+        .getElementById(
+            "bottone-annulla"
+        )
+        .style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   APRE MODALE SOGGETTO
+   ========================================================= */
+
+function apriModaleSoggetto(
+    uovo
+) {
+
+    if (
+        !covataInModifica
+    ) {
+
+        alert(
+            "Salva prima la covata per poter creare il soggetto."
+        );
+
+        return;
+
+    }
+
+
+    const coppiaId =
+        document
+            .getElementById(
+                "coppia_id"
+            )
+            .value;
+
+
+    const relazione =
+        coppieDisponibili.find(
+            elemento =>
+                String(
+                    elemento.coppia.id
+                ) ===
+                String(coppiaId)
+        );
+
+
+    if (
+        !relazione
+    ) {
+
+        alert(
+            "Impossibile recuperare i genitori della coppia."
+        );
+
+        return;
+
+    }
+
+
+    uovoPerNuovoSoggetto =
+        uovo;
+
+
+    if (
+        !uovoPerNuovoSoggetto
+    ) {
+
+        alert(
+            "Impossibile identificare l'uovo."
+        );
+
+        return;
+
+    }
+
+
+    const maschio =
+        relazione.maschio;
+
+
+    const femmina =
+        relazione.femmina;
+
+
+    document
+        .getElementById(
+            "nuovo_codice"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "nuovo_sesso"
+        )
+        .value =
+        "Da definire";
+
+
+    document
+        .getElementById(
+            "nuovo_specie"
+        )
+        .value =
+        (
+            maschio?.specie ||
+            femmina?.specie ||
+            ""
+        );
+
+
+    document
+        .getElementById(
+            "nuova_mutazione"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "nuova_data_nascita"
+        )
+        .value =
+        uovo.data_schiusa ||
+        document
+            .getElementById(
+                "data_inizio"
+            )
+            .value ||
+        new Date()
+            .toISOString()
+            .slice(
+                0,
+                10
+            );
+
+
+    document
+        .getElementById(
+            "nuovo_padre_visuale"
+        )
+        .value =
+        maschio
+            ? creaNomeSoggetto(
+                maschio
+            )
+            : "Non disponibile";
+
+
+    document
+        .getElementById(
+            "nuova_madre_visuale"
+        )
+        .value =
+        femmina
+            ? creaNomeSoggetto(
+                femmina
+            )
+            : "Non disponibile";
+
+
+    document
+        .getElementById(
+            "modale-info"
+        )
+        .textContent =
+        "Uovo " +
+        uovoPerNuovoSoggetto.numero +
+        ": il nuovo soggetto verrà collegato automaticamente " +
+        "al padre e alla madre della coppia.";
+
+
+    document
+        .getElementById(
+            "modale-soggetto"
+        )
+        .classList.add(
+            "visible"
+        );
+
+
+    setTimeout(
+        function() {
+
+            document
+                .getElementById(
+                    "nuovo_codice"
+                )
+                .focus();
+
+        },
+        50
+    );
+
+}
+
+
+/* =========================================================
+   CHIUDE MODALE
+   ========================================================= */
+
+function chiudiModaleSoggetto() {
+
+    document
+        .getElementById(
+            "modale-soggetto"
+        )
+        .classList.remove(
+            "visible"
+        );
+
+
+    uovoPerNuovoSoggetto =
+        null;
+
+}
+
+
+/* =========================================================
+   CREA SOGGETTO DA UOVO SCHIUSO
+   ========================================================= */
+
+document
+    .getElementById(
+        "form-soggetto"
+    )
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            if (
+                !uovoPerNuovoSoggetto
+            ) {
+
+                alert(
+                    "Nessun uovo selezionato."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !covataInModifica
+            ) {
+
+                alert(
+                    "La covata non è stata ancora salvata."
+                );
+
+                return;
+
+            }
+
+
+            const coppiaId =
+                document
+                    .getElementById(
+                        "coppia_id"
+                    )
+                    .value;
+
+
+            const relazione =
+                coppieDisponibili.find(
+                    elemento =>
+                        String(
+                            elemento.coppia.id
+                        ) ===
+                        String(coppiaId)
+                );
+
+
+            if (
+                !relazione
+            ) {
+
+                alert(
+                    "Impossibile recuperare la coppia."
+                );
+
+                return;
+
+            }
+
+
+            const codice =
+                document
+                    .getElementById(
+                        "nuovo_codice"
+                    )
+                    .value
+                    .trim();
+
+
+            const sesso =
+                document
+                    .getElementById(
+                        "nuovo_sesso"
+                    )
+                    .value;
+
+
+            const specie =
+                document
+                    .getElementById(
+                        "nuovo_specie"
+                    )
+                    .value
+                    .trim();
+
+
+            const mutazione =
+                document
+                    .getElementById(
+                        "nuova_mutazione"
+                    )
+                    .value
+                    .trim();
+
+
+            const dataNascita =
+                document
+                    .getElementById(
+                        "nuova_data_nascita"
+                    )
+                    .value;
+
+
+            if (
+                !codice
+            ) {
+
+                alert(
+                    "Inserisci il codice del nuovo soggetto."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !dataNascita
+            ) {
+
+                alert(
+                    "Inserisci la data di nascita."
+                );
+
+                return;
+
+            }
+
+
+            const verificaCodice =
+                await client
+
+                    .from("soggetti")
+
+                    .select("id")
+
+                    .eq(
+                        "user_id",
+                        utenteCorrente.id
+                    )
+
+                    .eq(
+                        "codice",
+                        codice
+                    )
+
+                    .maybeSingle();
+
+
+            if (
+                verificaCodice.error
+            ) {
+
+                console.error(
+                    verificaCodice.error
+                );
+
+                alert(
+                    "Errore durante il controllo del codice: " +
+                    verificaCodice.error.message
+                );
+
+                return;
+
+            }
+
+
+            if (
+                verificaCodice.data
+            ) {
+
+                alert(
+                    "Esiste già un soggetto con il codice " +
+                    codice +
+                    "."
+                );
+
+                return;
+
+            }
+
+
+            const nuovoSoggetto = {
+
+                user_id:
+                    utenteCorrente.id,
+
+                codice:
+                    codice,
+
+                sesso:
+                    sesso,
+
+                specie:
+                    specie ||
+                    null,
+
+                mutazione:
+                    mutazione ||
+                    null,
+
+                data_di_nascita:
+                    dataNascita,
+
+                padre:
+                    relazione.maschio?.id ||
+                    null,
+
+                madre:
+                    relazione.femmina?.id ||
+                    null
+
+            };
+
+
+            const result =
+                await client
+
+                    .from("soggetti")
+
+                    .insert([
+                        nuovoSoggetto
+                    ])
+
+                    .select()
+                    .single();
+
+
+            if (
+                result.error
+            ) {
+
+                console.error(
+                    "Errore creazione soggetto:",
+                    result.error
+                );
+
+
+                alert(
+                    "Errore durante la creazione del soggetto: " +
+                    result.error.message
+                );
+
+
+                return;
+
+            }
+
+
+            const soggettoCreato =
+                result.data;
+
+
+            const dataSchiusa =
+                uovoPerNuovoSoggetto.data_schiusa ||
+                new Date()
+                    .toISOString()
+                    .slice(0, 10);
+
+
+            const aggiornamentoUovo =
+                await client
+
+                    .from("uova")
+
+                    .update({
+
+                        soggetto_id:
+                            soggettoCreato.id,
+
+                        esito:
+                            "Schiuso",
+
+                        data_schiusa:
+                            dataSchiusa
+
+                    })
+
+                    .eq(
+                        "id",
+                        uovoPerNuovoSoggetto.id
+                    )
+
+                    .eq(
+                        "user_id",
+                        utenteCorrente.id
+                    );
+
+
+            if (
+                aggiornamentoUovo.error
+            ) {
+
+                console.error(
+                    aggiornamentoUovo.error
+                );
+
+
+                alert(
+                    "Soggetto creato, ma non è stato possibile collegarlo all'uovo: " +
+                    aggiornamentoUovo.error.message
+                );
+
+                chiudiModaleSoggetto();
+
+                await caricaUova(
+                    covataInModifica
+                );
+
+                generaUovaNelForm(
+                    Number(
+                        document
+                            .getElementById(
+                                "numero_uova"
+                            )
+                            .value
+                    )
+                );
+
+                return;
+
+            }
+
+
+            const indice =
+                uovaCorrenti.findIndex(
+                    elemento =>
+                        Number(elemento.numero) ===
+                        Number(
+                            uovoPerNuovoSoggetto.numero
+                        )
+                );
+
+
+            if (
+                indice >= 0
+            ) {
+
+                uovaCorrenti[indice].soggetto_id =
+                    soggettoCreato.id;
+
+                uovaCorrenti[indice].esito =
+                    "Schiuso";
+
+                uovaCorrenti[indice].data_schiusa =
+                    dataSchiusa;
+
+            }
+
+
+            alert(
+                "Soggetto " +
+                creaNomeSoggetto(
+                    soggettoCreato
+                ) +
+                " creato correttamente."
+            );
+
+
+            chiudiModaleSoggetto();
+
+
+            generaUovaNelForm(
+                Number(
+                    document
+                        .getElementById(
+                            "numero_uova"
+                        )
+                        .value
+                )
+            );
+
+
+            await caricaCovate();
+
+        }
+    );
+
+
+/* =========================================================
+   CHIUSURA MODALE CLICCANDO FUORI
+   ========================================================= */
+
+document
+    .getElementById(
+        "modale-soggetto"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                chiudiModaleSoggetto();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   ESC
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            chiudiModaleSoggetto();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logoutUser() {
+
+    await client.auth.signOut();
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================================================
+   AVVIO
+   ========================================================= */
+
+controllaUtente();
+
+</script>
+
+</body>
+</html>
+
+
+
