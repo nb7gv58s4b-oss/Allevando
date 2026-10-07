@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Coppie — ALLEVANDO</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+
+    <style>
+
+        /* =========================================================
+           COPPIE — STILE COERENTE CON DASHBOARD
+           ========================================================= */
+
+        body.dashboard-page {
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(24, 92, 69, 0.045),
+                    transparent 30%
+                ),
+                #faf8f2;
+            color: #18251f;
+        }
+
+
+        /* =========================================================
+           HEADER
+           ========================================================= */
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background: rgba(250, 248, 242, 0.88);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border-bottom: 1px solid rgba(24, 92, 69, 0.10);
+        }
+
+
+        .app-header-inner {
+            width: min(1280px, calc(100% - 40px));
+            min-height: 82px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 32px;
+        }
+
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+
+        .app-logo img {
+            display: block;
+
+            width: 175px;
+            height: auto;
+        }
+
+
+        /* =========================================================
+           NAVIGAZIONE
+           ========================================================= */
+
+        .app-nav {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-left: auto;
+        }
+
+
+        .app-nav a {
+            position: relative;
+
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 42px;
+
+            padding: 0 15px;
+
+            border-radius: 10px;
+
+            color: #52625a;
+
+            text-decoration: none;
+
+            font-size: 0.88rem;
+            font-weight: 600;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .app-nav a:hover {
+            color: #185c45;
+
+            background:
+                rgba(24, 92, 69, 0.06);
+        }
+
+
+        .app-nav a.active {
+            color: #185c45;
+
+            background: #e8f1eb;
+        }
+
+
+        .app-nav a.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 15px;
+            right: 15px;
+            bottom: 5px;
+
+            height: 2px;
+
+            border-radius: 99px;
+
+            background: #185c45;
+        }
+
+
+        /* =========================================================
+           LOGOUT
+           ========================================================= */
+
+        .logout-button {
+            flex-shrink: 0;
+
+            border: 1px solid rgba(24, 92, 69, 0.18);
+
+            background: transparent;
+
+            color: #185c45;
+
+            border-radius: 10px;
+
+            padding: 10px 16px;
+
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        .logout-button:hover {
+            background: #185c45;
+
+            color: white;
+
+            border-color: #185c45;
+        }
+
+
+        /* =========================================================
+           MAIN
+           ========================================================= */
+
+        .dashboard-main {
+            width: min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 46px 0 80px;
+        }
+
+
+        /* =========================================================
+           INTRO
+           ========================================================= */
+
+        .dashboard-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 40px;
+
+            margin-bottom: 46px;
+        }
+
+
+        .dashboard-kicker {
+            display: block;
+
+            margin-bottom: 12px;
+
+            color: #b96848;
+
+            font-size: 0.72rem;
+            font-weight: 800;
+
+            letter-spacing: 0.16em;
+
+            text-transform: uppercase;
+        }
+
+
+        .dashboard-title {
+            margin: 0;
+
+            max-width: 760px;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size:
+                clamp(3rem, 6vw, 5rem);
+
+            font-weight: 500;
+
+            line-height: 0.95;
+
+            letter-spacing: -0.045em;
+
+            color: #092f23;
+        }
+
+
+        .dashboard-title span {
+            color: #185c45;
+        }
+
+
+        .dashboard-subtitle {
+            max-width: 680px;
+
+            margin: 20px 0 0;
+
+            color: #65736d;
+
+            font-size: 1rem;
+
+            line-height: 1.75;
+        }
+
+
+        /* =========================================================
+           CONTATORE
+           ========================================================= */
+
+        .page-intro-box {
+            flex-shrink: 0;
+
+            min-width: 220px;
+
+            padding: 20px 22px;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.12);
+
+            border-radius: 16px;
+
+            background:
+                rgba(255, 255, 255, 0.55);
+        }
+
+
+        .page-intro-box-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #8a968f;
+
+            font-size: 0.7rem;
+            font-weight: 800;
+
+            letter-spacing: 0.12em;
+
+            text-transform: uppercase;
+        }
+
+
+        .page-intro-box strong {
+            display: block;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.8rem;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           SEZIONI
+           ========================================================= */
+
+        .section-label {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+
+            color: #718079;
+
+            font-size: 0.72rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.14em;
+
+            text-transform: uppercase;
+        }
+
+
+        .section-label::before {
+            content: "";
+
+            width: 24px;
+
+            height: 1px;
+
+            background: #b96848;
+        }
+
+
+        /* =========================================================
+           PANEL
+           ========================================================= */
+
+        .dashboard-panel {
+            padding: 28px;
+
+            border:
+                1px solid rgba(24, 92, 69, 0.10);
+
+            border-radius: 20px;
+
+            background:
+                rgba(255, 255, 255, 0.68);
+
+            box-shadow:
+                0 10px 35px
+                rgba(9, 47, 35, 0.045);
+        }
+
+
+        .panel-heading {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 26px;
+        }
+
+
+        .panel-title {
+            margin: 0;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 2rem;
+
+            font-weight: 600;
+
+            line-height: 1;
+        }
+
+
+        .panel-description {
+            margin: 7px 0 0;
+
+            color: #7a8680;
+
+            font-size: 0.88rem;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           FORM
+           ========================================================= */
+
+        .coppia-form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+
+        .form-field {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+
+        .form-field.full {
+            grid-column: 1 / -1;
+        }
+
+
+        .form-field label {
+            color: #4e5d56;
+
+            font-size: 0.78rem;
+
+            font-weight: 700;
+        }
+
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            border:
+                1px solid #dfe5df;
+
+            border-radius: 11px;
+
+            background: #fff;
+
+            color: #18251f;
+
+            font-family: inherit;
+
+            font-size: 0.9rem;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .form-field input,
+        .form-field select {
+
+            min-height: 46px;
+
+            padding: 0 13px;
+        }
+
+
+        .form-field textarea {
+
+            min-height: 110px;
+
+            padding: 13px;
+
+            resize: vertical;
+        }
+
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+
+            border-color: #185c45;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(24, 92, 69, 0.09);
+        }
+
+
+        /* =========================================================
+           BOTTONI
+           ========================================================= */
+
+        .form-actions {
+
+            grid-column: 1 / -1;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 4px;
+        }
+
+
+        .primary-button,
+        .secondary-button {
+
+            min-height: 45px;
+
+            padding: 0 18px;
+
+            border-radius: 11px;
+
+            font-family: inherit;
+
+            font-size: 0.84rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .primary-button {
+
+            border:
+                1px solid #185c45;
+
+            background: #185c45;
+
+            color: white;
+        }
+
+
+        .primary-button:hover {
+
+            background: #0d3d2d;
+
+            border-color: #0d3d2d;
+        }
+
+
+        .secondary-button {
+
+            border:
+                1px solid #d7dfd9;
+
+            background: transparent;
+
+            color: #52625a;
+        }
+
+
+        .secondary-button:hover {
+
+            border-color: #185c45;
+
+            color: #185c45;
+
+            background: #f1f6f2;
+        }
+
+
+        /* =========================================================
+           LISTA COPPIE
+           ========================================================= */
+
+        .coppie-list {
+
+            display: grid;
+
+            gap: 14px;
+        }
+
+
+        .coppia-card {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr) auto;
+
+            align-items: center;
+
+            gap: 24px;
+
+            padding: 21px 22px;
+
+            border:
+                1px solid #e4e9e4;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, 0.82);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .coppia-card:hover {
+
+            transform: translateY(-1px);
+
+            border-color:
+                rgba(24, 92, 69, 0.20);
+
+            box-shadow:
+                0 8px 24px
+                rgba(9, 47, 35, 0.05);
+        }
+
+
+        .coppia-main {
+            min-width: 0;
+        }
+
+
+        .coppia-title-row {
+
+            display: flex;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .coppia-title {
+
+            margin: 0;
+
+            color: #092f23;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.55rem;
+
+            font-weight: 600;
+
+            line-height: 1;
+        }
+
+
+        .coppia-specie {
+
+            margin: 0 0 10px;
+
+            color: #77837d;
+
+            font-size: 0.82rem;
+        }
+
+
+        .coppia-meta {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px 18px;
+
+            color: #68756f;
+
+            font-size: 0.78rem;
+        }
+
+
+        .coppia-meta strong {
+
+            color: #435149;
+        }
+
+
+        .coppia-note {
+
+            margin: 10px 0 0;
+
+            color: #77837d;
+
+            font-size: 0.78rem;
+
+            line-height: 1.55;
+        }
+
+
+        .coppia-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .edit-button {
+
+            min-height: 38px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid #dce4de;
+
+            border-radius: 9px;
+
+            background: #fff;
+
+            color: #185c45;
+
+            font-family: inherit;
+
+            font-size: 0.76rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .edit-button:hover {
+
+            border-color: #185c45;
+
+            background: #f1f6f2;
+        }
+
+
+        /* =========================================================
+           BADGE STATO
+           ========================================================= */
+
+        .status-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            min-height: 26px;
+
+            padding: 0 9px;
+
+            border-radius: 999px;
+
+            font-size: 0.68rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.02em;
+        }
+
+
+        .status-attiva {
+
+            background: #e8f1eb;
+
+            color: #185c45;
+        }
+
+
+        .status-cova {
+
+            background: #f5eadb;
+
+            color: #9a5b35;
+        }
+
+
+        .status-separata {
+
+            background: #eef0ed;
+
+            color: #66716b;
+        }
+
+
+        .status-terminata {
+
+            background: #eee9e3;
+
+            color: #786e65;
+        }
+
+
+        /* =========================================================
+           STATO VUOTO
+           ========================================================= */
+
+        .empty-state {
+
+            padding: 42px 20px;
+
+            text-align: center;
+
+            border:
+                1px dashed #d9e1db;
+
+            border-radius: 14px;
+
+            color: #7b8781;
+
+            font-size: 0.88rem;
+        }
+
+
+        .empty-state strong {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #435149;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size: 1.45rem;
+        }
+
+
+        /* =========================================================
+           FOOTER
+           ========================================================= */
+
+        .dashboard-footer {
+
+            width:
+                min(1280px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 28px 0 36px;
+
+            border-top:
+                1px solid rgba(24, 92, 69, 0.10);
+
+            color: #7c8781;
+
+            font-size: 0.76rem;
+        }
+
+
+        .dashboard-footer-inner {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+
+        .dashboard-footer strong {
+
+            color: #185c45;
+
+            letter-spacing: 0.04em;
+        }
+
+
+        .dashboard-footer p {
+
+            margin: 4px 0 0;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .app-header-inner {
+                gap: 18px;
+            }
+
+
+            .app-nav {
+                gap: 2px;
+            }
+
+
+            .app-nav a {
+                padding: 0 10px;
+
+                font-size: 0.78rem;
+            }
+
+
+            .app-nav a.active::after {
+
+                left: 10px;
+
+                right: 10px;
+            }
+
+
+            .dashboard-top {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .page-intro-box {
+
+                width: 100%;
+
+                box-sizing: border-box;
+            }
+
+
+            .coppia-card {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .coppia-actions {
+
+                justify-content: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .app-header {
+
+                position: static;
+            }
+
+
+            .app-header-inner {
+
+                width:
+                    calc(100% - 28px);
+
+                min-height: auto;
+
+                padding: 16px 0;
+
+                flex-wrap: wrap;
+            }
+
+
+            .app-logo img {
+
+                width: 145px;
+            }
+
+
+            .app-nav {
+
+                order: 3;
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                padding-bottom: 2px;
+
+                margin-left: 0;
+            }
+
+
+            .app-nav a {
+
+                flex-shrink: 0;
+
+                min-height: 38px;
+            }
+
+
+            .logout-button {
+
+                margin-left: auto;
+            }
+
+
+            .dashboard-main {
+
+                width:
+                    calc(100% - 28px);
+
+                padding:
+                    34px 0 55px;
+            }
+
+
+            .dashboard-title {
+
+                font-size:
+                    clamp(2.7rem, 15vw, 4rem);
+            }
+
+
+            .dashboard-panel {
+
+                padding: 21px;
+
+                border-radius: 16px;
+            }
+
+
+            .coppia-form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-field.full,
+            .form-actions {
+
+                grid-column: auto;
+            }
+
+
+            .form-actions {
+
+                flex-wrap: wrap;
+            }
+
+
+            .primary-button,
+            .secondary-button {
+
+                flex: 1;
+            }
+
+
+            .dashboard-footer {
+
+                width:
+                    calc(100% - 28px);
+            }
+
+
+            .dashboard-footer-inner {
+
+                flex-direction: column;
+
+                gap: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<header class="app-header">
+
+    <div class="app-header-inner">
+
+
+        <a
+            href="dashboard.html"
+            class="app-logo"
+        >
+            <img
+                src="logo.png"
+                alt="ALLEVANDO"
+            >
+        </a>
+
+
+        <nav class="app-nav">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="soggetti.html">
+                Soggetti
+            </a>
+
+            <a
+                href="coppie.html"
+                class="active"
+            >
+                Coppie
+            </a>
+
+            <a href="covate.html">
+                Covate
+            </a>
+
+                        <a href="gabbie.html">
+                            Gabbie
+                        </a>
+
+        </nav>
+
+
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logoutUser()"
+        >
+            Esci
+        </button>
+
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN
+     ========================================================= -->
+
+<main class="dashboard-main">
+
+
+    <!-- INTRO -->
+
+    <section class="dashboard-top">
+
+
+        <div>
+
+            <span class="dashboard-kicker">
+                Riproduzione
+            </span>
+
+
+            <h1 class="dashboard-title">
+
+                Le tue
+                <span>coppie</span>.
+
+            </h1>
+
+
+            <p class="dashboard-subtitle">
+
+                Crea e gestisci le coppie riproduttive
+                del tuo allevamento.
+
+            </p>
+
+        </div>
+
+
+        <div class="page-intro-box">
+
+            <span class="page-intro-box-label">
+                Registro
+            </span>
+
+            <strong id="numero-coppie">
+                — coppie
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         FORM
+         ===================================================== -->
+
+    <section>
+
+
+        <div class="section-label">
+            Gestione coppia
+        </div>
+
+
+        <div class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2
+                        class="panel-title"
+                        id="titolo-form"
+                    >
+                        Nuova coppia
+                    </h2>
+
+
+                    <p class="panel-description">
+
+                        Seleziona i due soggetti
+                        e configura la coppia riproduttiva.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="form-coppia">
+
+
+                <div class="coppia-form-grid">
+
+
+                    <!-- MASCHIO -->
+
+                    <div class="form-field">
+
+                        <label for="maschio_id">
+                            Maschio
+                        </label>
+
+
+                        <select
+                            id="maschio_id"
+                            required
+                        >
+
+                            <option value="">
+                                Seleziona il maschio
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- FEMMINA -->
+
+                    <div class="form-field">
+
+                        <label for="femmina_id">
+                            Femmina
+                        </label>
+
+
+                        <select
+                            id="femmina_id"
+                            required
+                        >
+
+                            <option value="">
+                                Seleziona la femmina
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA -->
+
+                    <div class="form-field">
+
+                        <label for="data_inizio">
+                            Data inizio
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="data_inizio"
+                        >
+
+                    </div>
+
+
+                    <!-- STATO -->
+
+                    <div class="form-field">
+
+                        <label for="stato">
+                            Stato
+                        </label>
+
+
+                        <select id="stato">
+
+                            <option value="Attiva">
+                                Attiva
+                            </option>
+
+                            <option value="In cova">
+                                In cova
+                            </option>
+
+                            <option value="Separata">
+                                Separata
+                            </option>
+
+                            <option value="Terminata">
+                                Terminata
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- NOTE -->
+
+                    <div class="form-field full">
+
+                        <label for="note">
+                            Note
+                        </label>
+
+
+                        <textarea
+                            id="note"
+                            rows="4"
+                            placeholder="Eventuali note sulla coppia..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- BOTTONI -->
+
+                    <div class="form-actions">
+
+
+                        <button
+                            type="submit"
+                            class="primary-button"
+                            id="bottone-salva"
+                        >
+                            Salva coppia
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="bottone-annulla"
+                            onclick="annullaModifica()"
+                            style="display:none;"
+                        >
+                            Annulla
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         LISTA
+         ===================================================== -->
+
+    <section style="margin-top:46px;">
+
+
+        <div class="section-label">
+            Registro coppie
+        </div>
+
+
+        <div class="dashboard-panel">
+
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2 class="panel-title">
+                        Le tue coppie
+                    </h2>
+
+
+                    <p class="panel-description">
+
+                        Visualizza e modifica
+                        le coppie del tuo allevamento.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="lista-coppie"
+                class="coppie-list"
+            >
+
+                <div class="empty-state">
+
+                    Caricamento coppie...
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="dashboard-footer">
+
+
+    <div class="dashboard-footer-inner">
+
+
+        <div>
+
+            <strong>
+                ALLEVANDO
+            </strong>
+
+
+            <p>
+                Il gestionale fatto dagli allevatori,
+                per gli allevatori.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                © 2026 ALLEVANDO.
+                Tutti i diritti riservati.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</footer>
+
+
+<script>
+
+
+let utenteCorrente = null;
+
+let coppiaInModifica = null;
+
+
+/* =========================================================
+   CONTROLLO UTENTE
+   ========================================================= */
+
+async function controllaUtente() {
+
+
+    const result =
+        await client.auth.getUser();
+
+
+    if (
+        result.error ||
+        !result.data.user
+    ) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    utenteCorrente =
+        result.data.user;
+
+
+    await caricaSoggetti();
+
+    await caricaCoppie();
+
+}
+
+
+/* =========================================================
+   CARICA SOGGETTI ATTIVI
+   ========================================================= */
+
+async function caricaSoggetti() {
+
+
+    const result =
+        await client
+            .from("soggetti")
+            .select("*")
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+            .eq(
+                "stato",
+                "Attivo"
+            )
+            .order(
+                "codice",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            "Errore caricamento soggetti:",
+            result.error
+        );
+
+
+        alert(
+            "Errore nel caricamento dei soggetti: " +
+            result.error.message
+        );
+
+
+        return;
+
+    }
+
+
+    const maschioSelect =
+        document.getElementById(
+            "maschio_id"
+        );
+
+
+    const femminaSelect =
+        document.getElementById(
+            "femmina_id"
+        );
+
+
+    maschioSelect.innerHTML =
+        '<option value="">Seleziona il maschio</option>';
+
+
+    femminaSelect.innerHTML =
+        '<option value="">Seleziona la femmina</option>';
+
+
+    result.data.forEach(
+        function(soggetto) {
+
+
+            const testo =
+                creaNomeSoggetto(
+                    soggetto
+                );
+
+
+            /*
+             * Manteniamo la logica attuale:
+             * un soggetto "Da definire" può essere
+             * selezionato in entrambi i campi.
+             */
+
+
+            if (
+                soggetto.sesso === "Maschio" ||
+                soggetto.sesso === "Da definire"
+            ) {
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    soggetto.id;
+
+
+                option.textContent =
+                    testo;
+
+
+                maschioSelect.appendChild(
+                    option
+                );
+
+            }
+
+
+            if (
+                soggetto.sesso === "Femmina" ||
+                soggetto.sesso === "Da definire"
+            ) {
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    soggetto.id;
+
+
+                option.textContent =
+                    testo;
+
+
+                femminaSelect.appendChild(
+                    option
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NOME SOGGETTO
+   ========================================================= */
+
+function creaNomeSoggetto(
+    soggetto
+) {
+
+
+    let nome = "";
+
+
+    if (soggetto.codice) {
+
+        nome +=
+            soggetto.codice;
+
+    } else {
+
+        nome +=
+            "Soggetto";
+
+    }
+
+
+    if (soggetto.specie) {
+
+        nome +=
+            " — " +
+            soggetto.specie;
+
+    }
+
+
+    if (soggetto.mutazione) {
+
+        nome +=
+            " — " +
+            soggetto.mutazione;
+
+    }
+
+
+    return nome;
+
+}
+
+
+/* =========================================================
+   CONTROLLO SOGGETTO GIÀ IN COPPIA
+   ========================================================= */
+
+async function controllaSoggettoOccupato(
+    soggettoId
+) {
+
+
+    if (!soggettoId) {
+
+        return false;
+
+    }
+
+
+    let query =
+        client
+            .from("coppie")
+            .select(
+                "id, maschio_id, femmina_id, stato"
+            )
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+            .in(
+                "stato",
+                [
+                    "Attiva",
+                    "In cova"
+                ]
+            )
+            .or(
+                `maschio_id.eq.${soggettoId},femmina_id.eq.${soggettoId}`
+            );
+
+
+    /*
+     * Durante la modifica escludiamo
+     * la coppia stessa.
+     */
+
+    if (coppiaInModifica) {
+
+        query =
+            query.neq(
+                "id",
+                coppiaInModifica
+            );
+
+    }
+
+
+    const result =
+        await query;
+
+
+    if (result.error) {
+
+
+        console.error(
+            "Errore controllo coppia:",
+            result.error
+        );
+
+
+        alert(
+            "Errore durante il controllo delle coppie: " +
+            result.error.message
+        );
+
+
+        return true;
+
+    }
+
+
+    return (
+        result.data &&
+        result.data.length > 0
+    );
+
+}
+
+
+/* =========================================================
+   CARICA COPPIE
+   ========================================================= */
+
+async function caricaCoppie() {
+
+
+    const lista =
+        document.getElementById(
+            "lista-coppie"
+        );
+
+
+    const contatore =
+        document.getElementById(
+            "numero-coppie"
+        );
+
+
+    const result =
+        await client
+            .from("coppie")
+            .select("*")
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (result.error) {
+
+
+        console.error(
+            "Errore caricamento coppie:",
+            result.error
+        );
+
+
+        lista.innerHTML = `
+            <div class="empty-state">
+
+                <strong>
+                    Errore nel caricamento
+                </strong>
+
+                Impossibile recuperare
+                le coppie dal database.
+
+            </div>
+        `;
+
+
+        contatore.textContent =
+            "— coppie";
+
+
+        return;
+
+    }
+
+
+    const coppie =
+        result.data || [];
+
+
+    contatore.textContent =
+        coppie.length +
+        (
+            coppie.length === 1
+                ? " coppia"
+                : " coppie"
+        );
+
+
+    if (coppie.length === 0) {
+
+
+        lista.innerHTML = `
+
+            <div class="empty-state">
+
+                <strong>
+                    Nessuna coppia registrata
+                </strong>
+
+                Crea la prima coppia
+                utilizzando il modulo qui sopra.
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    /*
+     * Per ogni coppia recuperiamo
+     * i due soggetti.
+     */
+
+    for (
+        const coppia of coppie
+    ) {
+
+
+        let maschio = null;
+
+        let femmina = null;
+
+
+        const maschioResult =
+            await client
+                .from("soggetti")
+                .select("*")
+                .eq(
+                    "id",
+                    coppia.maschio_id
+                )
+                .eq(
+                    "user_id",
+                    utenteCorrente.id
+                )
+                .single();
+
+
+        if (!maschioResult.error) {
+
+            maschio =
+                maschioResult.data;
+
+        }
+
+
+        const femminaResult =
+            await client
+                .from("soggetti")
+                .select("*")
+                .eq(
+                    "id",
+                    coppia.femmina_id
+                )
+                .eq(
+                    "user_id",
+                    utenteCorrente.id
+                )
+                .single();
+
+
+        if (!femminaResult.error) {
+
+            femmina =
+                femminaResult.data;
+
+        }
+
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+
+        card.className =
+            "coppia-card";
+
+
+        const main =
+            document.createElement(
+                "div"
+            );
+
+
+        main.className =
+            "coppia-main";
+
+
+        const titleRow =
+            document.createElement(
+                "div"
+            );
+
+
+        titleRow.className =
+            "coppia-title-row";
+
+
+        const title =
+            document.createElement(
+                "h3"
+            );
+
+
+        title.className =
+            "coppia-title";
+
+
+        const nomeMaschio =
+            maschio
+                ? creaNomeSoggetto(
+                    maschio
+                )
+                : "Soggetto non disponibile";
+
+
+        const nomeFemmina =
+            femmina
+                ? creaNomeSoggetto(
+                    femmina
+                )
+                : "Soggetto non disponibile";
+
+
+        title.textContent =
+            nomeMaschio +
+            " × " +
+            nomeFemmina;
+
+
+        titleRow.appendChild(
+            title
+        );
+
+
+        /* BADGE STATO */
+
+        const badge =
+            document.createElement(
+                "span"
+            );
+
+
+        badge.className =
+            "status-badge " +
+            classeStato(
+                coppia.stato
+            );
+
+
+        badge.textContent =
+            coppia.stato ||
+            "Non specificato";
+
+
+        titleRow.appendChild(
+            badge
+        );
+
+
+        main.appendChild(
+            titleRow
+        );
+
+
+        /* SPECIE */
+
+        const specie =
+            document.createElement(
+                "p"
+            );
+
+
+        specie.className =
+            "coppia-specie";
+
+
+        const specieMaschio =
+            maschio?.specie || "";
+
+
+        const specieFemmina =
+            femmina?.specie || "";
+
+
+        if (
+            specieMaschio &&
+            specieFemmina &&
+            specieMaschio === specieFemmina
+        ) {
+
+
+            specie.textContent =
+                specieMaschio;
+
+
+        } else if (
+            specieMaschio ||
+            specieFemmina
+        ) {
+
+
+            specie.textContent =
+                [
+                    specieMaschio,
+                    specieFemmina
+                ]
+                .filter(Boolean)
+                .join(" · ");
+
+
+        } else {
+
+
+            specie.textContent =
+                "Specie non specificata";
+
+        }
+
+
+        main.appendChild(
+            specie
+        );
+
+
+        /* META */
+
+        const meta =
+            document.createElement(
+                "div"
+            );
+
+
+        meta.className =
+            "coppia-meta";
+
+
+        const data =
+            document.createElement(
+                "span"
+            );
+
+
+        data.innerHTML =
+            "<strong>Data inizio:</strong> " +
+            formattaData(
+                coppia.data_inizio
+            );
+
+
+        meta.appendChild(
+            data
+        );
+
+
+        const mutazioni =
+            document.createElement(
+                "span"
+            );
+
+
+        mutazioni.innerHTML =
+            "<strong>Mutazioni:</strong> " +
+            (
+                maschio?.mutazione ||
+                "—"
+            ) +
+            " / " +
+            (
+                femmina?.mutazione ||
+                "—"
+            );
+
+
+        meta.appendChild(
+            mutazioni
+        );
+
+
+        main.appendChild(
+            meta
+        );
+
+
+        /* NOTE */
+
+        if (coppia.note) {
+
+
+            const note =
+                document.createElement(
+                    "p"
+                );
+
+
+            note.className =
+                "coppia-note";
+
+
+            note.textContent =
+                "Note: " +
+                coppia.note;
+
+
+            main.appendChild(
+                note
+            );
+
+        }
+
+
+        /* AZIONI */
+
+        const actions =
+            document.createElement(
+                "div"
+            );
+
+
+        actions.className =
+            "coppia-actions";
+
+
+        const modifica =
+            document.createElement(
+                "button"
+            );
+
+
+        modifica.type =
+            "button";
+
+
+        modifica.className =
+            "edit-button";
+
+
+        modifica.textContent =
+            "Modifica";
+
+
+        modifica.addEventListener(
+            "click",
+            function() {
+
+                modificaCoppia(
+                    coppia.id
+                );
+
+            }
+        );
+
+
+        actions.appendChild(
+            modifica
+        );
+
+
+        card.appendChild(
+            main
+        );
+
+
+        card.appendChild(
+            actions
+        );
+
+
+        lista.appendChild(
+            card
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLASSE STATO
+   ========================================================= */
+
+function classeStato(
+    stato
+) {
+
+
+    switch (stato) {
+
+
+        case "In cova":
+
+            return "status-cova";
+
+
+        case "Separata":
+
+            return "status-separata";
+
+
+        case "Terminata":
+
+            return "status-terminata";
+
+
+        case "Attiva":
+
+        default:
+
+            return "status-attiva";
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMATTA DATA
+   ========================================================= */
+
+function formattaData(
+    data
+) {
+
+
+    if (!data) {
+
+        return "—";
+
+    }
+
+
+    const parti =
+        data.split("-");
+
+
+    if (parti.length !== 3) {
+
+        return data;
+
+    }
+
+
+    return (
+        parti[2] +
+        "/" +
+        parti[1] +
+        "/" +
+        parti[0]
+    );
+
+}
+
+
+/* =========================================================
+   CREA / MODIFICA COPPIA
+   ========================================================= */
+
+document
+    .getElementById(
+        "form-coppia"
+    )
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+
+            event.preventDefault();
+
+
+            const maschioId =
+                document
+                    .getElementById(
+                        "maschio_id"
+                    )
+                    .value;
+
+
+            const femminaId =
+                document
+                    .getElementById(
+                        "femmina_id"
+                    )
+                    .value;
+
+
+            const stato =
+                document
+                    .getElementById(
+                        "stato"
+                    )
+                    .value;
+
+
+            /* CONTROLLO SELEZIONE */
+
+            if (
+                !maschioId ||
+                !femminaId
+            ) {
+
+
+                alert(
+                    "Seleziona un maschio e una femmina."
+                );
+
+
+                return;
+
+            }
+
+
+            /* CONTROLLO STESSO SOGGETTO */
+
+            if (
+                maschioId ===
+                femminaId
+            ) {
+
+
+                alert(
+                    "Il maschio e la femmina devono essere due soggetti diversi."
+                );
+
+
+                return;
+
+            }
+
+
+            /*
+             * Controlliamo la disponibilità
+             * solo per coppie Attive / In cova.
+             */
+
+            if (
+                stato === "Attiva" ||
+                stato === "In cova"
+            ) {
+
+
+                const maschioOccupato =
+                    await controllaSoggettoOccupato(
+                        maschioId
+                    );
+
+
+                if (
+                    maschioOccupato
+                ) {
+
+
+                    alert(
+                        "Questo maschio appartiene già a una coppia attiva o in cova."
+                    );
+
+
+                    return;
+
+                }
+
+
+                const femminaOccupata =
+                    await controllaSoggettoOccupato(
+                        femminaId
+                    );
+
+
+                if (
+                    femminaOccupata
+                ) {
+
+
+                    alert(
+                        "Questa femmina appartiene già a una coppia attiva o in cova."
+                    );
+
+
+                    return;
+
+                }
+
+            }
+
+
+            const datiCoppia = {
+
+
+                maschio_id:
+                    maschioId,
+
+
+                femmina_id:
+                    femminaId,
+
+
+                data_inizio:
+                    document
+                        .getElementById(
+                            "data_inizio"
+                        )
+                        .value ||
+                    null,
+
+
+                stato:
+                    stato,
+
+
+                note:
+                    document
+                        .getElementById(
+                            "note"
+                        )
+                        .value
+                        .trim() ||
+                    null
+
+            };
+
+
+            /* MODIFICA */
+
+            if (
+                coppiaInModifica
+            ) {
+
+
+                const result =
+                    await client
+                        .from("coppie")
+                        .update(
+                            datiCoppia
+                        )
+                        .eq(
+                            "id",
+                            coppiaInModifica
+                        )
+                        .eq(
+                            "user_id",
+                            utenteCorrente.id
+                        );
+
+
+                if (
+                    result.error
+                ) {
+
+
+                    console.error(
+                        "Errore modifica coppia:",
+                        result.error
+                    );
+
+
+                    alert(
+                        "Errore durante la modifica: " +
+                        result.error.message
+                    );
+
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Coppia modificata correttamente."
+                );
+
+
+            } else {
+
+
+                /* NUOVA COPPIA */
+
+                const nuovaCoppia = {
+
+
+                    user_id:
+                        utenteCorrente.id,
+
+
+                    ...datiCoppia
+
+                };
+
+
+                const result =
+                    await client
+                        .from("coppie")
+                        .insert([
+                            nuovaCoppia
+                        ]);
+
+
+                if (
+                    result.error
+                ) {
+
+
+                    console.error(
+                        "Errore creazione coppia:",
+                        result.error
+                    );
+
+
+                    alert(
+                        "Errore durante la creazione: " +
+                        result.error.message
+                    );
+
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Coppia creata correttamente."
+                );
+
+            }
+
+
+            annullaModifica();
+
+
+            await caricaCoppie();
+
+        }
+    );
+
+
+/* =========================================================
+   MODIFICA COPPIA
+   ========================================================= */
+
+async function modificaCoppia(
+    id
+) {
+
+
+    const result =
+        await client
+            .from("coppie")
+            .select("*")
+            .eq(
+                "id",
+                id
+            )
+            .eq(
+                "user_id",
+                utenteCorrente.id
+            )
+            .single();
+
+
+    if (
+        result.error
+    ) {
+
+
+        alert(
+            "Errore nel caricamento della coppia."
+        );
+
+
+        console.error(
+            result.error
+        );
+
+
+        return;
+
+    }
+
+
+    const coppia =
+        result.data;
+
+
+    coppiaInModifica =
+        coppia.id;
+
+
+    document
+        .getElementById(
+            "maschio_id"
+        )
+        .value =
+        coppia.maschio_id ||
+        "";
+
+
+    document
+        .getElementById(
+            "femmina_id"
+        )
+        .value =
+        coppia.femmina_id ||
+        "";
+
+
+    document
+        .getElementById(
+            "data_inizio"
+        )
+        .value =
+        coppia.data_inizio ||
+        "";
+
+
+    document
+        .getElementById(
+            "stato"
+        )
+        .value =
+        coppia.stato ||
+        "Attiva";
+
+
+    document
+        .getElementById(
+            "note"
+        )
+        .value =
+        coppia.note ||
+        "";
+
+
+    document
+        .getElementById(
+            "titolo-form"
+        )
+        .textContent =
+        "Modifica coppia";
+
+
+    document
+        .getElementById(
+            "bottone-salva"
+        )
+        .textContent =
+        "Salva modifiche";
+
+
+    document
+        .getElementById(
+            "bottone-annulla"
+        )
+        .style.display =
+        "inline-flex";
+
+
+    document
+        .getElementById(
+            "form-coppia"
+        )
+        .scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+}
+
+
+/* =========================================================
+   ANNULLA MODIFICA
+   ========================================================= */
+
+function annullaModifica() {
+
+
+    coppiaInModifica =
+        null;
+
+
+    document
+        .getElementById(
+            "form-coppia"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "stato"
+        )
+        .value =
+        "Attiva";
+
+
+    document
+        .getElementById(
+            "titolo-form"
+        )
+        .textContent =
+        "Nuova coppia";
+
+
+    document
+        .getElementById(
+            "bottone-salva"
+        )
+        .textContent =
+        "Salva coppia";
+
+
+    document
+        .getElementById(
+            "bottone-annulla"
+        )
+        .style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logoutUser() {
+
+
+    await client.auth.signOut();
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================================================
+   AVVIO
+   ========================================================= */
+
+controllaUtente();
+
+</script>
+
+</body>
+</html>
